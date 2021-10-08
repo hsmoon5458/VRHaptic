@@ -26,6 +26,8 @@ public class NetworkPlayer : MonoBehaviour
         rightHandrig = rig.transform.Find("TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
 
     }
+    
+
 
     // Update is called once per frame
     void Update()
