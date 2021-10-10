@@ -15,7 +15,6 @@ public struct Gesture
 
 public class GestureDetector : MonoBehaviour
 {
-    [Range(0.01f, 5f)]
     public float threshold = 0.1f;
     public OVRSkeleton skeleton;
     public List<Gesture> gestures;
@@ -25,7 +24,7 @@ public class GestureDetector : MonoBehaviour
 
     void Start()
     {
-        fingerBones = new List<OVRBone>(skeleton.Bones);
+        StartCoroutine(BoneIdentify()); // wait few second for the systems to recognize the bones properly at the beginning
         previousGesture = new Gesture();
     }
 
@@ -36,7 +35,7 @@ public class GestureDetector : MonoBehaviour
         {
             Save();
         }
-        /*
+        
         Gesture currentGesture = Recognize();
         bool hasRecognized = !currentGesture.Equals(new Gesture());
         if(hasRecognized && !currentGesture.Equals(previousGesture))
@@ -45,7 +44,7 @@ public class GestureDetector : MonoBehaviour
             previousGesture = currentGesture;
             currentGesture.onRecognized.Invoke();
         }
-        */
+        
     }
 
     void Save()
@@ -53,6 +52,7 @@ public class GestureDetector : MonoBehaviour
         Gesture g = new Gesture();
         g.name = "New Gesture";
         List<Vector3> data = new List<Vector3>();
+        
         foreach (var bone in fingerBones)
         {
             data.Add(skeleton.transform.InverseTransformPoint(bone.Transform.position));
@@ -90,5 +90,11 @@ public class GestureDetector : MonoBehaviour
             }
         }
         return currentGesture;
+    }
+
+    private IEnumerator BoneIdentify()
+    {
+        yield return new WaitForSeconds(2f);
+        fingerBones = new List<OVRBone>(skeleton.Bones);
     }
 }
