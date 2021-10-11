@@ -10,6 +10,7 @@ public class NetworkPlayer : MonoBehaviour
     public Transform head;
     public Transform leftHand;
     public Transform rightHand;
+    public OVRCameraRig rig;
     private PhotonView photonView;
 
     private Transform headRig;
@@ -19,16 +20,18 @@ public class NetworkPlayer : MonoBehaviour
     void Start()
     {
         photonView = GetComponent<PhotonView>();
-        OVRCameraRig rig = FindObjectOfType<OVRCameraRig>();
-
-        headRig = rig.transform.Find("TrackingSpace/CenterEyeAnchor");
-        leftHandrig = rig.transform.Find("TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
-        rightHandrig = rig.transform.Find("TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
-
+        try
+        {
+            headRig = rig.transform.Find("TrackingSpace/CenterEyeAnchor");
+            leftHandrig = rig.transform.Find("TrackingSpace/LeftHandAnchor/OVRHandPrefab");
+            rightHandrig = rig.transform.Find("TrackingSpace/RightHandAnchor/OVRHandPrefab");
+        }
+        catch
+        {
+            Debug.LogError("OVR not found");
+        }      
     }
-    
-
-
+   
     // Update is called once per frame
     void Update()
     {

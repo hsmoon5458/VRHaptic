@@ -275,7 +275,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!1 &4146225558129122780
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!1 &6396391283616703822
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,6 +570,7 @@ MonoBehaviour:
   head: {fileID: 1575208002717368073}
   leftHand: {fileID: 2010249147048886819}
   rightHand: {fileID: 4952814720221973205}
+  rig: {fileID: 3002194737184733520, guid: d3b54f2ff1c67c943a2fc9890d789b3b, type: 3}
 --- !u!1 &7149769928225624800
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +675,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!1 &7666128679260692585
 GameObject:
   m_ObjectHideFlags: 0
