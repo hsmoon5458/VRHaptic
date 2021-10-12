@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 using Photon.Pun;
 
 
@@ -13,6 +12,7 @@ public class NetworkPlayer : MonoBehaviour
     public OVRCameraRig rig;
     private PhotonView photonView;
 
+
     private Transform headRig;
     private Transform leftHandrig;
     private Transform rightHandrig;
@@ -20,11 +20,13 @@ public class NetworkPlayer : MonoBehaviour
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+
         try
         {
             headRig = rig.transform.Find("TrackingSpace/CenterEyeAnchor");
             leftHandrig = rig.transform.Find("TrackingSpace/LeftHandAnchor/OVRHandPrefab");
             rightHandrig = rig.transform.Find("TrackingSpace/RightHandAnchor/OVRHandPrefab");
+
         }
         catch
         {
