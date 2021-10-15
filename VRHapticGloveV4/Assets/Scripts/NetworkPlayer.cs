@@ -6,26 +6,29 @@ using Photon.Pun;
 
 public class NetworkPlayer : MonoBehaviour
 {
-    public Transform head;
-    public Transform leftHand;
-    public Transform rightHand;
-    public OVRCameraRig rig;
+    public Transform networkPlayerHead;
+    public Transform networkPlayerLeftHand;
+    public Transform networkPlayerRightHand;
+
+    
     private PhotonView photonView;
 
-
-    private Transform headRig;
-    private Transform leftHandrig;
-    private Transform rightHandrig;
+    private Transform myHeadRig;
+    private Transform myLeftHandRig;
+    private Transform myRightHandRig;
 
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+        
 
         try
         {
-            headRig = rig.transform.Find("TrackingSpace/CenterEyeAnchor");
-            leftHandrig = rig.transform.Find("TrackingSpace/LeftHandAnchor/OVRHandPrefab");
-            rightHandrig = rig.transform.Find("TrackingSpace/RightHandAnchor/OVRHandPrefab");
+            OVRCameraRig OVRrig = FindObjectOfType<OVRCameraRig>();
+
+            myHeadRig = OVRrig.transform.Find("TrackingSpace/CenterEyeAnchor");
+            myLeftHandRig = OVRrig.transform.Find("TrackingSpace/LeftHandAnchor/OVRHandPrefab");
+            myRightHandRig = OVRrig.transform.Find("TrackingSpace/RightHandAnchor/OVRHandPrefab");
 
         }
         catch
@@ -39,20 +42,20 @@ public class NetworkPlayer : MonoBehaviour
     {
         if (photonView.IsMine)
         {
-            rightHand.gameObject.SetActive(false);
-            leftHand.gameObject.SetActive(false);
-            head.gameObject.SetActive(false);
+            networkPlayerHead.gameObject.SetActive(false);
+            networkPlayerLeftHand.gameObject.SetActive(false);
+            networkPlayerRightHand.gameObject.SetActive(false);
 
-            MapPosition(head, headRig);
-            MapPosition(leftHand, leftHandrig);
-            MapPosition(rightHand, rightHandrig);
+            MapTransform(networkPlayerHead, myHeadRig);
+            MapTransform(networkPlayerLeftHand, myLeftHandRig);
+            MapTransform(networkPlayerRightHand, myRightHandRig);
         }
         
     }
 
-    void MapPosition(Transform target, Transform rigTransform)
+    void MapTransform(Transform networkPlayer, Transform myTransform)
     {
-        target.position = rigTransform.position;
-        target.rotation = rigTransform.rotation;
+        networkPlayer.position = myTransform.position;
+        networkPlayer.rotation = myTransform.rotation;
     }
 }
