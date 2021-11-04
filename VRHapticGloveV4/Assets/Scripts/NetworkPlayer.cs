@@ -81,8 +81,8 @@ public class NetworkPlayer : MonoBehaviour
             OVRCameraRig OVRrig = FindObjectOfType<OVRCameraRig>(); //get OVRrig
 
             myHeadRig = OVRrig.transform.Find("TrackingSpace/CenterEyeAnchor");
-            myLeftHandRig = OVRrig.transform.Find("TrackingSpace/LeftHandAnchor/OVRHandPrefab");
-            myRightHandRig = OVRrig.transform.Find("TrackingSpace/RightHandAnchor/OVRHandPrefab");
+            myLeftHandRig = OVRrig.transform.Find("TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
+            myRightHandRig = OVRrig.transform.Find("TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
             
         }
         catch

@@ -15,9 +15,10 @@ public class NetworkObjectsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("1"))
+        if (Input.GetKeyDown("1") || TestCubeGenerate.testTouched)
         {
             networkCube = PhotonNetwork.Instantiate("NetworkCube", new Vector3(1,1,1), Quaternion.identity);
+            TestCubeGenerate.testTouched = false;
         }
         if (Input.GetKeyDown("2"))
         {
@@ -28,15 +29,5 @@ public class NetworkObjectsManager : MonoBehaviour
             networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", new Vector3(1, 1, 1), Quaternion.identity);
         }
 
-
-        if (Input.GetKey("a"))
-        {
-            networkCube.transform.Translate(Vector3.left * Time.deltaTime);
-        }
-
-        if (Input.GetKey("d"))
-        {
-            networkCube.transform.Translate(Vector3.right * Time.deltaTime);
-        }
     }
 }
