@@ -4,70 +4,66 @@ using UnityEngine;
 
 public class FingertipBehavior : MonoBehaviour
 {
-    public static bool F1F1, F1F2, F2F1, F2F2; //thumb touch thumb, thumb touch index, index touch thumb, index touch index
+    public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex;
     void Update()
     {
         
     }
 
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
+        #region ForLeftHandSetup
         if (this.gameObject.name == "L1Tip")
         {
             if(other.gameObject.name == "R1Tip")
             {
-                F1F1 = true;
-                Debug.Log("F1F1");
+                thumbTouchedThumb = true;
             }
             if(other.gameObject.name == "R2Tip")
             {
-                F1F2 = true;
-                Debug.Log("F1F2");
+                thumbTouchedIndex = true;
             }
         }
         if (this.gameObject.name == "L2Tip")
         {
             if (other.gameObject.name == "R1Tip")
             {
-                F2F1 = true;
-                Debug.Log("F2F1");
+                indexTouchedThumb = true;
             }
             if (other.gameObject.name == "R2Tip")
             {
-                F2F2 = true;
-                Debug.Log("F2F2");
+                indexTouchedIndex = true;
             }
         }
-    }
+        #endregion
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (this.gameObject.name == "L1Tip")
+
+        /*
+        #region ForRightHandSetup
+        if (this.gameObject.name == "R1Tip")
         {
-            if (other.gameObject.name == "R1Tip")
+            if (other.gameObject.name == "L1Tip")
             {
-                F1F1 = false;
-                Debug.Log("F1F1");
+                thumbTouchedThumb = true;
             }
-            if (other.gameObject.name == "R2Tip")
+            if (other.gameObject.name == "L2Tip")
             {
-                F1F2 = false;
-                Debug.Log("F1F2");
+                thumbTouchedIndex = true;
             }
         }
-        if (this.gameObject.name == "L2Tip")
+        if (this.gameObject.name == "R2Tip")
         {
-            if (other.gameObject.name == "R1Tip")
+            if (other.gameObject.name == "L1Tip")
             {
-                F2F1 = false;
-                Debug.Log("F2F1");
+                indexTouchedThumb = true;
             }
-            if (other.gameObject.name == "R2Tip")
+            if (other.gameObject.name == "L2Tip")
             {
-                F2F2 = false;
-                Debug.Log("F2F2");
+                indexTouchedIndex = true;
             }
         }
+        #endregion
+        */
     }
 }
