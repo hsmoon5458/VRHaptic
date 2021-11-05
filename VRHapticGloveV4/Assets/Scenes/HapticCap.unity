@@ -892,6 +892,7 @@ GameObject:
   m_Component:
   - component: {fileID: 408468189}
   - component: {fileID: 408468190}
+  - component: {fileID: 408468191}
   m_Layer: 0
   m_Name: L4Tip
   m_TagString: Untagged
@@ -926,6 +927,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &408468191
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408468188}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &415834261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1760,6 +1777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 551352127}
   - component: {fileID: 551352128}
+  - component: {fileID: 551352129}
   m_Layer: 0
   m_Name: R5Tip
   m_TagString: Untagged
@@ -1794,6 +1812,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &551352129
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551352126}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &589760538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2060,6 +2094,7 @@ GameObject:
   m_Component:
   - component: {fileID: 735427729}
   - component: {fileID: 735427730}
+  - component: {fileID: 735427731}
   m_Layer: 0
   m_Name: L3Tip
   m_TagString: Untagged
@@ -2094,6 +2129,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &735427731
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735427728}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &773672611
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,6 +2509,7 @@ GameObject:
   m_Component:
   - component: {fileID: 819953765}
   - component: {fileID: 819953766}
+  - component: {fileID: 819953767}
   m_Layer: 0
   m_Name: R4Tip
   m_TagString: Untagged
@@ -2492,6 +2544,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &819953767
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819953764}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &876891484
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,6 +3092,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1067422391}
   - component: {fileID: 1067422392}
+  - component: {fileID: 1067422393}
   m_Layer: 0
   m_Name: R3Tip
   m_TagString: Untagged
@@ -3058,6 +3127,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1067422393
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067422390}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1073138888
 GameObject:
   m_ObjectHideFlags: 0
@@ -3967,6 +4052,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1292645771}
   - component: {fileID: 1292645772}
+  - component: {fileID: 1292645773}
+  - component: {fileID: 1292645774}
   m_Layer: 0
   m_Name: L1Tip
   m_TagString: Untagged
@@ -3996,11 +4083,39 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1292645770}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.007
+  m_Radius: 0.015
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1292645773
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292645770}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1292645774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292645770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d710d79f46d1d84e9e51ff6308e370d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1308664909
 GameObject:
   m_ObjectHideFlags: 0
@@ -4486,6 +4601,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1413259680}
   - component: {fileID: 1413259681}
+  - component: {fileID: 1413259682}
+  - component: {fileID: 1413259683}
   m_Layer: 0
   m_Name: L2Tip
   m_TagString: Untagged
@@ -4515,11 +4632,39 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413259679}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.007
+  m_Radius: 0.015
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1413259682
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413259679}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1413259683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413259679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d710d79f46d1d84e9e51ff6308e370d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1486999333
 GameObject:
   m_ObjectHideFlags: 0
@@ -4530,6 +4675,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1486999334}
   - component: {fileID: 1486999335}
+  - component: {fileID: 1486999336}
   m_Layer: 0
   m_Name: L5Tip
   m_TagString: Untagged
@@ -4564,6 +4710,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.007
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1486999336
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486999333}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1508252106
 GameObject:
   m_ObjectHideFlags: 0
@@ -4954,6 +5116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1610935634}
   - component: {fileID: 1610935635}
+  - component: {fileID: 1610935636}
   m_Layer: 0
   m_Name: R1Tip
   m_TagString: Untagged
@@ -4986,8 +5149,24 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.007
+  m_Radius: 0.015
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1610935636
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610935633}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1637914074
 GameObject:
   m_ObjectHideFlags: 0
@@ -7666,6 +7845,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2044547131}
   - component: {fileID: 2044547132}
+  - component: {fileID: 2044547133}
   m_Layer: 0
   m_Name: R2Tip
   m_TagString: Untagged
@@ -7698,8 +7878,24 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.007
+  m_Radius: 0.015
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &2044547133
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044547130}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &2052292815
 GameObject:
   m_ObjectHideFlags: 0
