@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3267964665880128362}
   - component: {fileID: -2463301718751955789}
   - component: {fileID: -2670159670238087508}
+  - component: {fileID: 4697991749131607291}
   m_Layer: 0
   m_Name: NetworkCylinder
   m_TagString: InstantiatedObject
@@ -137,3 +138,15 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
+--- !u!114 &4697991749131607291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5893082909977670674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28063a96d9568a34599b68b1d9bf7ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -8,8 +8,8 @@ public class NetworkObjectsManager : MonoBehaviour
     private GameObject networkCube, networkSphere, networkCylinder;
     private GameObject[] networkObjects;
 
-    private float timeCountCube, timeCountSphere;
-    private bool cubeGenerate, sphereGenerate, sphereCylinder;
+    private float timeCountCube, timeCountSphere, timeCountCylinder;
+    private bool cubeGenerate, sphereGenerate, cylinderGenerate;
 
     [Range(0.5f, 2.5f)]
     public float timeToGenerate = 1.2f;
@@ -27,7 +27,6 @@ public class NetworkObjectsManager : MonoBehaviour
         if ((FingertipBehavior.thumbTouchedIndex && FingertipBehavior.thumbTouchedIndex))
         {
             timeCountCube += Time.deltaTime; // count time
-            Debug.Log(timeCountCube);
             if (timeCountCube > timeToGenerate) //if it lasts for two seconds
             {
                 cubeGenerate = true;
@@ -41,7 +40,6 @@ public class NetworkObjectsManager : MonoBehaviour
         if ((FingertipBehavior.thumbTouchedThumb && FingertipBehavior.indexTouchedIndex))
         {
             timeCountSphere += Time.deltaTime; // count time
-            Debug.Log(timeCountSphere);
             if (timeCountSphere > timeToGenerate) //if it lasts for certain period
             {
                 sphereGenerate = true;
@@ -50,24 +48,40 @@ public class NetworkObjectsManager : MonoBehaviour
                 FingertipBehavior.indexTouchedIndex = false;
             }
         }
+
+        //hand shape for cylinder
+        if ((!FingertipBehavior.thumbTouchedThumb && FingertipBehavior.indexTouchedIndex))
+        {
+            timeCountCylinder += Time.deltaTime; // count time
+            if (timeCountCylinder > timeToGenerate) //if it lasts for certain period
+            {
+                cylinderGenerate = true;
+                timeCountCylinder = 0; //reset the time for another iteration
+                FingertipBehavior.thumbTouchedThumb = false; //falsify the touch
+                FingertipBehavior.indexTouchedIndex = false;
+            }
+        }
+
         #endregion
 
         #region Instantiate 3D Objects
         if (Input.GetKeyDown("1") || cubeGenerate)
         {
-            networkCube = PhotonNetwork.Instantiate("NetworkCube", new Vector3(Random.Range(-10f,10f) * 0.1f,1,1), Quaternion.identity);
+            networkCube = PhotonNetwork.Instantiate("NetworkCube", new Vector3(Random.Range(-10f,10f) * 0.1f, 1, 0.4f), Quaternion.identity);
             cubeGenerate = false;
         }
         if (Input.GetKeyDown("2") || sphereGenerate)
         {
-            networkSphere = PhotonNetwork.Instantiate("NetworkSphere", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 1), Quaternion.identity);
+            networkSphere = PhotonNetwork.Instantiate("NetworkSphere", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 0.4f), Quaternion.identity);
             sphereGenerate = false;
         }
-        if (Input.GetKeyDown("3"))
+        if (Input.GetKeyDown("3") || cylinderGenerate)
         {
-            networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 1), Quaternion.identity);
+            networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 0.4f), Quaternion.identity);
+            cylinderGenerate = false;
         }
 
+        //delete all network object
         if (Input.GetKeyDown(KeyCode.Space))
         {
             networkObjects = GameObject.FindGameObjectsWithTag("InstantiatedObject");

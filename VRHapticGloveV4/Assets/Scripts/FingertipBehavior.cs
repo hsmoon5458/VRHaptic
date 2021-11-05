@@ -37,9 +37,11 @@ public class FingertipBehavior : MonoBehaviour
             }
         }
         #endregion
+                      
+    }
+}
 
-
-        /*
+/*
         #region ForRightHandSetup
         if (this.gameObject.name == "R1Tip")
         {
@@ -65,5 +67,3 @@ public class FingertipBehavior : MonoBehaviour
         }
         #endregion
         */
-    }
-}

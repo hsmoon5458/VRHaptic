@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2206622695514523132}
   - component: {fileID: 4686325451471421224}
   - component: {fileID: 1377033215903361684}
+  - component: {fileID: 8268840009248858137}
   m_Layer: 0
   m_Name: NetworkSphere
   m_TagString: InstantiatedObject
@@ -136,3 +137,15 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
+--- !u!114 &8268840009248858137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869689891432943734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28063a96d9568a34599b68b1d9bf7ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
