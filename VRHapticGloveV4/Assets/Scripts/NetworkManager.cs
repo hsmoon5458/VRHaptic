@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
+    
     void Start()
     {
         ConnectToServer();
@@ -23,7 +23,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         base.OnConnectedToMaster();
 
         //Room option
-        RoomOptions roomOptions = new RoomOptions(){ MaxPlayers = 10, IsVisible = true, IsOpen = true, PublishUserId = true};
+        RoomOptions roomOptions = new RoomOptions(){
+            MaxPlayers = 10,
+            IsVisible = true,
+            IsOpen = true,
+            PublishUserId = true
+        };
 
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
@@ -38,5 +43,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("A new player entered the room");
         base.OnPlayerEnteredRoom(newPlayer);
+
     }
 }

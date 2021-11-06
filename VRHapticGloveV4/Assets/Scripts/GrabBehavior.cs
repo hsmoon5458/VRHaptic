@@ -5,6 +5,7 @@ using UnityEngine;
 public class GrabBehavior : MonoBehaviour
 {
     public static bool leftGrabbed;
+    public static GameObject grabbedObject;
     private bool L1Tip, L2Tip, networkObject;
     void Update()
     {
@@ -14,7 +15,9 @@ public class GrabBehavior : MonoBehaviour
             leftGrabbed = true;
             Debug.Log("grabbed!");
         }
-        else
+        //just two tips are detached conditions since, if the grabbed object is moving fast with a hand,
+        //grabbed object is detached from the grab collider, and make it false, so just tips are conditions
+        else if (!L1Tip && !L2Tip)
         {
             leftGrabbed = false;
         }
@@ -34,6 +37,7 @@ public class GrabBehavior : MonoBehaviour
         if (other.gameObject.name.Contains("Network"))
         {
             networkObject = true;
+            grabbedObject = other.gameObject;
         }
 
     }

@@ -100,9 +100,12 @@ public class NetworkPlayer : MonoBehaviour
 
         if (photonView.IsMine)
         {
-            networkPlayerHead.gameObject.SetActive(false);
-            networkPlayerLeftHand.gameObject.SetActive(false);
-            networkPlayerRightHand.gameObject.SetActive(false);
+            //Set network player layer as 'Network' and change camera culling mask to disable 'Network'
+            //By doing so, network palyer is not visable, but it can be referenced for grabbing object
+
+            //networkPlayerHead.gameObject.SetActive(false);
+            //networkPlayerLeftHand.gameObject.SetActive(false);
+            //networkPlayerRightHand.gameObject.SetActive(false);
 
             MapTransform(networkPlayerHead, myHeadRig);
             MapTransform(networkPlayerLeftHand, myLeftHandRig);

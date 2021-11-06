@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4686325451471421224}
   - component: {fileID: 1377033215903361684}
   - component: {fileID: 8268840009248858137}
+  - component: {fileID: 134631209318371632}
   m_Layer: 0
   m_Name: NetworkSphere
   m_TagString: InstantiatedObject
@@ -63,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 179555ab8bd66734b8c1ac67e84c7cbc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,5 +148,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28063a96d9568a34599b68b1d9bf7ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &134631209318371632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869689891432943734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48e4ee8c1bfe9e342877f0039910c52f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

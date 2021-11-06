@@ -8,20 +8,18 @@ public class NetworkObjectsManager : MonoBehaviour
     private GameObject networkCube, networkSphere, networkCylinder;
     private GameObject[] networkObjects;
 
-    private float timeCountCube, timeCountSphere, timeCountCylinder;
+    private float timeCountCube, timeCountSphere, timeCountCylinder, timeReset;
+    private bool cubeFlag, sphereFlag, cylinderFlag;
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
 
     [Range(0.5f, 2.5f)]
     public float timeToGenerate = 1.2f;
-    
-    void Start()
-    {
-        
-    }
-
+  
     // Update is called once per frame
     void Update()
     {
+        //reset the time for all instantiations so that it does not make objects mistakely
+        
         #region Condition Check for Instantiation
         //hand shape for cube
         if ((FingertipBehavior.thumbTouchedIndex && FingertipBehavior.thumbTouchedIndex))
@@ -34,6 +32,10 @@ public class NetworkObjectsManager : MonoBehaviour
                 FingertipBehavior.thumbTouchedIndex = false; //falsify the touch
                 FingertipBehavior.thumbTouchedIndex = false;
             }
+        }
+        else
+        {
+            timeCountCube = 0;
         }
 
         //hand shape for sphere
@@ -48,6 +50,10 @@ public class NetworkObjectsManager : MonoBehaviour
                 FingertipBehavior.indexTouchedIndex = false;
             }
         }
+        else
+        {
+            timeCountSphere = 0;
+        }
 
         //hand shape for cylinder
         if ((!FingertipBehavior.thumbTouchedThumb && FingertipBehavior.indexTouchedIndex))
@@ -60,6 +66,10 @@ public class NetworkObjectsManager : MonoBehaviour
                 FingertipBehavior.thumbTouchedThumb = false; //falsify the touch
                 FingertipBehavior.indexTouchedIndex = false;
             }
+        }
+        else
+        {
+            timeCountCylinder = 0;
         }
 
         #endregion
