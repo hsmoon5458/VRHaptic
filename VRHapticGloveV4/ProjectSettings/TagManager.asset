@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - InstantiatedObject
+  - Button
   layers:
   - Default
   - TransparentFX

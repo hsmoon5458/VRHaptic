@@ -12,8 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/HapticGloveController.unity
     guid: 1770e5f6d2150214c9e05aba285b8e95
   - enabled: 1
-    path: Assets/Scenes/HapticCap.unity
+    path: Assets/Scenes/CooperativeSculpturingLobby.unity
     guid: 2575b24bed76bf24795eb1b28e847823
+  - enabled: 1
+    path: Assets/Scenes/CooperativeSculpturingRoom1.unity
+    guid: 474feb969c3728247943e38b285e1d01
+  - enabled: 1
+    path: Assets/Scenes/CooperativeSculpturingRoom2.unity
+    guid: be658989feb5cd74fbce80b5746ce077
+  - enabled: 1
+    path: Assets/Scenes/CooperativeSculpturingRoom3.unity
+    guid: 5dab764bc2a04e94b98afa7cc2aa4b2d
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 997c0bd702ed75a49884d25716241363, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0bb8dee914e344d4ca3d373b79d38897, type: 2}

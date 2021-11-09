@@ -7,7 +7,7 @@ public class FingertipBehavior : MonoBehaviour
     public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex;
     void Update()
     {
-        
+
     }
 
 
@@ -37,7 +37,8 @@ public class FingertipBehavior : MonoBehaviour
             }
         }
         #endregion
-                      
+
+
     }
 }
 
