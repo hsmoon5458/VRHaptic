@@ -24,6 +24,7 @@ public class ButtonsBehavior : MonoBehaviour
 
         if(other.gameObject.name == "L2Tip" || other.gameObject.name == "R2Tip")
         {
+            this.gameObject.GetComponent<Renderer>().material.color = Color.green;
             onClick.Invoke();
         }
     }

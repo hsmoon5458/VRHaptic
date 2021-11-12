@@ -8,7 +8,7 @@ public class GrabbableBehavior : MonoBehaviour
     private GameObject leftHandGrabCollider;
     void Start()
     {
-        leftHandGrabCollider = GameObject.Find(PhotonNetwork.AuthValues.UserId + "/LeftHand");
+        leftHandGrabCollider = GameObject.Find(PhotonNetwork.NickName + "/LeftHand"); //local nickname (mine)
         //leftHandGrabCollider = GameObject.Find("HankOVRCameraRig/TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L/OculusHand_L/b_l_wrist/LeftGrabCollider");
     }
 

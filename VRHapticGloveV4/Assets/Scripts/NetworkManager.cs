@@ -1,6 +1,9 @@
  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -16,9 +19,32 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public List<DefaultRoom> defaultRooms;
     public GameObject LobbyUI;
+    public TMP_InputField nickNameInputField;
+    public TMP_InputField nickNameInputFieldPCSide; //this is for PC
+
+    private void Start()
+    {
+        if (PhotonNetwork.IsConnected) // if it is connected to server, do nothing
+        {
+
+        }
+        else //otherwise, creat Nickname to connect to server
+        {
+            string randStr = Random.Range(0, 9999).ToString();
+            nickNameInputField.text = randStr;
+
+            try { nickNameInputFieldPCSide.text = randStr; } //in case PCSide UI is disabled.
+            catch { }
+        }
+
+    }
+
     public void ConnectToServer()
     {
         PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.NickName = nickNameInputField.text.ToString();
+        PhotonNetwork.NickName = nickNameInputFieldPCSide.text.ToString();
+
         Debug.Log("Try Connect to Server...");
     }
   
@@ -34,7 +60,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedLobby();
         Debug.Log("Joined Lobby");
-        LobbyUI.SetActive(true);
+        if(SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            //do nothing
+        }
+        else
+        {
+            PhotonNetwork.LoadLevel(0); // go back to lobby
+        }
+        
+
+        //in case go back to lobby from the room
+        try { LobbyUI.SetActive(true); }
+        catch { }    
+
     }
 
     public void InitializeRoom(int defaultRoomIndex)

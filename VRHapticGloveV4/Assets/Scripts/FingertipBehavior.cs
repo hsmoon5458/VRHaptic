@@ -14,43 +14,14 @@ public class FingertipBehavior : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         #region ForLeftHandSetup
-        if (this.gameObject.name == "L1Tip")
-        {
-            if(other.gameObject.name == "R1Tip")
-            {
-                thumbTouchedThumb = true;
-            }
-            if(other.gameObject.name == "R2Tip")
-            {
-                thumbTouchedIndex = true;
-            }
-        }
-        if (this.gameObject.name == "L2Tip")
-        {
-            if (other.gameObject.name == "R1Tip")
-            {
-                indexTouchedThumb = true;
-            }
-            if (other.gameObject.name == "R2Tip")
-            {
-                indexTouchedIndex = true;
-            }
-        }
-        #endregion
 
-
-    }
-}
-
-/*
-        #region ForRightHandSetup
         if (this.gameObject.name == "R1Tip")
         {
-            if (other.gameObject.name == "L1Tip")
+            if(other.gameObject.name == "L1Tip")
             {
                 thumbTouchedThumb = true;
             }
-            if (other.gameObject.name == "L2Tip")
+            if(other.gameObject.name == "L2Tip")
             {
                 thumbTouchedIndex = true;
             }
@@ -67,4 +38,7 @@ public class FingertipBehavior : MonoBehaviour
             }
         }
         #endregion
-        */
+
+
+    }
+}

@@ -27,7 +27,9 @@ public class NetworkPlayer : MonoBehaviour
     {
         
         photonView = GetComponent<PhotonView>();
-        
+
+        this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
+
         //catch the Transform of each joints 
         leftHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
         rightHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
