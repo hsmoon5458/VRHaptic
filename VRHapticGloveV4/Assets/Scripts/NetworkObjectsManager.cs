@@ -13,7 +13,9 @@ public class NetworkObjectsManager : MonoBehaviour
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
 
     [Range(0.5f, 2.5f)]
-    public float timeToGenerate = 1.2f;
+    private float timeToGenerate = 1.2f;
+
+    public Transform objectSpawnTransform;
   
     // Update is called once per frame
     void Update()
@@ -77,17 +79,17 @@ public class NetworkObjectsManager : MonoBehaviour
         #region Instantiate 3D Objects
         if (Input.GetKeyDown("1") || cubeGenerate)
         {
-            networkCube = PhotonNetwork.Instantiate("NetworkCube", new Vector3(Random.Range(-10f,10f) * 0.1f, 1, 0.4f), Quaternion.identity);
+            networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
             cubeGenerate = false;
         }
         if (Input.GetKeyDown("2") || sphereGenerate)
         {
-            networkSphere = PhotonNetwork.Instantiate("NetworkSphere", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 0.4f), Quaternion.identity);
+            networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
             sphereGenerate = false;
         }
         if (Input.GetKeyDown("3") || cylinderGenerate)
         {
-            networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", new Vector3(Random.Range(-10f, 10f) * 0.1f, 1, 0.4f), Quaternion.identity);
+            networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
             cylinderGenerate = false;
         }
 

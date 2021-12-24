@@ -6,11 +6,27 @@ using Photon.Pun;
 public class NetworkPlayerSpawn : MonoBehaviourPunCallbacks
 {
     private GameObject spawnedPlayerPrefab;
+    private Transform spawningTransform;
+    void Start()
+    {
 
+    }
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        spawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", transform.position, transform.rotation);
+        if(PhotonNetwork.NickName == "Researcher")
+        {
+            spawningTransform = GameObject.Find("Player1SpawnPosition").transform;
+        }
+        else if (PhotonNetwork.NickName == "Participant")
+        {
+            spawningTransform = GameObject.Find("Player2SpawnPosition").transform;
+        }
+        else
+        {
+            spawningTransform = this.transform;
+        }
+        spawnedPlayerPrefab = PhotonNetwork.Instantiate("Network Player", spawningTransform.position, spawningTransform.rotation);
         spawnedPlayerPrefab.name = PhotonNetwork.NickName;
     }
 
