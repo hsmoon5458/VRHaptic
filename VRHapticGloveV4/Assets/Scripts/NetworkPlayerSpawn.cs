@@ -16,11 +16,11 @@ public class NetworkPlayerSpawn : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         if(PhotonNetwork.NickName == "Researcher")
         {
-            spawningTransform = GameObject.Find("Player1SpawnPosition").transform;
+            spawningTransform = GameObject.Find("ResearcherSpawnPosition").transform;
         }
         else if (PhotonNetwork.NickName == "Participant")
         {
-            spawningTransform = GameObject.Find("Player2SpawnPosition").transform;
+            spawningTransform = GameObject.Find("ParticipantSpawnPosition").transform;
         }
         else
         {

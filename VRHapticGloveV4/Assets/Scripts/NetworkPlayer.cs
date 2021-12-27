@@ -105,10 +105,6 @@ public class NetworkPlayer : MonoBehaviour
             //Set network player layer as 'Network' and change camera culling mask to disable 'Network'
             //By doing so, network palyer is not visable, but it can be referenced for grabbing object
 
-            //networkPlayerHead.gameObject.SetActive(false);
-            //networkPlayerLeftHand.gameObject.SetActive(false);
-            //networkPlayerRightHand.gameObject.SetActive(false);
-
             MapTransform(networkPlayerHead, myHeadRig);
             MapTransform(networkPlayerLeftHand, myLeftHandRig);
             MapTransform(networkPlayerRightHand, myRightHandRig);
@@ -148,7 +144,22 @@ public class NetworkPlayer : MonoBehaviour
             MapTransform(networkPlayerRightHandFingers[15], RPalm);
 
         }
-
+        /*
+        else
+        {
+            if(this.gameObject.name == "Researcher")
+            {
+                networkPlayerLeftHand.gameObject.SetActive(true);
+                networkPlayerRightHand.gameObject.SetActive(false);
+            }
+            if(this.gameObject.name == "Participant")
+            {
+                networkPlayerLeftHand.gameObject.SetActive(false);
+                networkPlayerRightHand.gameObject.SetActive(true);
+            }
+            
+        }
+        */
     }
 
     void MapTransform(Transform networkPlayer, Transform myTransform)

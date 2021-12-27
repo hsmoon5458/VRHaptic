@@ -4,56 +4,74 @@ using UnityEngine;
 
 public class FingertipBehavior : MonoBehaviour
 {
-    public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex, pinchingStatus;
+    [SerializeField]
+    public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex, myPinchingStatus, networkPinchingStatus;
     void Update()
     {
 
     }
 
-
+    //right hand setup only (participant side only)
     private void OnTriggerEnter(Collider other)
     {
-        #region ForLeftHandSetup
-        //for creating object
-        if (this.gameObject.name == "L1Tip")
+        //for creating object at participant side
+        if (this.gameObject.name == "R1Tip")
         {
-            if(other.gameObject.name == "R1Tip")
+            if(other.gameObject.name == "L1TipNetwork")
             {
                 thumbTouchedThumb = true;
             }
-            if(other.gameObject.name == "R2Tip")
+            if(other.gameObject.name == "L2TipNetwork")
             {
                 thumbTouchedIndex = true;
             }
         }
-        if (this.gameObject.name == "L2Tip")
+        if (this.gameObject.name == "R2Tip")
         {
-            if (other.gameObject.name == "R1Tip")
+            if (other.gameObject.name == "L1TipNetwork")
             {
                 indexTouchedThumb = true;
             }
-            if (other.gameObject.name == "R2Tip")
+            if (other.gameObject.name == "L2TipNetwork")
             {
                 indexTouchedIndex = true;
             }
         }
 
         //for pinching and scaling
-        if(this.gameObject.name == "L2Tip")
-        {
-            if(other.gameObject.name == "L1Tip")
-            {
-                pinchingStatus = true;
-            }
-        }
-        if (this.gameObject.name == "R2Tip")
+        if(this.gameObject.name == "R2Tip")
         {
             if(other.gameObject.name == "R1Tip")
             {
-                pinchingStatus = true;
+                myPinchingStatus = true;
             }
         }
-        #endregion
+        //network player pinching
+        if (this.gameObject.name == "L2TipNetwork")
+        {
+            if (other.gameObject.name == "L1TipNetwork")
+            {
+                networkPinchingStatus = true;
+            }
+        }
+    }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (this.gameObject.name == "R2Tip")
+        {
+            if (other.gameObject.name == "R1Tip")
+            {
+                myPinchingStatus = false;
+            }
+        }
+        //network player pinching
+        if (this.gameObject.name == "L2TipNetwork")
+        {
+            if (other.gameObject.name == "L1TipNetwork")
+            {
+                networkPinchingStatus = false;
+            }
+        }
     }
 }

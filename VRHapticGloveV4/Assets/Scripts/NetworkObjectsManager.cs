@@ -16,7 +16,8 @@ public class NetworkObjectsManager : MonoBehaviour
     private float timeToGenerate = 1.2f;
 
     public Transform objectSpawnTransform;
-  
+
+
     // Update is called once per frame
     void Update()
     {
@@ -24,7 +25,7 @@ public class NetworkObjectsManager : MonoBehaviour
         
         #region Condition Check for Instantiation
         //hand shape for cube
-        if ((FingertipBehavior.thumbTouchedIndex && FingertipBehavior.thumbTouchedIndex))
+        if ((FingertipBehavior.thumbTouchedIndex && FingertipBehavior.indexTouchedThumb))
         {
             timeCountCube += Time.deltaTime; // count time
             if (timeCountCube > timeToGenerate) //if it lasts for two seconds
@@ -32,7 +33,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 cubeGenerate = true;
                 timeCountCube = 0; //reset the time for another iteration
                 FingertipBehavior.thumbTouchedIndex = false; //falsify the touch
-                FingertipBehavior.thumbTouchedIndex = false;
+                FingertipBehavior.indexTouchedThumb = false;
             }
         }
         else
@@ -58,7 +59,7 @@ public class NetworkObjectsManager : MonoBehaviour
         }
 
         //hand shape for cylinder
-        if ((!FingertipBehavior.thumbTouchedThumb && FingertipBehavior.indexTouchedIndex))
+        if ((FingertipBehavior.thumbTouchedThumb && !FingertipBehavior.indexTouchedIndex))
         {
             timeCountCylinder += Time.deltaTime; // count time
             if (timeCountCylinder > timeToGenerate) //if it lasts for certain period
@@ -76,10 +77,19 @@ public class NetworkObjectsManager : MonoBehaviour
 
         #endregion
 
+        #region Sacling the 3D Objects
+        if (XAxisPinching.XScaling) //if bool is true
+        {
+            GameObject tempObject = GameObject.Find("testObj");
+            tempObject.transform.localScale = new Vector3(2f, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
+        }
+        #endregion
+
         #region Instantiate 3D Objects
         if (Input.GetKeyDown("1") || cubeGenerate)
         {
             networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
+            networkCube.name = "testObj";
             cubeGenerate = false;
         }
         if (Input.GetKeyDown("2") || sphereGenerate)
@@ -105,4 +115,5 @@ public class NetworkObjectsManager : MonoBehaviour
         }
         #endregion
     }
+
 }
