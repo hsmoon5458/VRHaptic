@@ -8,7 +8,13 @@ public class FingertipBehavior : MonoBehaviour
     public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex, myPinchingStatus, networkPinchingStatus;
     void Update()
     {
-
+        //to disable pinching and scaling
+        if(!myPinchingStatus || !networkPinchingStatus)
+        {
+            NetworkObjectsManager.xAxisScalingEnabledFlag = false;
+            NetworkObjectsManager.yAxisScalingEnabledFlag = false;
+            NetworkObjectsManager.zAxisScalingEnabledFlag = false;
+        }
     }
 
     //right hand setup only (participant side only)

@@ -8,14 +8,11 @@ public class XAxisPinching : MonoBehaviour
     private bool rightHandPinched, leftHandPinched;
     void Update()
     {
-        if(rightHandPinched && leftHandPinched)
+        if(rightHandPinched && leftHandPinched && !NetworkObjectsManager.xAxisScalingEnabledFlag)
         {
             XScaling = true;
         }
-        else
-        {
-            XScaling = false;
-        }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -44,6 +41,7 @@ public class XAxisPinching : MonoBehaviour
             }
         }
     }
+    
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.name == "R2Tip")
@@ -70,17 +68,23 @@ public class XAxisPinching : MonoBehaviour
             }
         }
     }
-
+    
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.name == "R2Tip")
         {
-            XScaling = false;
+            if (FingertipBehavior.myPinchingStatus)
+            {
+                rightHandPinched = false;
+            }
         }
 
         if (other.gameObject.name == "L2TipNetwork")
         {
-            XScaling = false;
+            if (FingertipBehavior.networkPinchingStatus)
+            {
+                leftHandPinched = false;
+            }
         }
     }
 }
