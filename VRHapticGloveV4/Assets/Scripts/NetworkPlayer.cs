@@ -144,7 +144,7 @@ public class NetworkPlayer : MonoBehaviour
             MapTransform(networkPlayerRightHandFingers[15], RPalm);
 
         }
-        /*
+        
         else
         {
             if(this.gameObject.name == "Researcher")
@@ -159,7 +159,7 @@ public class NetworkPlayer : MonoBehaviour
             }
             
         }
-        */
+        
     }
 
     void MapTransform(Transform networkPlayer, Transform myTransform)

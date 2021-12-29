@@ -23,8 +23,7 @@ public class GameManager : MonoBehaviour
             rightHand.SetActive(true);
         }
     }
-    /*
-    // Update is called once per frame
+    
     void Update()
     {
         tempTime += Time.deltaTime;
@@ -36,5 +35,5 @@ public class GameManager : MonoBehaviour
         string minutes = Mathf.Floor(completionTime / 60).ToString("00");
         string seconds = (completionTime % 60).ToString("00");
     }
-    */
+    
 }

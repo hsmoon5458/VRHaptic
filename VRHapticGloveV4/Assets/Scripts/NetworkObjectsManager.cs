@@ -5,23 +5,25 @@ using Photon.Pun;
 
 public class NetworkObjectsManager : MonoBehaviour
 {
+    //creating 3D objects
+    public Transform objectSpawnTransform;
     private GameObject networkCube, networkSphere, networkCylinder;
     private GameObject[] networkObjects;
-
     private float timeCountCube, timeCountSphere, timeCountCylinder, timeReset;
     private bool cubeFlag, sphereFlag, cylinderFlag;
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
+    private float timeToGenerate = 1.2f;
 
+    //scaling 3D objects
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
     [SerializeField]
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     [SerializeField]
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
 
-    [Range(0.5f, 2.5f)]
-    private float timeToGenerate = 1.2f;
-
-    public Transform objectSpawnTransform;
+    //positioning object
+    public GameObject lightString;
+    private float lightStringDistanceThreshold = 0.3f;
 
     private void Start()
     {
@@ -210,7 +212,18 @@ public class NetworkObjectsManager : MonoBehaviour
 
         #region Rotating the 3D Objects
 
-        #endregion 
+        #endregion
+
+        #region Positioning the 3D Objects
+        if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold)
+        {
+            lightString.SetActive(true);
+        }
+        else
+        {
+            lightString.SetActive(false);
+        }
+        #endregion
     }
 
     IEnumerator IdentifyFingertip()
