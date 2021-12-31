@@ -92,8 +92,28 @@ public class NetworkPlayer : MonoBehaviour
             Debug.LogError("OVR not found");
         }
 
-        
-
+        //this is for network player (not myself)
+        if (!photonView.IsMine)
+        {
+            if (this.gameObject.name == "Researcher") //if it is a reseracher, only enable lefthand
+            {
+                networkPlayerLeftHand.gameObject.SetActive(true);
+                networkPlayerRightHand.gameObject.SetActive(false);
+            }
+            if (this.gameObject.name == "Participant") //if it is a participant, only enable righthand
+            {
+                //need to enable rotating knob
+                networkPlayerLeftHand.gameObject.SetActive(false);
+                networkPlayerRightHand.gameObject.SetActive(true);
+            }
+        }
+        else //this is for myself
+        {
+            networkPlayerHead.gameObject.SetActive(false);
+            networkPlayerLeftHand.gameObject.SetActive(false);
+            networkPlayerRightHand.gameObject.SetActive(false);
+        }
+ 
     }
    
     // Update is called once per frame
@@ -102,6 +122,7 @@ public class NetworkPlayer : MonoBehaviour
 
         if (photonView.IsMine)
         {
+            //Tip
             //Set network player layer as 'Network' and change camera culling mask to disable 'Network'
             //By doing so, network palyer is not visable, but it can be referenced for grabbing object
 
@@ -144,7 +165,8 @@ public class NetworkPlayer : MonoBehaviour
             MapTransform(networkPlayerRightHandFingers[15], RPalm);
 
         }
-        
+        /*
+        //this is for network player (not myself)
         else
         {
             if(this.gameObject.name == "Researcher")
@@ -154,12 +176,13 @@ public class NetworkPlayer : MonoBehaviour
             }
             if(this.gameObject.name == "Participant")
             {
+                //need to enable rotating knob
                 networkPlayerLeftHand.gameObject.SetActive(false);
                 networkPlayerRightHand.gameObject.SetActive(true);
             }
             
         }
-        
+        */
     }
 
     void MapTransform(Transform networkPlayer, Transform myTransform)

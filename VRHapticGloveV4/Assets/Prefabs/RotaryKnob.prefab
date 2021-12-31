@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3246163311645460283
+--- !u!1 &3688045784337043192
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3021076116832985665}
-  - component: {fileID: 2848233093531381397}
-  - component: {fileID: 6284258186530453404}
+  - component: {fileID: 4021475822828186498}
+  - component: {fileID: 4153680760403060566}
+  - component: {fileID: 5265844631781588575}
   m_Layer: 0
-  m_Name: Knob
+  m_Name: RotaryKnob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3021076116832985665
+--- !u!4 &4021475822828186498
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3246163311645460283}
+  m_GameObject: {fileID: 3688045784337043192}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,21 +32,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!33 &2848233093531381397
+--- !u!33 &4153680760403060566
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3246163311645460283}
+  m_GameObject: {fileID: 3688045784337043192}
   m_Mesh: {fileID: -6418547184091236538, guid: ff15b20487a080649a8484d87f507790, type: 3}
---- !u!23 &6284258186530453404
+--- !u!23 &5265844631781588575
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3246163311645460283}
+  m_GameObject: {fileID: 3688045784337043192}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1

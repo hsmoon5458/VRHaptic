@@ -44,16 +44,16 @@ namespace DigitalRuby.LightningBolt
     public class LightningBoltScript : MonoBehaviour
     {
         [Tooltip("The game object where the lightning will emit from. If null, StartPosition is used.")]
-        public GameObject StartObject;
+        private GameObject StartObject;
 
         [Tooltip("The start position where the lightning will emit from. This is in world space if StartObject is null, otherwise this is offset from StartObject position.")]
-        public Vector3 StartPosition;
+        private Vector3 StartPosition = new Vector3(0f, 0f, 0f);
 
         [Tooltip("The game object where the lightning will end at. If null, EndPosition is used.")]
-        public GameObject EndObject;
+        private GameObject EndObject;
 
         [Tooltip("The end position where the lightning will end at. This is in world space if EndObject is null, otherwise this is offset from EndObject position.")]
-        public Vector3 EndPosition;
+        private Vector3 EndPosition = new Vector3(0f, 0f, 0f);
 
         [Range(0, 8)]
         [Tooltip("How manu generations? Higher numbers create more line segments.")]
@@ -291,18 +291,32 @@ namespace DigitalRuby.LightningBolt
             lineRenderer = GetComponent<LineRenderer>();
             lineRenderer.positionCount = 0;
             UpdateFromMaterialChange();
-            StartCoroutine(IdentifyFingertip());
+
+            InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f); //repeat until they find it.
         }
 
-        IEnumerator IdentifyFingertip()
+        //indentify start and end object for lighting effect.
+        private void IdentifyFingertip()
         {
-            yield return new WaitForSeconds(3.5f);
-            StartObject = GameObject.FindWithTag("networkLeftFinger");
-            EndObject = GameObject.FindWithTag("myRightFinger");
+            if (LobbyNetworkManager.userType == 1) // researcher
+            {
+                StartObject = GameObject.FindWithTag("myLeftIndexFinger");
+                EndObject = GameObject.FindWithTag("networkRightIndexFinger");
+            }
+            else if (LobbyNetworkManager.userType == 2) // participant
+            {
+                StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
+                EndObject = GameObject.FindWithTag("myRightIndexFinger");
+            }
         }
 
         private void Update()
         {
+            if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.
+            {
+                CancelInvoke("IdentifyFingertip");
+            }
+
             orthographic = (Camera.main != null && Camera.main.orthographic);
             if (timer <= 0.0f)
             {

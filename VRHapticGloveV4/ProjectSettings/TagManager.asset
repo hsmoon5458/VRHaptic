@@ -6,8 +6,12 @@ TagManager:
   tags:
   - InstantiatedObject
   - Button
-  - myRightFinger
-  - networkLeftFinger
+  - myLeftIndexFinger
+  - myRightIndexFinger
+  - networkLeftIndexFinger
+  - networkRightIndexFinger
+  - testLeftHand
+  - testRightHand
   layers:
   - Default
   - TransparentFX

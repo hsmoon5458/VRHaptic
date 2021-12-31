@@ -27,12 +27,18 @@ public class NetworkObjectsManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(IdentifyFingertip());
+        InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //keep finding the fingertip objects
+        if (leftFingertip != null && rightFingertip != null) // if they are both identified, cancel invoking.
+        {
+            CancelInvoke("IdentifyFingertip");
+        }
+
         //reset the time for all instantiations so that it does not make objects mistakely      
         #region Condition Check for Instantiation
         //hand shape for cube
@@ -213,7 +219,7 @@ public class NetworkObjectsManager : MonoBehaviour
         #region Rotating the 3D Objects
 
         #endregion
-
+        /*
         #region Positioning the 3D Objects
         if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold)
         {
@@ -224,12 +230,20 @@ public class NetworkObjectsManager : MonoBehaviour
             lightString.SetActive(false);
         }
         #endregion
+        */
     }
 
-    IEnumerator IdentifyFingertip()
+    private void IdentifyFingertip()
     {
-        yield return new WaitForSeconds(3.5f);
-        leftFingertip = GameObject.FindWithTag("networkLeftFinger");
-        rightFingertip = GameObject.FindWithTag("myRightFinger");
+        if(LobbyNetworkManager.userType == 1) // researcher
+        {
+            leftFingertip = GameObject.FindWithTag("myLeftIndexFinger");
+            rightFingertip = GameObject.FindWithTag("networkRightIndexFinger");
+        }
+        else if(LobbyNetworkManager.userType == 2) // participant
+        {
+            leftFingertip = GameObject.FindWithTag("networkLeftIndexFinger");
+            rightFingertip = GameObject.FindWithTag("myRightIndexFinger");
+        }
     }
 }
