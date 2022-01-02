@@ -8,17 +8,15 @@ public class RotatingKnob : MonoBehaviour
     private bool thumbTouched, indexTouched;
     public static bool knobEnabled = false;
     public static float knobAngle;
+    public static int axisSelected = 0; //1 is X, 2 is y, and Z is 3.
     public GameObject knobParent, fingertip; // to rotate the knob
     private GameObject touchedFingerObject;
-    public static GameObject knob; //remove this after the test
     private float tempKnobAngle, tempFingerAngle;
 
-    public float xAngle = 0, yAngle = 0, zAngle = 0;
+    RaycastHit hit;
+    private float raycastRange = 50f;
+    public LayerMask axisTargetLayer;
 
-    private void Start()
-    {
-        knob = this.gameObject;
-    }
     void Update()
     {
         if (thumbTouched && indexTouched && !knobEnabled)
@@ -27,19 +25,41 @@ public class RotatingKnob : MonoBehaviour
             knobAngle = this.transform.eulerAngles.z;
             tempKnobAngle = this.transform.eulerAngles.z;
             tempFingerAngle = touchedFingerObject.transform.eulerAngles.x;
-
         }
 
         if (knobEnabled)
         {
-            //this nigga has a problem
             this.gameObject.GetComponent<Renderer>().material.color = Color.green;
-            knobParent.transform.eulerAngles = new Vector3(xAngle, touchedFingerObject.transform.eulerAngles.z, 90);
+            knobParent.transform.eulerAngles = new Vector3(0, touchedFingerObject.transform.eulerAngles.z, 90);
         }
         else
         {
             this.gameObject.GetComponent<Renderer>().material.color = Color.red;
             knobParent.transform.rotation = fingertip.transform.rotation;
+        }
+
+        if (Physics.Raycast(fingertip.transform.position, fingertip.transform.right, out hit, raycastRange, axisTargetLayer))
+        {
+            if(hit.transform.name == "XaxisRaycastTarget")
+            {
+                Debug.Log("X Axis Hit!");
+                axisSelected = 1;
+            }
+            else if (hit.transform.name == "YaxisRaycastTarget")
+            {
+                Debug.Log("Y Axis Hit!");
+                axisSelected = 2;
+            }
+            else if(hit.transform.name == "ZaxisRaycastTarget")
+            {
+                Debug.Log("Z Axis Hit!");
+                axisSelected = 3;
+            }
+            else
+            {
+                axisSelected = 0;
+            }
+
         }
 
     }

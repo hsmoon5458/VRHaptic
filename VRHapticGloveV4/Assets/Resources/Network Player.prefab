@@ -7135,6 +7135,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knobParent: {fileID: 8324882876388936626}
   fingertip: {fileID: 3394382723224371777}
-  xAngle: 0
-  yAngle: 0
-  zAngle: 0
+  axisTargetLayer:
+    serializedVersion: 2
+    m_Bits: 128

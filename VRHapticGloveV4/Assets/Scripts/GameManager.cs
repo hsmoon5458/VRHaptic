@@ -38,9 +38,11 @@ public class GameManager : MonoBehaviour
         //test code
         try
         {
-            xtmp.text = RotatingKnob.knob.transform.eulerAngles.x.ToString("F2");
-            ytmp.text = RotatingKnob.knob.transform.eulerAngles.y.ToString("F2");
-            ztmp.text = RotatingKnob.knob.transform.eulerAngles.z.ToString("F2");
+            /*
+            xtmp.text = RotatingKnob..transform.eulerAngles.x.ToString("F0");
+            ytmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.y.ToString("F0");
+            ztmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.z.ToString("F0");
+            */
         }
         catch
         {
