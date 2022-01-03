@@ -13,12 +13,11 @@ public class NetworkObjectsManager : MonoBehaviour
     private bool cubeFlag, sphereFlag, cylinderFlag;
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
     private float timeToGenerate = 1.2f;
-
+    private float rotatingSpeed = 5f;
     //scaling 3D objects
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
     [SerializeField]
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
-    [SerializeField]
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
 
     //positioning object
@@ -127,7 +126,6 @@ public class NetworkObjectsManager : MonoBehaviour
         #endregion
 
         #region Sacling the 3D Objects
-        #region Scaling X axis
         //this X axis is for 1) Cube X axis, 2) Cylinder radius, and 3) Sphere Radius.
         if (XAxisPinching.XScaling && !xAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
         {
@@ -148,16 +146,14 @@ public class NetworkObjectsManager : MonoBehaviour
 
             //find the difference value and added to original distance
             GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(scalingDistance - tempScalingDis + tempObjDis1, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
+            tempObject.transform.localScale = new Vector3(Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis1)*10) * 0.1f, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
         }
         else
         {
             tempObjDis1 = 0;
             //tempScalingDis = 0;
         }
-        #endregion
-        
-        #region Scaling Y axis
+
         //this is for 1) Cube Y axis and 2) Cylinder Height
         if (YAxisPinching.YScaling && !yAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
         {
@@ -178,15 +174,14 @@ public class NetworkObjectsManager : MonoBehaviour
 
             //find the difference value and added to original distance
             GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, scalingDistance - tempScalingDis + tempObjDis2, tempObject.transform.localScale.z);
+            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis2)*10) * 0.1f, tempObject.transform.localScale.z);
         }
         else
         {
             tempObjDis2 = 0;
         }
-        #endregion
 
-        #region Scaling Z axis
+
         if (ZAxisPinching.ZScaling && !zAxisScalingEnabledFlag)
         {
             //identify object
@@ -206,7 +201,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
             //find the difference value and added to original distance
             GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, tempObject.transform.localScale.y, scalingDistance - tempScalingDis + tempObjDis3);
+            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, tempObject.transform.localScale.y, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis3)*10)*0.1f);
         }
         else
         {
@@ -214,12 +209,29 @@ public class NetworkObjectsManager : MonoBehaviour
         }
         #endregion
 
-        #endregion
-
         #region Rotating the 3D Objects
+        
+        if(RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 1)
+        {
+            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.x), 1));
+            RotatingKnob.rotatedFlag = false;
+        }
+        if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 2)
+        {
+            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.y), 2));
+            RotatingKnob.rotatedFlag = false;
+        }
+        if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 3)
+        {
+            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.z), 3));
+            RotatingKnob.rotatedFlag = false;
+        }
 
         #endregion
-        /*
+
         #region Positioning the 3D Objects
         if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold)
         {
@@ -230,7 +242,7 @@ public class NetworkObjectsManager : MonoBehaviour
             lightString.SetActive(false);
         }
         #endregion
-        */
+        
     }
 
     private void IdentifyFingertip()
@@ -246,4 +258,43 @@ public class NetworkObjectsManager : MonoBehaviour
             rightFingertip = GameObject.FindWithTag("myRightIndexFinger");
         }
     }
+
+    IEnumerator RotatingObject(GameObject obj, int startAngle, int axis)
+    {
+        if (axis == 1)
+        {
+            //to rotate the object smoothly, using lerp to rotate the object
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.x) != startAngle + 45)
+            {
+                Debug.Log("Spinning");
+                Debug.Log(Mathf.RoundToInt(obj.transform.eulerAngles.x));
+                Debug.Log(startAngle + 45);
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(startAngle + 45, obj.transform.eulerAngles.y, obj.transform.eulerAngles.z), rotatingSpeed * Time.deltaTime);
+                yield return null;
+            }
+            //at last, round up to integer so that it lands onto integer angle
+            obj.transform.eulerAngles = new Vector3(Mathf.RoundToInt(obj.transform.eulerAngles.x), Mathf.RoundToInt(obj.transform.eulerAngles.y), Mathf.RoundToInt(obj.transform.eulerAngles.z));
+        }
+        else if (axis == 2)
+        {
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.y) != startAngle + 45)
+            {
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(obj.transform.eulerAngles.x, startAngle + 45, obj.transform.eulerAngles.z), rotatingSpeed * Time.deltaTime);
+                yield return null;
+            }
+            obj.transform.eulerAngles = new Vector3(Mathf.RoundToInt(obj.transform.eulerAngles.x), Mathf.RoundToInt(obj.transform.eulerAngles.y), Mathf.RoundToInt(obj.transform.eulerAngles.z));
+        }
+        else if (axis == 3)
+        {
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.z) != startAngle + 45)
+            {
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(obj.transform.eulerAngles.x, obj.transform.eulerAngles.y, startAngle + 45), rotatingSpeed * Time.deltaTime);
+                yield return null;
+            }
+            obj.transform.eulerAngles = new Vector3(Mathf.RoundToInt(obj.transform.eulerAngles.x), Mathf.RoundToInt(obj.transform.eulerAngles.y), Mathf.RoundToInt(obj.transform.eulerAngles.z));
+        }
+
+        
+    }
+
 }

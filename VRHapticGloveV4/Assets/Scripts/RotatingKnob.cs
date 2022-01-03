@@ -7,12 +7,14 @@ public class RotatingKnob : MonoBehaviour
 {
     private bool thumbTouched, indexTouched;
     public static bool knobEnabled = false;
-    public static float knobAngle;
-    public static int axisSelected = 0; //1 is X, 2 is y, and Z is 3.
+    public static bool rotatedFlag; //when the knob is spined more than 90 degree
+    public static int rotatingAxisSelected = 0; //1 is X, 2 is y, and Z is 3.
     public GameObject knobParent, fingertip; // to rotate the knob
     private GameObject touchedFingerObject;
-    private float tempKnobAngle, tempFingerAngle;
+    [SerializeField]
+    private float tempKnobAngle, tempFingerAngle, rotatedAngle;
 
+    public float x, y; //remove this after the test;
     RaycastHit hit;
     private float raycastRange = 50f;
     public LayerMask axisTargetLayer;
@@ -22,19 +24,42 @@ public class RotatingKnob : MonoBehaviour
         if (thumbTouched && indexTouched && !knobEnabled)
         {
             knobEnabled = true;
-            knobAngle = this.transform.eulerAngles.z;
-            tempKnobAngle = this.transform.eulerAngles.z;
-            tempFingerAngle = touchedFingerObject.transform.eulerAngles.x;
+            tempKnobAngle = knobParent.transform.eulerAngles.z; //to get the initial rotation of the knob
+            tempFingerAngle = touchedFingerObject.transform.eulerAngles.z;
         }
 
         if (knobEnabled)
         {
-            this.gameObject.GetComponent<Renderer>().material.color = Color.green;
-            knobParent.transform.eulerAngles = new Vector3(0, touchedFingerObject.transform.eulerAngles.z, 90);
+            rotatedAngle = tempFingerAngle - touchedFingerObject.transform.eulerAngles.z; //cacluated the difference between initial rotation and moved rotation
+            
+            if(rotatingAxisSelected == 1)
+            {
+                knobParent.transform.eulerAngles = new Vector3(-(tempKnobAngle + rotatedAngle), 180, 0);
+                this.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            }
+            else if(rotatingAxisSelected == 2)
+            {
+                knobParent.transform.eulerAngles = new Vector3(0, -(tempKnobAngle + rotatedAngle), 90);
+                this.gameObject.GetComponent<Renderer>().material.color = Color.green;
+            }
+            else if(rotatingAxisSelected == 3)
+            {
+                knobParent.transform.eulerAngles = new Vector3(tempKnobAngle + rotatedAngle, 90, 180);
+                this.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+            }
+            
+            if(rotatedAngle > 95)
+            {
+                rotatedFlag = true; //this is used and falsed in NetworkObjectMangager script
+                rotatedAngle = 0;
+                tempKnobAngle = 0;
+                tempFingerAngle = 0;
+            }
+
         }
         else
         {
-            this.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            this.gameObject.GetComponent<Renderer>().material.color = Color.white;
             knobParent.transform.rotation = fingertip.transform.rotation;
         }
 
@@ -42,22 +67,19 @@ public class RotatingKnob : MonoBehaviour
         {
             if(hit.transform.name == "XaxisRaycastTarget")
             {
-                Debug.Log("X Axis Hit!");
-                axisSelected = 1;
+                rotatingAxisSelected = 1;
             }
             else if (hit.transform.name == "YaxisRaycastTarget")
             {
-                Debug.Log("Y Axis Hit!");
-                axisSelected = 2;
+                rotatingAxisSelected = 2;
             }
             else if(hit.transform.name == "ZaxisRaycastTarget")
             {
-                Debug.Log("Z Axis Hit!");
-                axisSelected = 3;
+                rotatingAxisSelected = 3;
             }
             else
             {
-                axisSelected = 0;
+                rotatingAxisSelected = 0;
             }
 
         }
@@ -76,7 +98,6 @@ public class RotatingKnob : MonoBehaviour
         {
             indexTouched = true;
             touchedFingerObject = other.gameObject;
-            Debug.Log(touchedFingerObject);
         }
     }
 
