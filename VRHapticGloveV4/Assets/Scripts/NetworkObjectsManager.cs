@@ -16,13 +16,14 @@ public class NetworkObjectsManager : MonoBehaviour
     private float rotatingSpeed = 5f;
     //scaling 3D objects
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
-    [SerializeField]
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
-
+    
     //positioning object
-    public GameObject lightString;
-    private float lightStringDistanceThreshold = 0.3f;
+    public GameObject handToHandLightString;//, leftHandToObjectLightString, rightHandToObjectLightString;
+    private float lightStringDistanceThreshold = 0.5f, positioningThreshold = 0.1f, objectMovementSpeed = 0.1f;
+    private Vector3 tempRightFingerPosition, tempTargetPosition;
+    private bool positioiningFlag;
 
     private void Start()
     {
@@ -93,6 +94,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
         #endregion
 
+        //Step 1 Done
         #region Instantiate 3D Objects
         if (Input.GetKeyDown("1") || cubeGenerate)
         {
@@ -125,6 +127,7 @@ public class NetworkObjectsManager : MonoBehaviour
         }
         #endregion
 
+        //Step 2 Done
         #region Sacling the 3D Objects
         //this X axis is for 1) Cube X axis, 2) Cylinder radius, and 3) Sphere Radius.
         if (XAxisPinching.XScaling && !xAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
@@ -209,6 +212,7 @@ public class NetworkObjectsManager : MonoBehaviour
         }
         #endregion
 
+        //Step 3 
         #region Rotating the 3D Objects
         
         if(RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 1)
@@ -232,17 +236,58 @@ public class NetworkObjectsManager : MonoBehaviour
 
         #endregion
 
+        //Step 4 Done
         #region Positioning the 3D Objects
-        if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold)
+        if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
         {
-            lightString.SetActive(true);
+            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+            //tempRightFingerPosition = rightFingertip.transform.position;
+            //positioiningFlag = true;
+            StartCoroutine(PositioningGetFingerPosition()); //delay for 0.4 second to get the position in the middle of range, so that temp position is not set to the edge of the threshold
         }
-        else
+        
+        if (positioiningFlag)
         {
-            lightString.SetActive(false);
+            handToHandLightString.SetActive(true);
+
+            if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += transform.right * Time.deltaTime * objectMovementSpeed;
+            }
+            if (rightFingertip.transform.position.y - tempRightFingerPosition.y > positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += transform.up * Time.deltaTime * objectMovementSpeed;
+            }
+            if (rightFingertip.transform.position.z - tempRightFingerPosition.z > positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += transform.forward * Time.deltaTime * objectMovementSpeed;
+            }
+            if (rightFingertip.transform.position.x - tempRightFingerPosition.x < -positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += -transform.right * Time.deltaTime * objectMovementSpeed;
+            }
+            if (rightFingertip.transform.position.y - tempRightFingerPosition.y < -positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += -transform.up * Time.deltaTime * objectMovementSpeed;
+            }
+            if (rightFingertip.transform.position.z - tempRightFingerPosition.z < -positioningThreshold)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.position += -transform.forward * Time.deltaTime * objectMovementSpeed;
+            }
+            if(Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
+            {
+                handToHandLightString.SetActive(false);
+                positioiningFlag = false;
+            }
         }
         #endregion
-        
+
     }
 
     private void IdentifyFingertip()
@@ -297,4 +342,10 @@ public class NetworkObjectsManager : MonoBehaviour
         
     }
 
+    IEnumerator PositioningGetFingerPosition()
+    {
+        yield return new WaitForSeconds(0.4f);
+        tempRightFingerPosition = rightFingertip.transform.position;
+        positioiningFlag = true;
+    }
 }
