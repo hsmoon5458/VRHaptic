@@ -18,9 +18,9 @@ public class DefaultRoom
 public class LobbyNetworkManager : MonoBehaviourPunCallbacks
 {
     public List<DefaultRoom> defaultRooms;
-    public GameObject LobbyUIResearcher, LobbyUIParticipant, LobbyUIPCView;
+    public GameObject roomSelectionUIResearcher, roomSelectionUIParticipant, roomSelectionUIPCView, interactionTypeUIResearcher, interactionTypeUIParticipant;
     public GameObject connectButtonResearcher, connectButtonParticipant, connectButtonPCView;
-    public static int userType; //1 is researcher, 2 is participant, and 3 is PCview
+    public static int userType, interactionType; //1 is researcher, 2 is participant, and 3 is PCview for userType, and 1 for controller and 2 for hand tracking
 
     private void Start()
     {
@@ -32,15 +32,15 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
 
             if (userType == 1)
             {
-                LobbyUIResearcher.SetActive(true);
+                roomSelectionUIResearcher.SetActive(true);
             }
             else if (userType == 2)
             {
-                LobbyUIParticipant.SetActive(true);
+                roomSelectionUIParticipant.SetActive(true);
             }
             else
             {
-                LobbyUIPCView.SetActive(true);
+                roomSelectionUIPCView.SetActive(true);
             }
         }
         else //otherwise, creat Nickname to connect to server
@@ -71,6 +71,19 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.NickName = "PCView";
         Debug.Log("Try Connect to Server...");
     }
+
+    public void ClickedController()
+    {
+        interactionType = 1;
+        StartCoroutine(ActiveRoomSelectionPanel());
+    }
+
+    public void ClickedHandTracking()
+    {
+        interactionType = 2;
+        StartCoroutine(ActiveRoomSelectionPanel());
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected To Server");
@@ -82,7 +95,8 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
-        Debug.Log("Joined Lobby");
+        Debug.Log("Joined the Lobby");
+        //in case go back to lobby from the room
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             //do nothing
@@ -91,22 +105,20 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LoadLevel(0); // go back to lobby
         }
-
-
-        //in case go back to lobby from the room
+                
         try
         { 
             if(userType == 1)
             {
-                LobbyUIResearcher.SetActive(true);
+                interactionTypeUIResearcher.SetActive(true);
             }
             else if (userType == 2)
             {
-                LobbyUIParticipant.SetActive(true);
+                interactionTypeUIParticipant.SetActive(true);
             }
             else
             {
-                LobbyUIPCView.SetActive(true);
+                roomSelectionUIPCView.SetActive(true);
             }
 
         }
@@ -141,6 +153,24 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("A new player entered the room");
         base.OnPlayerEnteredRoom(newPlayer);
+
+    }
+
+    IEnumerator ActiveRoomSelectionPanel()
+    {
+        yield return new WaitForSeconds(1f);
+        if (userType == 1) //researcher
+        {
+            roomSelectionUIResearcher.SetActive(true);
+        }
+        else if (userType == 2) //participant
+        {
+            roomSelectionUIParticipant.SetActive(true);
+        }
+        else
+        {
+            roomSelectionUIPCView.SetActive(true);
+        }
 
     }
 }

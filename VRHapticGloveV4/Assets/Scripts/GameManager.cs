@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     private float completionTime, tempTime;
     private int gameStep = 0; //1 is creating, 2 is scaling, 3 rotating, 4 is positioning
 
-    public GameObject leftHand, rightHand;
+    public GameObject leftHand, rightHand, leftHandController, rightHandController, leftHandTracking, rightHandTracking;
     public TextMeshProUGUI xtmp, ytmp, ztmp;
 
     //test code
@@ -22,19 +22,47 @@ public class GameManager : MonoBehaviour
         {
             leftHand.SetActive(true);
             rightHand.SetActive(false);
+
+            if(LobbyNetworkManager.interactionType == 1) //if is controller setting
+            {
+                leftHandController.SetActive(true);
+                leftHandTracking.SetActive(false);
+            }
+            else // if it is hand tracking setting
+            {
+                leftHandController.SetActive(false);
+                leftHandTracking.SetActive(true);
+            }
         }
 
         if (LobbyNetworkManager.userType == 2) // participant uses right hand only
         {
             leftHand.SetActive(false);
             rightHand.SetActive(true);
+
+            if (LobbyNetworkManager.interactionType == 1) //if is controller setting
+            {
+                rightHandController.SetActive(true);
+                rightHandTracking.SetActive(false);
+            }
+            else // if it is hand tracking setting
+            {
+                rightHandController.SetActive(false);
+                rightHandTracking.SetActive(true);
+            }
         }
     }
     
     void Update()
     {
+        /*
+        button_A = OVRInput.Get(OVRInput.Button.One);
+        button_B = OVRInput.Get(OVRInput.Button.Two);
+        button_X = OVRInput.Get(OVRInput.Button.Three);
+        button_Y = OVRInput.Get(OVRInput.Button.Four);
+        
         tempTime += Time.deltaTime;
-
+        */
         //test code
         try
         {
