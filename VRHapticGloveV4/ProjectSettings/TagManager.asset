@@ -10,8 +10,8 @@ TagManager:
   - myRightIndexFinger
   - networkLeftIndexFinger
   - networkRightIndexFinger
-  - testLeftHand
   - testRightHand
+  - testLeftHand
   layers:
   - Default
   - TransparentFX
@@ -21,7 +21,7 @@ TagManager:
   - UI
   - Network
   - AxisRaycastTargets
-  - 
+  - myselfNetwork
   - 
   - 
   - 

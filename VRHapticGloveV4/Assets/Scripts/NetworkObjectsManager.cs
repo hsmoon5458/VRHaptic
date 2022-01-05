@@ -238,6 +238,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
         //Step 4 Done
         #region Positioning the 3D Objects
+        /* uncomment this
         if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
         {
             GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
@@ -280,12 +281,15 @@ public class NetworkObjectsManager : MonoBehaviour
                 GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
                 tempObject.transform.position += -transform.forward * Time.deltaTime * objectMovementSpeed;
             }
+
+            //while the flag is enabled, distnace gets further, turn off the ligth string
             if(Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
             {
                 handToHandLightString.SetActive(false);
                 positioiningFlag = false;
             }
         }
+        */
         #endregion
 
     }

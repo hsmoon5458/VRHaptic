@@ -9,7 +9,8 @@ public class NetworkPlayer : MonoBehaviour
     public Transform networkPlayerHead;
     public Transform networkPlayerLeftHand;
     public Transform networkPlayerRightHand;
-    public GameObject networkLeftControllerHand, networkRightControllerHand;
+    public GameObject networkLeftControllerAnchor, networkRightControllerAnchor, networkLeftControllerHand, networkRightControllerHand;
+    public GameObject networkControllerKnob, networkHandTrackingKnob;
 
     private PhotonView photonView;
 
@@ -33,6 +34,7 @@ public class NetworkPlayer : MonoBehaviour
         this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
 
         //catch the Transform of each joints 
+        #region Hand Tracking hand prefabs setting
         try
         {
             leftHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
@@ -87,6 +89,7 @@ public class NetworkPlayer : MonoBehaviour
         {
             Debug.LogError("Hand prefabs not found");
         }
+        #endregion
 
         try
         {
@@ -102,30 +105,111 @@ public class NetworkPlayer : MonoBehaviour
             Debug.LogError("OVR not found");
         }
 
+
+        #region Setup Network Player setting
         //this is for network player (not myself)
         if (!photonView.IsMine)
         {
             if (this.gameObject.name == "Researcher") //if it is a reseracher, only enable lefthand
             {
-                networkPlayerLeftHand.gameObject.SetActive(true);
-                networkPlayerRightHand.gameObject.SetActive(false);
+                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(true);
+                    networkRightControllerHand.SetActive(false);
+                }
+
+                if(LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(true);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(false);
+                }
             }
             if (this.gameObject.name == "Participant") //if it is a participant, only enable righthand
             {
-                //need to enable rotating knob
-                networkPlayerLeftHand.gameObject.SetActive(false);
-                networkPlayerRightHand.gameObject.SetActive(true);
+                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(true);
+                }
+
+                if (LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(true);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(false);
+                }
             }
         }
-        else //this is for myself
+        //this is for myself
+        else
         {
-            networkPlayerHead.gameObject.SetActive(false);
-            networkPlayerLeftHand.gameObject.SetActive(false);
-            networkPlayerRightHand.gameObject.SetActive(false);
+            //when changing the layer, think about the CHILDREN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //think when if it only change the layer, what about the double excution???????????????????????
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            //these should not be deactive, but just remove the visual from culling mask.
+            networkPlayerHead.gameObject.layer = 8; //8 is myselfNetwork layer.
+
+            if (this.gameObject.name == "Researcher")
+            {
+                if (LobbyNetworkManager.interactionType == 1) // if the setting is controller
+                {
+                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+
+                    ChangeLayers(networkLeftControllerHand, 8); // change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    networkRightControllerHand.SetActive(false); // not using right controlelr hand for researcher
+                }
+                else // if the setting is hand tracking
+                {
+                    ChangeLayers(networkPlayerLeftHand.gameObject, 8);//researcher uses left hand, so network object should not be disabled to synchronized the movement from HankOVRRig left hand to be seen from all clients
+                    networkPlayerRightHand.gameObject.SetActive(false); // dont use right hand, so it can be disabled
+                    
+                    networkLeftControllerHand.SetActive(false);// not using the controllers in hand tracking setting
+                    networkRightControllerHand.SetActive(false); 
+                }
+
+            }
+            if (this.gameObject.name == "Participant")
+            {
+                if(LobbyNetworkManager.interactionType == 1) // if the setting is controller
+                {
+                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+
+                    ChangeLayers(networkRightControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    ChangeLayers(networkControllerKnob, 6);// Change the knob layer to 6 (network) to visualize the knob for myself
+                    networkLeftControllerHand.SetActive(false); // not using left controller hand for participant
+                }
+                else // if the setting is hand tracking
+                {
+                    ChangeLayers(networkPlayerRightHand.gameObject, 8);//participant uses right hand, so network object should not be disabled to synchronized the movement from HankOVRRig right hand to be seen from all clients
+                    ChangeLayers(networkHandTrackingKnob.gameObject, 6); // Change the knob layer to 6 (network) to visualize the knob for myself
+                    networkPlayerLeftHand.gameObject.SetActive(false); // dont use left hand, so it can be disabled
+                    
+                    networkRightControllerHand.SetActive(false); // not using the controllers in hand tracking setting
+                    networkLeftControllerHand.SetActive(false);
+                }
+            }
         }
- 
+        #endregion
     }
-   
+    public static void ChangeLayers(GameObject go, int layer)
+    {
+        go.layer = layer;
+        foreach (Transform child in go.transform)
+        {
+            ChangeLayers(child.gameObject, layer);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -137,44 +221,53 @@ public class NetworkPlayer : MonoBehaviour
             //By doing so, network palyer is not visable, but it can be referenced for grabbing object
 
             MapTransform(networkPlayerHead, myHeadRig);
-            MapTransform(networkPlayerLeftHand, myLeftHandRig);
-            MapTransform(networkPlayerRightHand, myRightHandRig);
-            MapTransform(networkRightControllerHand.transform, myRightHandRig);
+            
+            //to sync the animation movement throughout the network, use controller hand inside the "NetworkPlayer" instead of "HankOVRCameraRig"
+            if(LobbyNetworkManager.interactionType == 1) //if current setting is controller
+            {
+                MapTransform(networkLeftControllerAnchor.transform, myLeftHandRig);
+                MapTransform(networkRightControllerAnchor.transform, myRightHandRig);
+            }
 
-            MapTransform(networkPlayerLeftHandFingers[0], L1J1);
-            MapTransform(networkPlayerLeftHandFingers[1], L1J2);
-            MapTransform(networkPlayerLeftHandFingers[2], L1J3);
-            MapTransform(networkPlayerLeftHandFingers[3], L2J1);
-            MapTransform(networkPlayerLeftHandFingers[4], L2J2);
-            MapTransform(networkPlayerLeftHandFingers[5], L2J3);
-            MapTransform(networkPlayerLeftHandFingers[6], L3J1);
-            MapTransform(networkPlayerLeftHandFingers[7], L3J2);
-            MapTransform(networkPlayerLeftHandFingers[8], L3J3);
-            MapTransform(networkPlayerLeftHandFingers[9], L4J1);
-            MapTransform(networkPlayerLeftHandFingers[10], L4J2);
-            MapTransform(networkPlayerLeftHandFingers[11], L4J3);
-            MapTransform(networkPlayerLeftHandFingers[12], L5J1);
-            MapTransform(networkPlayerLeftHandFingers[13], L5J2);
-            MapTransform(networkPlayerLeftHandFingers[14], L5J3);
-            MapTransform(networkPlayerLeftHandFingers[15], LPalm);
+            else
+            {
+                MapTransform(networkPlayerLeftHand, myLeftHandRig);
+                MapTransform(networkPlayerRightHand, myRightHandRig);
 
-            MapTransform(networkPlayerRightHandFingers[0], R1J1);
-            MapTransform(networkPlayerRightHandFingers[1], R1J2);
-            MapTransform(networkPlayerRightHandFingers[2], R1J3);
-            MapTransform(networkPlayerRightHandFingers[3], R2J1);
-            MapTransform(networkPlayerRightHandFingers[4], R2J2);
-            MapTransform(networkPlayerRightHandFingers[5], R2J3);
-            MapTransform(networkPlayerRightHandFingers[6], R3J1);
-            MapTransform(networkPlayerRightHandFingers[7], R3J2);
-            MapTransform(networkPlayerRightHandFingers[8], R3J3);
-            MapTransform(networkPlayerRightHandFingers[9], R4J1);
-            MapTransform(networkPlayerRightHandFingers[10], R4J2);
-            MapTransform(networkPlayerRightHandFingers[11], R4J3);
-            MapTransform(networkPlayerRightHandFingers[12], R5J1);
-            MapTransform(networkPlayerRightHandFingers[13], R5J2);
-            MapTransform(networkPlayerRightHandFingers[14], R5J3);
-            MapTransform(networkPlayerRightHandFingers[15], RPalm);
+                MapTransform(networkPlayerLeftHandFingers[0], L1J1);
+                MapTransform(networkPlayerLeftHandFingers[1], L1J2);
+                MapTransform(networkPlayerLeftHandFingers[2], L1J3);
+                MapTransform(networkPlayerLeftHandFingers[3], L2J1);
+                MapTransform(networkPlayerLeftHandFingers[4], L2J2);
+                MapTransform(networkPlayerLeftHandFingers[5], L2J3);
+                MapTransform(networkPlayerLeftHandFingers[6], L3J1);
+                MapTransform(networkPlayerLeftHandFingers[7], L3J2);
+                MapTransform(networkPlayerLeftHandFingers[8], L3J3);
+                MapTransform(networkPlayerLeftHandFingers[9], L4J1);
+                MapTransform(networkPlayerLeftHandFingers[10], L4J2);
+                MapTransform(networkPlayerLeftHandFingers[11], L4J3);
+                MapTransform(networkPlayerLeftHandFingers[12], L5J1);
+                MapTransform(networkPlayerLeftHandFingers[13], L5J2);
+                MapTransform(networkPlayerLeftHandFingers[14], L5J3);
+                MapTransform(networkPlayerLeftHandFingers[15], LPalm);
 
+                MapTransform(networkPlayerRightHandFingers[0], R1J1);
+                MapTransform(networkPlayerRightHandFingers[1], R1J2);
+                MapTransform(networkPlayerRightHandFingers[2], R1J3);
+                MapTransform(networkPlayerRightHandFingers[3], R2J1);
+                MapTransform(networkPlayerRightHandFingers[4], R2J2);
+                MapTransform(networkPlayerRightHandFingers[5], R2J3);
+                MapTransform(networkPlayerRightHandFingers[6], R3J1);
+                MapTransform(networkPlayerRightHandFingers[7], R3J2);
+                MapTransform(networkPlayerRightHandFingers[8], R3J3);
+                MapTransform(networkPlayerRightHandFingers[9], R4J1);
+                MapTransform(networkPlayerRightHandFingers[10], R4J2);
+                MapTransform(networkPlayerRightHandFingers[11], R4J3);
+                MapTransform(networkPlayerRightHandFingers[12], R5J1);
+                MapTransform(networkPlayerRightHandFingers[13], R5J2);
+                MapTransform(networkPlayerRightHandFingers[14], R5J3);
+                MapTransform(networkPlayerRightHandFingers[15], RPalm);
+            }
         }
     }
 
