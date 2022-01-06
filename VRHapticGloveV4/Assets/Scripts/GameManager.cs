@@ -83,11 +83,16 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown("e"))
         {
+
+            networkLeftHand = GameObject.Find("Participant/LeftControllerAnchor/CustomHandLeft");
+            networkLeftHand.SetActive(true);
+            /*
             myLeftHand.SetActive(true);
             networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
             networkLeftHand.SetActive(true);
             networkRightHand = PhotonView.Find(1001).gameObject.transform.GetChild(1).gameObject;
             networkRightHand.SetActive(true);
+            */
         }
         //test code end
     }

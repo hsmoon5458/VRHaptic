@@ -238,7 +238,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
         //Step 4 Done
         #region Positioning the 3D Objects
-        /* uncomment this
+
         if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
         {
             GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
@@ -289,7 +289,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 positioiningFlag = false;
             }
         }
-        */
+        
         #endregion
 
     }
