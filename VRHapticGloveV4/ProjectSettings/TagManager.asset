@@ -15,6 +15,7 @@ TagManager:
   - sampleCube
   - sampleCylinder
   - sampleSphere
+  - completedObject
   layers:
   - Default
   - TransparentFX

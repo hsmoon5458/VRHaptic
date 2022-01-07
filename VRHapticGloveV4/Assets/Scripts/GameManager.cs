@@ -6,7 +6,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    private float completionTime, tempTime;
+    private float completionTime, tempTime, step1Timer, step2Timer, step3Timer, step4Timer;
     [SerializeField]
     public static int gameStep = 0; //1 is creating, 2 is scaling, 3 rotating, 4 is positioning
     public int sampleNum, objectNum; // ex) Sample1, s3
@@ -66,6 +66,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //need to enable and diable knob at netwokrplayer correspond to game step here.
+
+        //timer for performance measurement
+        tempTime = Time.deltaTime;
 
         //test code
         try
@@ -133,6 +136,10 @@ public class GameManager : MonoBehaviour
 
     public void LevelStart(int sampleNum)
     {
+        //set the timer setting
+        tempTime = 0;
+
+        //set the level setting
         objectNum = 1;
         gameStep = 1;
         WorkspaceInitialize(sampleNum, objectNum, gameStep); //start the level with first object, and first game step
@@ -194,8 +201,12 @@ public class GameManager : MonoBehaviour
         else if (gameStep == 2){currentWorkingGuideObject.transform.localScale = currentWorkingSampleObject.transform.localScale;}
 
         //rotating object
-        else if (gameStep == 3){currentWorkingGuideObject.transform.eulerAngles = currentWorkingSampleObject.transform.eulerAngles;}
-
+        else if (gameStep == 3)
+        {
+            StartCoroutine(RotateGuideObject());
+            //currentWorkingGuideObject.transform.eulerAngles = currentWorkingSampleObject.transform.eulerAngles;
+        }
+        
         //move the guide object position to right place based on the sample figure
         else if (gameStep == 4){currentWorkingGuideObject.transform.position = currentWorkingSampleObject.transform.position; }
     }
@@ -207,7 +218,8 @@ public class GameManager : MonoBehaviour
             //check it has same mesh filter name (cube, cylinder, sphere)
             if(workspaceObjectGuide.GetComponent<MeshFilter>().mesh.name == networkObject.GetComponent<MeshFilter>().mesh.name)
             {
-                gameStep++;
+                gameStep++; // go to next step
+                step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
             else
@@ -220,6 +232,7 @@ public class GameManager : MonoBehaviour
             if(networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
             {
                 gameStep++;
+                step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
             else
@@ -232,6 +245,7 @@ public class GameManager : MonoBehaviour
             if (networkObject.transform.eulerAngles == workspaceObjectGuide.transform.eulerAngles)
             {
                 gameStep++;
+                step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
             else
@@ -244,8 +258,10 @@ public class GameManager : MonoBehaviour
             if(Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.001f)
             {
                 currentWorkingNetoworkObject.tag = "completedObject"; //change the tag so that network object is not overlapped from other step and level
+                step4Timer = tempTime - step3Timer;
+                completionTime = tempTime; //save total time for each level
 
-                if(objectNum == 4) // if all objects are done
+                if (objectNum == 4) // if all objects are done
                 {
                     Debug.Log("Level Done");
                     objectNum = 0; //set to 0 for another level
@@ -272,6 +288,15 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Not close enough");
             }
             
+        }
+    }
+
+    IEnumerator RotateGuideObject()
+    {
+        while (currentWorkingGuideObject.transform.eulerAngles != currentWorkingSampleObject.transform.eulerAngles)
+        {
+            currentWorkingGuideObject.transform.rotation = Quaternion.Lerp(currentWorkingGuideObject.transform.rotation, currentWorkingSampleObject.transform.rotation, Time.deltaTime * 2.5f);
+            yield return null;
         }
     }
 }
