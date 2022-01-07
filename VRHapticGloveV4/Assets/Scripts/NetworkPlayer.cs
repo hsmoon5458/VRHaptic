@@ -28,178 +28,7 @@ public class NetworkPlayer : MonoBehaviour
 
     void Start()
     {
-        
-        photonView = GetComponent<PhotonView>();
-
-        this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
-
-        //catch the Transform of each joints 
-        #region Hand Tracking hand prefabs setting
-        try
-        {
-            leftHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
-            rightHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
-
-            L1J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1");
-            L1J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1/b_l_thumb2");
-            L1J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1/b_l_thumb2/b_l_thumb3");
-
-            L2J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1");
-            L2J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1/b_l_index2");
-            L2J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1/b_l_index2/b_l_index3");
-
-            L3J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1");
-            L3J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1/b_l_middle2");
-            L3J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1/b_l_middle2/b_l_middle3");
-
-            L4J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1");
-            L4J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1/b_l_ring2");
-            L4J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1/b_l_ring2/b_l_ring3");
-
-            L5J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1");
-            L5J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1/b_l_pinky2");
-            L5J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1/b_l_pinky2/b_l_pinky3");
-
-            LPalm = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_forearm_stub");
-
-            R1J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1");
-            R1J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1/b_r_thumb2");
-            R1J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1/b_r_thumb2/b_r_thumb3");
-
-            R2J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1");
-            R2J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1/b_r_index2");
-            R2J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1/b_r_index2/b_r_index3");
-
-            R3J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1");
-            R3J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1/b_r_middle2");
-            R3J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1/b_r_middle2/b_r_middle3");
-
-            R4J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1");
-            R4J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1/b_r_ring2");
-            R4J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1/b_r_ring2/b_r_ring3");
-
-            R5J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1");
-            R5J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1/b_r_pinky2");
-            R5J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1/b_r_pinky2/b_r_pinky3");
-
-            RPalm = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_forearm_stub");
-        }
-
-        catch
-        {
-            Debug.LogError("Hand prefabs not found");
-        }
-        #endregion
-
-        try
-        {
-            OVRCameraRig OVRrig = FindObjectOfType<OVRCameraRig>(); //get OVRrig
-
-            myHeadRig = OVRrig.transform.Find("TrackingSpace/CenterEyeAnchor");
-            myLeftHandRig = OVRrig.transform.Find("TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
-            myRightHandRig = OVRrig.transform.Find("TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
-            
-        }
-        catch
-        {
-            Debug.LogError("OVR not found");
-        }
-
-
-        #region Setup Network Player setting
-        //this is for network player (not myself)
-        if (!photonView.IsMine)
-        {
-            if (this.gameObject.name == "Researcher") //if it is a reseracher, only enable lefthand
-            {
-                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
-                {
-                    networkPlayerLeftHand.gameObject.SetActive(false);
-                    networkPlayerRightHand.gameObject.SetActive(false);
-                    networkLeftControllerHand.SetActive(true);
-                    networkRightControllerHand.SetActive(false);
-                }
-
-                if(LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
-                {
-                    networkPlayerLeftHand.gameObject.SetActive(true);
-                    networkPlayerRightHand.gameObject.SetActive(false);
-                    networkLeftControllerHand.SetActive(false);
-                    networkRightControllerHand.SetActive(false);
-                }
-            }
-            if (this.gameObject.name == "Participant") //if it is a participant, only enable righthand
-            {
-                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
-                {
-                    networkPlayerLeftHand.gameObject.SetActive(false);
-                    networkPlayerRightHand.gameObject.SetActive(false);
-                    networkLeftControllerHand.SetActive(false);
-                    networkRightControllerHand.SetActive(true);
-                }
-
-                if (LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
-                {
-                    networkPlayerLeftHand.gameObject.SetActive(false);
-                    networkPlayerRightHand.gameObject.SetActive(true);
-                    networkLeftControllerHand.SetActive(false);
-                    networkRightControllerHand.SetActive(false);
-                }
-            }
-        }
-        //this is for myself
-        else
-        {
-            //when changing the layer, think about the CHILDREN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //think when if it only change the layer, what about the double excution???????????????????????
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            //these should not be deactive, but just remove the visual from culling mask.
-            networkPlayerHead.gameObject.layer = 8; //8 is myselfNetwork layer.
-
-            if (this.gameObject.name == "Researcher")
-            {
-                if (LobbyNetworkManager.interactionType == 1) // if the setting is controller
-                {
-                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
-                    networkPlayerLeftHand.gameObject.SetActive(false);
-
-                    ChangeLayers(networkLeftControllerHand, 8); // change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
-                    networkRightControllerHand.SetActive(false); // not using right controlelr hand for researcher
-                }
-                else // if the setting is hand tracking
-                {
-                    ChangeLayers(networkPlayerLeftHand.gameObject, 8);//researcher uses left hand, so network object should not be disabled to synchronized the movement from HankOVRRig left hand to be seen from all clients
-                    networkPlayerRightHand.gameObject.SetActive(false); // dont use right hand, so it can be disabled
-                    
-                    networkLeftControllerHand.SetActive(false);// not using the controllers in hand tracking setting
-                    networkRightControllerHand.SetActive(false); 
-                }
-
-            }
-            if (this.gameObject.name == "Participant")
-            {
-                if(LobbyNetworkManager.interactionType == 1) // if the setting is controller
-                {
-                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
-                    networkPlayerLeftHand.gameObject.SetActive(false);
-
-                    ChangeLayers(networkRightControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
-                    ChangeLayers(networkControllerKnob, 6);// Change the knob layer to 6 (network) to visualize the knob for myself
-                    networkLeftControllerHand.SetActive(false); // not using left controller hand for participant
-                }
-                else // if the setting is hand tracking
-                {
-                    ChangeLayers(networkPlayerRightHand.gameObject, 8);//participant uses right hand, so network object should not be disabled to synchronized the movement from HankOVRRig right hand to be seen from all clients
-                    ChangeLayers(networkHandTrackingKnob.gameObject, 6); // Change the knob layer to 6 (network) to visualize the knob for myself
-                    networkPlayerLeftHand.gameObject.SetActive(false); // dont use left hand, so it can be disabled
-                    
-                    networkRightControllerHand.SetActive(false); // not using the controllers in hand tracking setting
-                    networkLeftControllerHand.SetActive(false);
-                }
-            }
-        }
-        #endregion
+        NetworkPlayerSetting();
     }
     public static void ChangeLayers(GameObject go, int layer)
     {
@@ -275,6 +104,181 @@ public class NetworkPlayer : MonoBehaviour
     {
         networkPlayer.position = myTransform.position;
         networkPlayer.rotation = myTransform.rotation;
+    }
+
+    public void NetworkPlayerSetting()
+    {
+        photonView = GetComponent<PhotonView>();
+
+        this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
+
+        //catch the Transform of each joints 
+        #region Hand Tracking hand prefabs setting
+        try
+        {
+            leftHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
+            rightHandPrefab = GameObject.Find("HankOVRCameraRig/TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
+
+            L1J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1");
+            L1J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1/b_l_thumb2");
+            L1J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_thumb0/b_l_thumb1/b_l_thumb2/b_l_thumb3");
+
+            L2J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1");
+            L2J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1/b_l_index2");
+            L2J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_index1/b_l_index2/b_l_index3");
+
+            L3J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1");
+            L3J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1/b_l_middle2");
+            L3J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_middle1/b_l_middle2/b_l_middle3");
+
+            L4J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1");
+            L4J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1/b_l_ring2");
+            L4J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_ring1/b_l_ring2/b_l_ring3");
+
+            L5J1 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1");
+            L5J2 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1/b_l_pinky2");
+            L5J3 = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_pinky0/b_l_pinky1/b_l_pinky2/b_l_pinky3");
+
+            LPalm = leftHandPrefab.transform.Find("OculusHand_L/b_l_wrist/b_l_forearm_stub");
+
+            R1J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1");
+            R1J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1/b_r_thumb2");
+            R1J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_thumb0/b_r_thumb1/b_r_thumb2/b_r_thumb3");
+
+            R2J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1");
+            R2J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1/b_r_index2");
+            R2J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_index1/b_r_index2/b_r_index3");
+
+            R3J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1");
+            R3J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1/b_r_middle2");
+            R3J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_middle1/b_r_middle2/b_r_middle3");
+
+            R4J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1");
+            R4J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1/b_r_ring2");
+            R4J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_ring1/b_r_ring2/b_r_ring3");
+
+            R5J1 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1");
+            R5J2 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1/b_r_pinky2");
+            R5J3 = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_pinky0/b_r_pinky1/b_r_pinky2/b_r_pinky3");
+
+            RPalm = rightHandPrefab.transform.Find("OculusHand_R/b_r_wrist/b_r_forearm_stub");
+        }
+
+        catch
+        {
+            Debug.LogError("Hand prefabs not found");
+        }
+        #endregion
+
+        try
+        {
+            OVRCameraRig OVRrig = FindObjectOfType<OVRCameraRig>(); //get OVRrig
+
+            myHeadRig = OVRrig.transform.Find("TrackingSpace/CenterEyeAnchor");
+            myLeftHandRig = OVRrig.transform.Find("TrackingSpace/LeftHandAnchor/OVRCustomHandPrefab_L");
+            myRightHandRig = OVRrig.transform.Find("TrackingSpace/RightHandAnchor/OVRCustomHandPrefab_R");
+
+        }
+        catch
+        {
+            Debug.LogError("OVR not found");
+        }
+
+
+        #region Setup Network Player setting
+        //this is for network player (not myself)
+        if (!photonView.IsMine)
+        {
+            if (this.gameObject.name == "Researcher") //if it is a reseracher, only enable lefthand
+            {
+                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(true);
+                    networkRightControllerHand.SetActive(false);
+                }
+
+                if (LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(true);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(false);
+                }
+            }
+            if (this.gameObject.name == "Participant") //if it is a participant, only enable righthand
+            {
+                if (LobbyNetworkManager.interactionType == 1) //if current setting is controller
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(true);
+                }
+
+                if (LobbyNetworkManager.interactionType == 2) //if current setting is hand tracking, disable controller hands.
+                {
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkPlayerRightHand.gameObject.SetActive(true);
+                    networkLeftControllerHand.SetActive(false);
+                    networkRightControllerHand.SetActive(false);
+                }
+            }
+        }
+        //this is for myself
+        else
+        {
+            //when changing the layer, think about the CHILDREN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //think when if it only change the layer, what about the double excution???????????????????????
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            //these should not be deactive, but just remove the visual from culling mask.
+            networkPlayerHead.gameObject.layer = 8; //8 is myselfNetwork layer.
+
+            if (this.gameObject.name == "Researcher")
+            {
+                if (LobbyNetworkManager.interactionType == 1) // if the setting is controller
+                {
+                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+
+                    ChangeLayers(networkLeftControllerHand, 8); // change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    networkRightControllerHand.SetActive(false); // not using right controlelr hand for researcher
+                }
+                else // if the setting is hand tracking
+                {
+                    ChangeLayers(networkPlayerLeftHand.gameObject, 8);//researcher uses left hand, so network object should not be disabled to synchronized the movement from HankOVRRig left hand to be seen from all clients
+                    networkPlayerRightHand.gameObject.SetActive(false); // dont use right hand, so it can be disabled
+
+                    networkLeftControllerHand.SetActive(false);// not using the controllers in hand tracking setting
+                    networkRightControllerHand.SetActive(false);
+                }
+
+            }
+            if (this.gameObject.name == "Participant")
+            {
+                if (LobbyNetworkManager.interactionType == 1) // if the setting is controller
+                {
+                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+
+                    ChangeLayers(networkRightControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    ChangeLayers(networkControllerKnob, 6);// Change the knob layer to 6 (network) to visualize the knob for myself
+                    networkLeftControllerHand.SetActive(false); // not using left controller hand for participant
+                }
+                else // if the setting is hand tracking
+                {
+                    ChangeLayers(networkPlayerRightHand.gameObject, 8);//participant uses right hand, so network object should not be disabled to synchronized the movement from HankOVRRig right hand to be seen from all clients
+                    ChangeLayers(networkHandTrackingKnob.gameObject, 6); // Change the knob layer to 6 (network) to visualize the knob for myself
+                    networkPlayerLeftHand.gameObject.SetActive(false); // dont use left hand, so it can be disabled
+
+                    networkRightControllerHand.SetActive(false); // not using the controllers in hand tracking setting
+                    networkLeftControllerHand.SetActive(false);
+                }
+            }
+        }
+        #endregion
     }
 
     /*

@@ -238,58 +238,59 @@ public class NetworkObjectsManager : MonoBehaviour
 
         //Step 4 Done
         #region Positioning the 3D Objects
-
-        if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
+        if(GameManager.gameStep == 1515) // positioning step
         {
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            //tempRightFingerPosition = rightFingertip.transform.position;
-            //positioiningFlag = true;
-            StartCoroutine(PositioningGetFingerPosition()); //delay for 0.4 second to get the position in the middle of range, so that temp position is not set to the edge of the threshold
-        }
-        
-        if (positioiningFlag)
-        {
-            handToHandLightString.SetActive(true);
-
-            if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
+            if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
             {
                 GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += transform.right * Time.deltaTime * objectMovementSpeed;
-            }
-            if (rightFingertip.transform.position.y - tempRightFingerPosition.y > positioningThreshold)
-            {
-                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += transform.up * Time.deltaTime * objectMovementSpeed;
-            }
-            if (rightFingertip.transform.position.z - tempRightFingerPosition.z > positioningThreshold)
-            {
-                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += transform.forward * Time.deltaTime * objectMovementSpeed;
-            }
-            if (rightFingertip.transform.position.x - tempRightFingerPosition.x < -positioningThreshold)
-            {
-                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += -transform.right * Time.deltaTime * objectMovementSpeed;
-            }
-            if (rightFingertip.transform.position.y - tempRightFingerPosition.y < -positioningThreshold)
-            {
-                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += -transform.up * Time.deltaTime * objectMovementSpeed;
-            }
-            if (rightFingertip.transform.position.z - tempRightFingerPosition.z < -positioningThreshold)
-            {
-                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                tempObject.transform.position += -transform.forward * Time.deltaTime * objectMovementSpeed;
+                                                                       //tempRightFingerPosition = rightFingertip.transform.position;
+                                                                       //positioiningFlag = true;
+                StartCoroutine(PositioningGetFingerPosition()); //delay for 0.4 second to get the position in the middle of range, so that temp position is not set to the edge of the threshold
             }
 
-            //while the flag is enabled, distnace gets further, turn off the ligth string
-            if(Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
+            if (positioiningFlag)
             {
-                handToHandLightString.SetActive(false);
-                positioiningFlag = false;
+                handToHandLightString.SetActive(true);
+
+                if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += transform.right * Time.deltaTime * objectMovementSpeed;
+                }
+                if (rightFingertip.transform.position.y - tempRightFingerPosition.y > positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += transform.up * Time.deltaTime * objectMovementSpeed;
+                }
+                if (rightFingertip.transform.position.z - tempRightFingerPosition.z > positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += transform.forward * Time.deltaTime * objectMovementSpeed;
+                }
+                if (rightFingertip.transform.position.x - tempRightFingerPosition.x < -positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += -transform.right * Time.deltaTime * objectMovementSpeed;
+                }
+                if (rightFingertip.transform.position.y - tempRightFingerPosition.y < -positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += -transform.up * Time.deltaTime * objectMovementSpeed;
+                }
+                if (rightFingertip.transform.position.z - tempRightFingerPosition.z < -positioningThreshold)
+                {
+                    GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                    tempObject.transform.position += -transform.forward * Time.deltaTime * objectMovementSpeed;
+                }
+
+                //while the flag is enabled, distnace gets further, turn off the ligth string
+                if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
+                {
+                    handToHandLightString.SetActive(false);
+                    positioiningFlag = false;
+                }
             }
-        }
-        
+        }       
         #endregion
 
     }

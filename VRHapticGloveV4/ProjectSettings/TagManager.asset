@@ -12,6 +12,9 @@ TagManager:
   - networkRightIndexFinger
   - testRightHand
   - testLeftHand
+  - sampleCube
+  - sampleCylinder
+  - sampleSphere
   layers:
   - Default
   - TransparentFX
