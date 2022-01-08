@@ -300,21 +300,41 @@ namespace DigitalRuby.LightningBolt
         {
             if (LobbyNetworkManager.userType == 1) // researcher
             {
-                StartObject = GameObject.FindWithTag("myLeftIndexFinger");
-                EndObject = GameObject.FindWithTag("networkRightIndexFinger");
+                if(this.gameObject.name == "HandToHandLightString")
+                {
+                    StartObject = GameObject.FindWithTag("myLeftIndexFinger");
+                    EndObject = GameObject.FindWithTag("networkRightIndexFinger");
+                }
+                else
+                {
+                    StartObject = GameObject.FindWithTag("myLeftIndexFinger");
+                    EndObject = GameObject.FindWithTag("InstantiatedObject");
+                }
+
             }
             else if (LobbyNetworkManager.userType == 2) // participant
             {
-                StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
-                EndObject = GameObject.FindWithTag("myRightIndexFinger");
+                if (this.gameObject.name == "HandToHandLightString")
+                {
+                    StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
+                    EndObject = GameObject.FindWithTag("myRightIndexFinger");
+                }
+                else
+                {
+                    StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
+                    EndObject = GameObject.FindWithTag("InstantiatedObject");
+                }  
             }
         }
-
         private void Update()
         {
             if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.
             {
                 CancelInvoke("IdentifyFingertip");
+            }
+            else
+            {
+                InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
             }
 
             orthographic = (Camera.main != null && Camera.main.orthographic);

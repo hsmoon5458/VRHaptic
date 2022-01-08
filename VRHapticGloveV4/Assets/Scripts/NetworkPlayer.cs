@@ -26,9 +26,11 @@ public class NetworkPlayer : MonoBehaviour
     private Transform L1J1, L1J2, L1J3, L2J1, L2J2, L2J3, L3J1, L3J2, L3J3, L4J1, L4J2, L4J3, L5J1, L5J2, L5J3, LPalm;
     private Transform R1J1, R1J2, R1J3, R2J1, R2J2, R2J3, R3J1, R3J2, R3J3, R4J1, R4J2, R4J3, R5J1, R5J2, R5J3, RPalm;
 
+    
     void Start()
     {
-        NetworkPlayerSetting();
+        GameManager.NetworkPlayerSettingDelegate = NetworkPlayerSetting; //to enable network setting outside of the prefab
+        NetworkPlayerSetting();//this is for initial setup, regardless of above code.
     }
     public static void ChangeLayers(GameObject go, int layer)
     {
@@ -42,7 +44,6 @@ public class NetworkPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (photonView.IsMine)
         {
             //Tip
@@ -110,7 +111,15 @@ public class NetworkPlayer : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
 
-        this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
+        try
+        {
+            this.gameObject.name = photonView.Owner.NickName; //change the object name to NickName
+        }
+        catch
+        {
+            Debug.Log("Name is set already");
+        }
+        
 
         //catch the Transform of each joints 
         #region Hand Tracking hand prefabs setting
@@ -229,11 +238,7 @@ public class NetworkPlayer : MonoBehaviour
         //this is for myself
         else
         {
-            //when changing the layer, think about the CHILDREN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //think when if it only change the layer, what about the double excution???????????????????????
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-            //these should not be deactive, but just remove the visual from culling mask.
+            //LAYER 8 WILL NOT BE VISIABLE FROM THE PLAYER
             networkPlayerHead.gameObject.layer = 8; //8 is myselfNetwork layer.
 
             if (this.gameObject.name == "Researcher")
@@ -242,17 +247,21 @@ public class NetworkPlayer : MonoBehaviour
                 {
                     networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
                     networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkRightControllerHand.gameObject.SetActive(false); //don't use right controller since it is Researcher
+                    networkLeftControllerHand.gameObject.SetActive(true); //use the Left controller only
 
-                    ChangeLayers(networkLeftControllerHand, 8); // change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
-                    networkRightControllerHand.SetActive(false); // not using right controlelr hand for researcher
+                    ChangeLayers(networkLeftControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    //Researcher network player does not have a knob (left hand does not have a knob)
                 }
                 else // if the setting is hand tracking
                 {
-                    ChangeLayers(networkPlayerLeftHand.gameObject, 8);//researcher uses left hand, so network object should not be disabled to synchronized the movement from HankOVRRig left hand to be seen from all clients
-                    networkPlayerRightHand.gameObject.SetActive(false); // dont use right hand, so it can be disabled
+                    networkLeftControllerHand.gameObject.SetActive(false); //dont use left and right controllers
+                    networkRightControllerHand.gameObject.SetActive(false);
+                    networkPlayerLeftHand.gameObject.SetActive(true); //use the left hand only
+                    networkPlayerRightHand.gameObject.SetActive(false);
 
-                    networkLeftControllerHand.SetActive(false);// not using the controllers in hand tracking setting
-                    networkRightControllerHand.SetActive(false);
+                    ChangeLayers(networkPlayerLeftHand.gameObject, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
+                    //Researcher network player does not have a knob (left hand does not have a knob)
                 }
 
             }
@@ -262,19 +271,21 @@ public class NetworkPlayer : MonoBehaviour
                 {
                     networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
                     networkPlayerLeftHand.gameObject.SetActive(false);
+                    networkLeftControllerHand.gameObject.SetActive(false); //don't use left controller since it is participant
+                    networkRightControllerHand.gameObject.SetActive(true); //use the right controller only
 
                     ChangeLayers(networkRightControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"
                     ChangeLayers(networkControllerKnob, 6);// Change the knob layer to 6 (network) to visualize the knob for myself
-                    networkLeftControllerHand.SetActive(false); // not using left controller hand for participant
                 }
                 else // if the setting is hand tracking
                 {
+                    networkLeftControllerHand.gameObject.SetActive(false); //dont use left and right controllers
+                    networkRightControllerHand.gameObject.SetActive(false); 
+                    networkPlayerRightHand.gameObject.SetActive(true); //use the right hand only
+                    networkPlayerLeftHand.gameObject.SetActive(false);
+
                     ChangeLayers(networkPlayerRightHand.gameObject, 8);//participant uses right hand, so network object should not be disabled to synchronized the movement from HankOVRRig right hand to be seen from all clients
                     ChangeLayers(networkHandTrackingKnob.gameObject, 6); // Change the knob layer to 6 (network) to visualize the knob for myself
-                    networkPlayerLeftHand.gameObject.SetActive(false); // dont use left hand, so it can be disabled
-
-                    networkRightControllerHand.SetActive(false); // not using the controllers in hand tracking setting
-                    networkLeftControllerHand.SetActive(false);
                 }
             }
         }

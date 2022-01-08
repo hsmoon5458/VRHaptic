@@ -15,12 +15,17 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI xtmp, ytmp, ztmp;
     public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
-    public bool startLevelFlag, confirmationFlag;
+    public bool confirmationFlag;
     
+    public GameObject[] completedObjects; //completed networked objects
 
-    public GameObject[] completedObjects;
+    public delegate void NetworkSettingDelegate(); //to recall the Network Setting for the script in "Network Player" prefab.
+    public static NetworkSettingDelegate NetworkPlayerSettingDelegate;
 
-
+    public void RefreshNetworkPlayerSetting()
+    {
+        NetworkPlayerSettingDelegate();
+    }
     //test code
     public GameObject myLeftHand;
     private GameObject networkLeftHand, networkRightHand;
@@ -28,39 +33,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        if(LobbyNetworkManager.userType == 1) // reseracher uses left hand only
-        {
-            leftHand.SetActive(true);
-            rightHand.SetActive(false);
-
-            if(LobbyNetworkManager.interactionType == 1) //if is controller setting
-            {
-                leftHandTracking.SetActive(false);
-                leftControllerHand.SetActive(true);
-            }
-            else // if it is hand tracking setting
-            {
-                leftHandTracking.SetActive(true);
-                leftControllerHand.SetActive(false);
-            }
-        }
-
-        if (LobbyNetworkManager.userType == 2) // participant uses right hand only
-        {
-            leftHand.SetActive(false);
-            rightHand.SetActive(true);
-
-            if (LobbyNetworkManager.interactionType == 1) //if is controller setting
-            {
-                rightHandTracking.SetActive(false);
-                rightControllerHand.SetActive(true);
-            }
-            else // if it is hand tracking setting
-            {
-                rightHandTracking.SetActive(true);
-                rightControllerHand.SetActive(false);
-            }
-        }
+        PlayerSetting();
     }
     
     void Update()
@@ -72,22 +45,16 @@ public class GameManager : MonoBehaviour
 
         //test code
         try
-        {
-            /*
+        {   /*
             xtmp.text = RotatingKnob..transform.eulerAngles.x.ToString("F0");
             ytmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.y.ToString("F0");
             ztmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.z.ToString("F0");
             */
         }
-        catch
-        {
-
-        }
-            
+        catch{}
 
         if (Input.GetKeyDown("e"))
         {
-
             networkLeftHand = GameObject.Find("Participant/LeftControllerAnchor/CustomHandLeft");
             networkLeftHand.SetActive(true);
             /*
@@ -98,17 +65,7 @@ public class GameManager : MonoBehaviour
             networkRightHand.SetActive(true);
             */
         }
-        
-
         //test code end
-
-        //start the new level
-        if (startLevelFlag)
-        {
-            sampleNum = 1; //remove this after the test
-            LevelStart(sampleNum);
-            startLevelFlag = false;
-        }
 
         //confirm the current step whether it's done
         if (confirmationFlag)
@@ -132,6 +89,55 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void StartLevel1()
+    {
+        sampleNum = 1;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel2()
+    {
+        sampleNum = 2;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel3()
+    {
+        sampleNum = 3;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel4()
+    {
+        sampleNum = 4;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel5()
+    {
+        sampleNum = 5;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel6()
+    {
+        sampleNum = 6;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel7()
+    {
+        sampleNum = 7;
+        LevelStart(sampleNum);
+    }
+    public void StartLevel8()
+    {
+        sampleNum = 8;
+        LevelStart(sampleNum);
+    }
+    public void ClickedController()
+    {
+        LobbyNetworkManager.interactionType = 1;
+    }
+    public void ClickedHandTracking()
+    {
+        LobbyNetworkManager.interactionType = 2;
     }
 
     public void LevelStart(int sampleNum)
@@ -288,6 +294,43 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Not close enough");
             }
             
+        }
+    }
+
+    public void PlayerSetting()
+    {
+        if (LobbyNetworkManager.userType == 1) // reseracher uses left hand only
+        {
+            leftHand.SetActive(true);
+            rightHand.SetActive(false);
+
+            if (LobbyNetworkManager.interactionType == 1) //if is controller setting
+            {
+                leftHandTracking.SetActive(false);
+                leftControllerHand.SetActive(true);
+            }
+            else // if it is hand tracking setting
+            {
+                leftHandTracking.SetActive(true);
+                leftControllerHand.SetActive(false);
+            }
+        }
+
+        if (LobbyNetworkManager.userType == 2) // participant uses right hand only
+        {
+            leftHand.SetActive(false);
+            rightHand.SetActive(true);
+
+            if (LobbyNetworkManager.interactionType == 1) //if is controller setting
+            {
+                rightHandTracking.SetActive(false);
+                rightControllerHand.SetActive(true);
+            }
+            else // if it is hand tracking setting
+            {
+                rightHandTracking.SetActive(true);
+                rightControllerHand.SetActive(false);
+            }
         }
     }
 

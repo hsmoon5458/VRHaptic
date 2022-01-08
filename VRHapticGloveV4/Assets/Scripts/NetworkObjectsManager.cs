@@ -18,9 +18,9 @@ public class NetworkObjectsManager : MonoBehaviour
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
-    
+    public GameObject scalingAxisObject; //x, y, z axis object
     //positioning object
-    public GameObject handToHandLightString;//, leftHandToObjectLightString, rightHandToObjectLightString;
+    public GameObject handToHandLightString, leftHandToObjectLightString, rightHandToObjectLightString;
     private float lightStringDistanceThreshold = 0.5f, positioningThreshold = 0.1f, objectMovementSpeed = 0.1f;
     private Vector3 tempRightFingerPosition, tempTargetPosition;
     private bool positioiningFlag;
@@ -37,6 +37,10 @@ public class NetworkObjectsManager : MonoBehaviour
         if (leftFingertip != null && rightFingertip != null) // if they are both identified, cancel invoking.
         {
             CancelInvoke("IdentifyFingertip");
+        }
+        else
+        {
+            InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
         }
 
         //reset the time for all instantiations so that it does not make objects mistakely      
@@ -96,25 +100,28 @@ public class NetworkObjectsManager : MonoBehaviour
 
         //Step 1 Done
         #region Instantiate 3D Objects
-        if (Input.GetKeyDown("1") || cubeGenerate)
+        if(GameManager.gameStep == 1)
         {
-            networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
-            networkCube.name = "NetworkCube";
-            cubeGenerate = false;
+            if (cubeGenerate)
+            {
+                networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
+                networkCube.name = "NetworkCube";
+                cubeGenerate = false;
+            }
+            if (sphereGenerate)
+            {
+                networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
+                networkSphere.name = "NetworkSphere";
+                sphereGenerate = false;
+            }
+            if (cylinderGenerate)
+            {
+                networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
+                networkCylinder.name = "NetworkCylinder";
+                cylinderGenerate = false;
+            }
         }
-        if (Input.GetKeyDown("2") || sphereGenerate)
-        {
-            networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
-            networkSphere.name = "NetworkSphere";
-            sphereGenerate = false;
-        }
-        if (Input.GetKeyDown("3") || cylinderGenerate)
-        {
-            networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
-            networkCylinder.name = "NetworkCylinder";
-            cylinderGenerate = false;
-        }
-
+        /*
         //delete all network object
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -125,132 +132,132 @@ public class NetworkObjectsManager : MonoBehaviour
             }
 
         }
+        */
         #endregion
 
         //Step 2 Done
         #region Sacling the 3D Objects
-        //this X axis is for 1) Cube X axis, 2) Cylinder radius, and 3) Sphere Radius.
-        if (XAxisPinching.XScaling && !xAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
-        {
-            //identify object
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObjDis1 = tempObject.transform.localScale.x;
-            tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-            XAxisPinching.XScaling = false;
-            xAxisScalingEnabledFlag = true; //this will be set false in FingertipBehavior script (when pinching is disabled)
-        }
-        if (xAxisScalingEnabledFlag)
+        if(GameManager.gameStep == 2)
         {
-            yAxisScalingEnabledFlag = false;
-            zAxisScalingEnabledFlag = false;
-            //calculate the distance
-            scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+            scalingAxisObject.SetActive(true); //activate the scaling axis object.
+            //this X axis is for 1) Cube X axis, 2) Cylinder radius, and 3) Sphere Radius.
+            if (XAxisPinching.XScaling && !xAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
+            {
+                //identify object
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObjDis1 = tempObject.transform.localScale.x;
+                tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-            //find the difference value and added to original distance
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis1)*10) * 0.1f, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
-        }
-        else
-        {
-            tempObjDis1 = 0;
-            //tempScalingDis = 0;
-        }
+                XAxisPinching.XScaling = false;
+                xAxisScalingEnabledFlag = true; //this will be set false in FingertipBehavior script (when pinching is disabled)
+            }
+            if (xAxisScalingEnabledFlag)
+            {
+                yAxisScalingEnabledFlag = false;
+                zAxisScalingEnabledFlag = false;
+                //calculate the distance
+                scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-        //this is for 1) Cube Y axis and 2) Cylinder Height
-        if (YAxisPinching.YScaling && !yAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
-        {
-            //identify object
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObjDis2 = tempObject.transform.localScale.y;
-            tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+                //find the difference value and added to original distance
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.localScale = new Vector3(Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis1) * 10) * 0.1f, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
+            }
+            else{tempObjDis1 = 0;}
 
-            YAxisPinching.YScaling = false;
-            yAxisScalingEnabledFlag = true; //this will be set false in FingertipBehavior script (when pinching is disabled)
-        }
-        if (yAxisScalingEnabledFlag)
-        {
-            xAxisScalingEnabledFlag = false;
-            zAxisScalingEnabledFlag = false;
-            //calculate the distance
-            scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+            //this is for 1) Cube Y axis and 2) Cylinder Height
+            if (YAxisPinching.YScaling && !yAxisScalingEnabledFlag) //if bool is true, this Xsxaling should be excuted to get the initial data of distance between fingers and the object local scale for scaling.
+            {
+                //identify object
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObjDis2 = tempObject.transform.localScale.y;
+                tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-            //find the difference value and added to original distance
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis2)*10) * 0.1f, tempObject.transform.localScale.z);
-        }
-        else
-        {
-            tempObjDis2 = 0;
-        }
+                YAxisPinching.YScaling = false;
+                yAxisScalingEnabledFlag = true; //this will be set false in FingertipBehavior script (when pinching is disabled)
+            }
+            if (yAxisScalingEnabledFlag)
+            {
+                xAxisScalingEnabledFlag = false;
+                zAxisScalingEnabledFlag = false;
+                //calculate the distance
+                scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+
+                //find the difference value and added to original distance
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis2) * 10) * 0.1f, tempObject.transform.localScale.z);
+            }
+            else{tempObjDis2 = 0;}
 
 
-        if (ZAxisPinching.ZScaling && !zAxisScalingEnabledFlag)
-        {
-            //identify object
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObjDis3 = tempObject.transform.localScale.z;
-            tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+            if (ZAxisPinching.ZScaling && !zAxisScalingEnabledFlag)
+            {
+                //identify object
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObjDis3 = tempObject.transform.localScale.z;
+                tempScalingDis = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-            ZAxisPinching.ZScaling = false;
-            zAxisScalingEnabledFlag = true;
-        }
-        if (zAxisScalingEnabledFlag)
-        {
-            xAxisScalingEnabledFlag = false;
-            yAxisScalingEnabledFlag = false;
-            //calculate the distance
-            scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
+                ZAxisPinching.ZScaling = false;
+                zAxisScalingEnabledFlag = true;
+            }
+            if (zAxisScalingEnabledFlag)
+            {
+                xAxisScalingEnabledFlag = false;
+                yAxisScalingEnabledFlag = false;
+                //calculate the distance
+                scalingDistance = Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position);
 
-            //find the difference value and added to original distance
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, tempObject.transform.localScale.y, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis3)*10)*0.1f);
-        }
-        else
-        {
-            tempObjDis3 = 0;
+                //find the difference value and added to original distance
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, tempObject.transform.localScale.y, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis3) * 10) * 0.1f);
+            }
+            else{tempObjDis3 = 0;}
         }
         #endregion
 
         //Step 3 
         #region Rotating the 3D Objects
-        
-        if(RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 1)
+        if(GameManager.gameStep == 3)
         {
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.x), 1));
-            RotatingKnob.rotatedFlag = false;
+            scalingAxisObject.SetActive(false); //after scaling is done, deactivate the scaling axis object
+            if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 1)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.x), 1));
+                RotatingKnob.rotatedFlag = false;
+            }
+            if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 2)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.y), 2));
+                RotatingKnob.rotatedFlag = false;
+            }
+            if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 3)
+            {
+                GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
+                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.z), 3));
+                RotatingKnob.rotatedFlag = false;
+            }
         }
-        if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 2)
-        {
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.y), 2));
-            RotatingKnob.rotatedFlag = false;
-        }
-        if (RotatingKnob.rotatedFlag && RotatingKnob.rotatingAxisSelected == 3)
-        {
-            GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-            StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.z), 3));
-            RotatingKnob.rotatedFlag = false;
-        }
-
         #endregion
 
         //Step 4 Done
         #region Positioning the 3D Objects
-        if(GameManager.gameStep == 1515) // positioning step
+        if(GameManager.gameStep == 4) // positioning step
         {
             if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) < lightStringDistanceThreshold && !positioiningFlag)
             {
                 GameObject tempObject = GameObject.Find("NetworkCube");//this should be changed ----------------
-                                                                       //tempRightFingerPosition = rightFingertip.transform.position;
-                                                                       //positioiningFlag = true;
+                tempRightFingerPosition = rightFingertip.transform.position;
+                positioiningFlag = true;
                 StartCoroutine(PositioningGetFingerPosition()); //delay for 0.4 second to get the position in the middle of range, so that temp position is not set to the edge of the threshold
             }
 
             if (positioiningFlag)
             {
                 handToHandLightString.SetActive(true);
+                leftHandToObjectLightString.SetActive(true);
+                rightHandToObjectLightString.SetActive(true);
 
                 if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
                 {
@@ -287,6 +294,8 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
                     handToHandLightString.SetActive(false);
+                    leftHandToObjectLightString.SetActive(false);
+                    rightHandToObjectLightString.SetActive(false);
                     positioiningFlag = false;
                 }
             }
@@ -346,7 +355,6 @@ public class NetworkObjectsManager : MonoBehaviour
 
         
     }
-
     IEnumerator PositioningGetFingerPosition()
     {
         yield return new WaitForSeconds(0.4f);
