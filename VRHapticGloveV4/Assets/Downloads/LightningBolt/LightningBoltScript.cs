@@ -305,6 +305,11 @@ namespace DigitalRuby.LightningBolt
                     StartObject = GameObject.FindWithTag("myLeftIndexFinger");
                     EndObject = GameObject.FindWithTag("networkRightIndexFinger");
                 }
+                else if(this.gameObject.name == "RightHandToObjectLightString")
+                {
+                    StartObject = GameObject.FindWithTag("networkRightIndexFinger");
+                    EndObject = GameObject.FindWithTag("InstantiatedObject");
+                }
                 else
                 {
                     StartObject = GameObject.FindWithTag("myLeftIndexFinger");
@@ -319,11 +324,16 @@ namespace DigitalRuby.LightningBolt
                     StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
                     EndObject = GameObject.FindWithTag("myRightIndexFinger");
                 }
+                else if(this.gameObject.name == "RightHandToObjectLightString")
+                {
+                    StartObject = GameObject.FindWithTag("myRightIndexFinger");
+                    EndObject = GameObject.FindWithTag("InstantiatedObject");
+                }
                 else
                 {
                     StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
                     EndObject = GameObject.FindWithTag("InstantiatedObject");
-                }  
+                }
             }
         }
         private void Update()

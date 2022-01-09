@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class FingertipBehavior : MonoBehaviour
 {
-    [SerializeField]
     public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex, myPinchingStatus, networkPinchingStatus;
+    private int vib_itr = 40, vib_freq = 2, vib_amp = 255;
+
     void Update()
     {
         //to disable pinching and scaling
@@ -26,10 +27,12 @@ public class FingertipBehavior : MonoBehaviour
             if(other.gameObject.name == "L1TipNetwork")
             {
                 thumbTouchedThumb = true;
+                VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
             }
             if(other.gameObject.name == "L2TipNetwork")
             {
                 thumbTouchedIndex = true;
+                VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
             }
         }
         if (this.gameObject.name == "R2Tip")
@@ -37,10 +40,12 @@ public class FingertipBehavior : MonoBehaviour
             if (other.gameObject.name == "L1TipNetwork")
             {
                 indexTouchedThumb = true;
+                VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
             }
             if (other.gameObject.name == "L2TipNetwork")
             {
                 indexTouchedIndex = true;
+                VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
             }
         }
 
@@ -50,8 +55,10 @@ public class FingertipBehavior : MonoBehaviour
             if(other.gameObject.name == "R1Tip")
             {
                 myPinchingStatus = true;
+                VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
             }
         }
+
         //network player pinching
         if (this.gameObject.name == "L2TipNetwork")
         {
@@ -59,6 +66,63 @@ public class FingertipBehavior : MonoBehaviour
             {
                 networkPinchingStatus = true;
             }
+        }
+
+
+        //Left hand side (just for the left hand controller vibration)
+        if (this.gameObject.name == "L1Tip")
+        {
+            if (other.gameObject.name == "R1Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.LTouch);
+            if (other.gameObject.name == "R2Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.LTouch);
+        }
+        if (this.gameObject.name == "L2Tip")
+        {
+            if (other.gameObject.name == "R1Tip")  VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.LTouch);
+            if (other.gameObject.name == "R2Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.LTouch);
+        }
+
+        if (this.gameObject.name == "L2Tip")
+        {
+            if (other.gameObject.name == "L1Tip")  VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.LTouch);
+        }
+
+        
+    }
+
+    //this is for vibration only.
+    private void OnTriggerStay(Collider other)
+    {
+        //Right hand side
+        if (this.gameObject.name == "R1Tip")
+        {
+            if (other.gameObject.name == "L1TipNetwork") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+            if (other.gameObject.name == "L2TipNetwork") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);  
+        }
+        if (this.gameObject.name == "R2Tip")
+        {
+            if (other.gameObject.name == "L1TipNetwork") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+            if (other.gameObject.name == "L2TipNetwork") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+        }
+        if (this.gameObject.name == "R2Tip")
+        {
+            if (other.gameObject.name == "R1Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+        }
+
+        //Left hand side
+        if (this.gameObject.name == "L1Tip")
+        {
+            if (other.gameObject.name == "R1Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+            if (other.gameObject.name == "R2Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+        }
+        if (this.gameObject.name == "L2Tip")
+        {
+            if (other.gameObject.name == "R1Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+            if (other.gameObject.name == "R2Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
+        }
+
+        if (this.gameObject.name == "L2Tip")
+        {
+            if (other.gameObject.name == "L1Tip") VibrationManager.singletone.TriggerVibration(vib_itr, vib_freq, vib_amp, OVRInput.Controller.RTouch);
         }
     }
 

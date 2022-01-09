@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
-public class GameManager : MonoBehaviour
+public class RoomGameManager : MonoBehaviour
 {
     [SerializeField]
     private float completionTime, tempTime, step1Timer, step2Timer, step3Timer, step4Timer;
@@ -16,20 +16,20 @@ public class GameManager : MonoBehaviour
     public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
     public bool confirmationFlag;
-    
-    public GameObject[] completedObjects; //completed networked objects
+    public static bool stopRotatingFlag;
 
+    public GameObject[] completedObjects; //completed networked objects
+    public GameObject[] instantiatedObjects; //instantiated network objects
     public delegate void NetworkSettingDelegate(); //to recall the Network Setting for the script in "Network Player" prefab.
     public static NetworkSettingDelegate NetworkPlayerSettingDelegate;
-
+    //test code
+    public GameObject testFinger;
+    private GameObject networkLeftHand;
+    //test code end
     public void RefreshNetworkPlayerSetting()
     {
         NetworkPlayerSettingDelegate();
     }
-    //test code
-    public GameObject myLeftHand;
-    private GameObject networkLeftHand, networkRightHand;
-    //test code end
 
     void Start()
     {
@@ -45,11 +45,11 @@ public class GameManager : MonoBehaviour
 
         //test code
         try
-        {   /*
-            xtmp.text = RotatingKnob..transform.eulerAngles.x.ToString("F0");
-            ytmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.y.ToString("F0");
-            ztmp.text = RotatingKnob.testKnobParent.transform.eulerAngles.z.ToString("F0");
-            */
+        {   
+            xtmp.text = RotatingKnob.tx.ToString("F0");
+            ytmp.text = RotatingKnob.ty.ToString("F0");
+            ztmp.text = RotatingKnob.tz.ToString("F0");
+            
         }
         catch{}
 
@@ -57,18 +57,14 @@ public class GameManager : MonoBehaviour
         {
             networkLeftHand = GameObject.Find("Participant/LeftControllerAnchor/CustomHandLeft");
             networkLeftHand.SetActive(true);
-            /*
-            myLeftHand.SetActive(true);
-            networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
-            networkLeftHand.SetActive(true);
-            networkRightHand = PhotonView.Find(1001).gameObject.transform.GetChild(1).gameObject;
-            networkRightHand.SetActive(true);
-            */
+
+            GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+            tempObject.transform.localScale = new Vector3(0.4f, 0.1f, 0.4f);
         }
         //test code end
 
         //confirm the current step whether it's done
-        if (confirmationFlag)
+        if (confirmationFlag || Input.GetKeyDown(KeyCode.Space))
         {
             currentWorkingNetoworkObject = GameObject.FindWithTag("InstantiatedObject");
             GameStepCheck(gameStep, currentWorkingSampleObject, currentWorkingNetoworkObject);
@@ -221,16 +217,20 @@ public class GameManager : MonoBehaviour
     {
         if (currentGameStep == 1)//created object check
         {
+            instantiatedObjects = GameObject.FindGameObjectsWithTag("InstantiatedObject");
             //check it has same mesh filter name (cube, cylinder, sphere)
-            if(workspaceObjectGuide.GetComponent<MeshFilter>().mesh.name == networkObject.GetComponent<MeshFilter>().mesh.name)
+            if (workspaceObjectGuide.GetComponent<MeshFilter>().mesh.name == networkObject.GetComponent<MeshFilter>().mesh.name && (instantiatedObjects.Length == 1))
             {
                 gameStep++; // go to next step
                 step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
-            else
+            else // if incorrect object was instantiated, destroy all network object
             {
-
+                foreach (GameObject instantiatedObject in instantiatedObjects)
+                {
+                    PhotonNetwork.Destroy(instantiatedObject);
+                }
             }
         }
         else if(currentGameStep == 2)//scaled object check
@@ -241,9 +241,9 @@ public class GameManager : MonoBehaviour
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
-            else
+            else 
             {
-
+                //maybe some message popup that somethings wrong.
             }
         }
         else if (currentGameStep == 3)//rotated object check
@@ -254,9 +254,10 @@ public class GameManager : MonoBehaviour
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
             }
-            else
+            else //reset the euler angles
             {
-
+                networkObject.transform.eulerAngles = new Vector3(0, 0, 0);
+                stopRotatingFlag = true;
             }
         }
         else if(currentGameStep == 4)// positioned object check
@@ -272,13 +273,9 @@ public class GameManager : MonoBehaviour
                     Debug.Log("Level Done");
                     objectNum = 0; //set to 0 for another level
                     gameStep = 0;
-                    
+
                     //do some effect and remove all the objects created.
-                    completedObjects = GameObject.FindGameObjectsWithTag("completedObject");
-                    foreach (GameObject completedObject in completedObjects)
-                    {
-                        PhotonNetwork.Destroy(completedObject);
-                    }
+                    StartCoroutine(LevelCompleteEffect());
                 }
                 else
                 {
@@ -296,7 +293,6 @@ public class GameManager : MonoBehaviour
             
         }
     }
-
     public void PlayerSetting()
     {
         if (LobbyNetworkManager.userType == 1) // reseracher uses left hand only
@@ -341,5 +337,19 @@ public class GameManager : MonoBehaviour
             currentWorkingGuideObject.transform.rotation = Quaternion.Lerp(currentWorkingGuideObject.transform.rotation, currentWorkingSampleObject.transform.rotation, Time.deltaTime * 2.5f);
             yield return null;
         }
+    }
+    
+    IEnumerator LevelCompleteEffect()
+    {
+        BackgroundCubeColor.colorChangeTime = 0.1f;
+        BackgroundCubeColor.numberOfCubeColorChanged = 30;
+        yield return new WaitForSeconds(5f);
+        completedObjects = GameObject.FindGameObjectsWithTag("completedObject");
+        foreach (GameObject completedObject in completedObjects)
+        {
+            PhotonNetwork.Destroy(completedObject);
+        }
+        BackgroundCubeColor.colorChangeTime = 2f;
+        BackgroundCubeColor.numberOfCubeColorChanged = 6;
     }
 }

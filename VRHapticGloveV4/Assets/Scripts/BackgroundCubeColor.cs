@@ -7,12 +7,12 @@ public class BackgroundCubeColor : MonoBehaviour
 
     public GameObject[] backgroundCubes;
 
-    [Range(0.1f, 2f)]
-    public float colorChangeTime = 2f;
+    //[Range(0.1f, 2f)]
+    public static float colorChangeTime = 2f;
     private float countTime;
     private int[] currentIndex, previousIndex;
-    [Range(1, 62)]
-    public int numberOfCubeColorChanged = 6;
+    //[Range(1, 62)]
+    public static int numberOfCubeColorChanged = 6;
     private Color defaultColor;
     void Start()
     {

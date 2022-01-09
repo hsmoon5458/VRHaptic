@@ -4527,7 +4527,7 @@ GameObject:
   - component: {fileID: 1297937241015650910}
   m_Layer: 6
   m_Name: RIghtHand
-  m_TagString: testRightHand
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5898,7 +5898,7 @@ GameObject:
   - component: {fileID: 7774031726508893887}
   m_Layer: 6
   m_Name: LeftHand
-  m_TagString: testLeftHand
+  m_TagString: networkLeftHandAnchor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5961,7 +5961,7 @@ GameObject:
   - component: {fileID: 1020933343022411006}
   m_Layer: 6
   m_Name: LeftControllerAnchor
-  m_TagString: Untagged
+  m_TagString: networkLeftControllerAnchor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7277,8 +7277,12 @@ MonoBehaviour:
   knobParent: {fileID: 8324882876388936626}
   fingertip: {fileID: 3394382723224371777}
   tempKnobAngle: 0
-  tempFingerAngle: 0
-  rotatedAngle: 0
+  tempFingerAngleX: 0
+  tempFingerAngleY: 0
+  tempFingerAngleZ: 0
+  rotatedAngleX: 0
+  rotatedAngleY: 0
+  rotatedAngleZ: 0
   x: 0
   y: 0
   axisTargetLayer:
@@ -7396,8 +7400,12 @@ MonoBehaviour:
   knobParent: {fileID: 4666960224685813593}
   fingertip: {fileID: 8187436442557461821}
   tempKnobAngle: 0
-  tempFingerAngle: 0
-  rotatedAngle: 0
+  tempFingerAngleX: 0
+  tempFingerAngleY: 0
+  tempFingerAngleZ: 0
+  rotatedAngleX: 0
+  rotatedAngleY: 0
+  rotatedAngleZ: 0
   x: 0
   y: 0
   axisTargetLayer:
@@ -7573,6 +7581,10 @@ PrefabInstance:
     - target: {fileID: 414912, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 11438496, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1040324774911890, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_Layer
@@ -8028,6 +8040,10 @@ PrefabInstance:
     - target: {fileID: 422740, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 11477634, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1134128082860472, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_Layer

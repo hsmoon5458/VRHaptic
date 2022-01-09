@@ -29,7 +29,7 @@ public class NetworkPlayer : MonoBehaviour
     
     void Start()
     {
-        GameManager.NetworkPlayerSettingDelegate = NetworkPlayerSetting; //to enable network setting outside of the prefab
+        RoomGameManager.NetworkPlayerSettingDelegate = NetworkPlayerSetting; //to enable network setting outside of the prefab
         NetworkPlayerSetting();//this is for initial setup, regardless of above code.
     }
     public static void ChangeLayers(GameObject go, int layer)

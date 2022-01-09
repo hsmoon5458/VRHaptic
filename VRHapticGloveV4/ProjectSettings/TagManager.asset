@@ -10,12 +10,12 @@ TagManager:
   - myRightIndexFinger
   - networkLeftIndexFinger
   - networkRightIndexFinger
-  - testRightHand
-  - testLeftHand
   - sampleCube
   - sampleCylinder
   - sampleSphere
   - completedObject
+  - networkLeftControllerAnchor
+  - networkLeftHandAnchor
   layers:
   - Default
   - TransparentFX
