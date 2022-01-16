@@ -52,6 +52,11 @@ public class RoomGameManager : MonoBehaviour
             
         }
         catch{}
+        if (Input.GetKeyDown("t"))
+        {
+            BackgroundCubeColor.colorChangeTime = 0.1f;
+            BackgroundCubeColor.numberOfCubeColorChanged = 30;
+        }
 
         if (Input.GetKeyDown("e"))
         {

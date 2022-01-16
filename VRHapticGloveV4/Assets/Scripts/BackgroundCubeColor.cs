@@ -31,7 +31,7 @@ public class BackgroundCubeColor : MonoBehaviour
                         
             for (int i = 0; i < numberOfCubeColorChanged; i++)
             {
-                try { backgroundCubes[previousIndex[i]].GetComponent<Renderer>().material.color = defaultColor; }
+                try { backgroundCubes[previousIndex[i]].GetComponent<Renderer>().material.color = Color.white; }
                 catch{
                     currentIndex = new int[numberOfCubeColorChanged];
                     previousIndex = new int[numberOfCubeColorChanged];
