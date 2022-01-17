@@ -25,6 +25,9 @@ public class RoomGameManager : MonoBehaviour
     //test code
     public GameObject testFinger;
     private GameObject networkLeftHand;
+    public GameObject testLeftAnchor;
+    public GameObject testLeftControllerAnchor;
+    public GameObject testLeftHandTracking;
     //test code end
     public void RefreshNetworkPlayerSetting()
     {
@@ -58,14 +61,21 @@ public class RoomGameManager : MonoBehaviour
             BackgroundCubeColor.numberOfCubeColorChanged = 30;
         }
 
-        if (Input.GetKeyDown("e"))
+        if (Input.GetKeyDown("c")) //enable controller for developing
         {
             networkLeftHand = GameObject.Find("Participant/LeftControllerAnchor/CustomHandLeft");
             networkLeftHand.SetActive(true);
-
-            GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-            tempObject.transform.localScale = new Vector3(0.4f, 0.1f, 0.4f);
         }
+        if (Input.GetKeyDown("h")) //enable handtracking for developing
+        {
+            testLeftAnchor.SetActive(true);
+            testLeftHandTracking.SetActive(true);
+            testLeftControllerAnchor.SetActive(false);
+            //networkLeftHand = GameObject.Find("Participant/LeftHand");
+            networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
+            networkLeftHand.SetActive(true); 
+        }
+
         //test code end
 
         //confirm the current step whether it's done

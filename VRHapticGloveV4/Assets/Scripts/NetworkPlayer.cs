@@ -239,7 +239,7 @@ public class NetworkPlayer : MonoBehaviour
         else
         {
             //LAYER 8 WILL NOT BE VISIABLE FROM THE PLAYER
-            networkPlayerHead.gameObject.layer = 8; //8 is myselfNetwork layer.
+            ChangeLayers(networkPlayerHead.gameObject, 8);//8 is myselfNetwork layer.
 
             if (this.gameObject.name == "Researcher")
             {
