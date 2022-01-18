@@ -15,6 +15,7 @@ public class RoomGameManager : MonoBehaviour
     public TextMeshProUGUI xtmp, ytmp, ztmp;
     public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
+
     public bool confirmationFlag;
     public static bool stopRotatingFlag;
 
@@ -47,6 +48,7 @@ public class RoomGameManager : MonoBehaviour
         tempTime = Time.deltaTime;
 
         //test code
+        #region Test Code
         try
         {   
             xtmp.text = RotatingKnob.tx.ToString("F0");
@@ -75,8 +77,16 @@ public class RoomGameManager : MonoBehaviour
             networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
             networkLeftHand.SetActive(true); 
         }
-
+        #endregion
         //test code end
+
+        if (ConfirmationButtonBehavior.leftConfirmation && ConfirmationButtonBehavior.rightConfirmation) // if both buttons are clicked, make confirmation flag ture for GameStepCheck
+        {
+            confirmationFlag = true;
+            
+            ConfirmationButtonBehavior.leftConfirmation = false;
+            ConfirmationButtonBehavior.rightConfirmation = false;
+        }
 
         //confirm the current step whether it's done
         if (confirmationFlag || Input.GetKeyDown(KeyCode.Space))
@@ -150,7 +160,7 @@ public class RoomGameManager : MonoBehaviour
     {
         LobbyNetworkManager.interactionType = 2;
     }
-
+    
     public void LevelStart(int sampleNum)
     {
         //set the timer setting
