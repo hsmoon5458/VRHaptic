@@ -266,6 +266,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 rightHandToObjectLightString.SetActive(true);
                 VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
 
+
                 if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
                 {
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
