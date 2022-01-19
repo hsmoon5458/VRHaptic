@@ -7,9 +7,11 @@ public class RoomGameManager : MonoBehaviour
 {
     [SerializeField]
     private float completionTime, tempTime, step1Timer, step2Timer, step3Timer, step4Timer;
-    [SerializeField]
     public static int gameStep = 0; //1 is creating, 2 is scaling, 3 rotating, 4 is positioning
     public int sampleNum, objectNum; // ex) Sample1, s3
+
+    public Transform participantTf, researcherTf;
+    public GameObject HankOVRCameraRig;
 
     public GameObject leftHand, rightHand, leftHandTracking, rightHandTracking, leftControllerHand, rightControllerHand;
     public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
@@ -28,7 +30,6 @@ public class RoomGameManager : MonoBehaviour
     public AudioClip positionSound, levelCompleteSound, confrimSound, rejectSound;
 
     //test code
-    public GameObject testFinger;
     private GameObject networkLeftHand;
     public GameObject testLeftAnchor;
     public GameObject testLeftControllerAnchor;
@@ -212,7 +213,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceCubeGuide.SetActive(true); //activate the object, and deactiavte the other.
                 workspaceCubeGuide.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f); //reset transform
                 workspaceCubeGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceCubeGuide.transform.position = new Vector3(0, 1, 0);
+                workspaceCubeGuide.transform.position = new Vector3(0, 1, 0.5f); //should be same as object spawn position
                 workspaceCylinderGuide.SetActive(false);
                 workspaceSphereGuide.SetActive(false);
 
@@ -224,7 +225,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceCylinderGuide.SetActive(true);
                 workspaceCylinderGuide.transform.localScale = new Vector3(0.2f, 0.1f, 0.2f);
                 workspaceCylinderGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceCylinderGuide.transform.position = new Vector3(0, 1, 0);
+                workspaceCylinderGuide.transform.position = new Vector3(0, 1, 0.5f);
                 workspaceSphereGuide.SetActive(false);
 
                 currentWorkingGuideObject = workspaceCylinderGuide;
@@ -236,7 +237,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceSphereGuide.SetActive(true);
                 workspaceSphereGuide.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
                 workspaceSphereGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceSphereGuide.transform.position = new Vector3(0, 1, 0);
+                workspaceSphereGuide.transform.position = new Vector3(0, 1, 0.5f);
 
                 currentWorkingGuideObject = workspaceSphereGuide;
             }
@@ -350,6 +351,8 @@ public class RoomGameManager : MonoBehaviour
     {
         if (LobbyNetworkManager.userType == 1) // reseracher uses left hand only
         {
+            HankOVRCameraRig.transform.position = researcherTf.position;
+
             leftHand.SetActive(true);
             rightHand.SetActive(false);
 
@@ -367,6 +370,8 @@ public class RoomGameManager : MonoBehaviour
 
         if (LobbyNetworkManager.userType == 2) // participant uses right hand only
         {
+            HankOVRCameraRig.transform.position = participantTf.position;
+
             leftHand.SetActive(false);
             rightHand.SetActive(true);
 
