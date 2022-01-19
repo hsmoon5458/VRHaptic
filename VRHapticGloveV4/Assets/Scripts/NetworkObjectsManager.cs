@@ -13,17 +13,23 @@ public class NetworkObjectsManager : MonoBehaviour
     private bool cubeFlag, sphereFlag, cylinderFlag;
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
     private float timeToGenerate = 1.2f;
-    private float rotatingSpeed = 5f;
+    private float rotatingSpeed = 1.4f;
     //scaling 3D objects
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
     public GameObject scalingAxisObject; //x, y, z axis object
+    //rotating object
+    private bool rotateCompletedFlag;
     //positioning object
     public GameObject handToHandLightString, leftHandToObjectLightString, rightHandToObjectLightString;
     private float lightStringDistanceThreshold = 0.5f, positioningThreshold = 0.1f, objectMovementSpeed = 0.1f;
     private Vector3 tempRightFingerPosition, tempTargetPosition;
     private bool positioiningFlag;
+
+    //sound
+    public AudioSource objectAudioSource;
+    public AudioClip instantiateSound, scaleSound, rotateSound;
 
     private void Start()
     {
@@ -98,22 +104,30 @@ public class NetworkObjectsManager : MonoBehaviour
         #region Instantiate 3D Objects
         if(RoomGameManager.gameStep == 1)
         {
+            //disable light string from game step 4
+            handToHandLightString.SetActive(false);
+            leftHandToObjectLightString.SetActive(false);
+            rightHandToObjectLightString.SetActive(false);
+
             if (cubeGenerate)
             {
                 networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCube.name = "NetworkCube";
+                objectAudioSource.PlayOneShot(instantiateSound);
                 cubeGenerate = false;
             }
             if (sphereGenerate)
             {
                 networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkSphere.name = "NetworkSphere";
+                objectAudioSource.PlayOneShot(instantiateSound);
                 sphereGenerate = false;
             }
             if (cylinderGenerate)
             {
                 networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCylinder.name = "NetworkCylinder";
+                objectAudioSource.PlayOneShot(instantiateSound);
                 cylinderGenerate = false;
             }
         }
@@ -156,7 +170,15 @@ public class NetworkObjectsManager : MonoBehaviour
 
                 //find the difference value and added to original distance
                 GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                Vector3 tempTf = tempObject.transform.localScale; //for ticking sound, get the scale to check the difference
+                //scale the object with snipping
                 tempObject.transform.localScale = new Vector3(Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis1) * 10) * 0.1f, tempObject.transform.localScale.y, tempObject.transform.localScale.z);
+                
+                //if there's a difference, make a sound.
+                if(tempTf != tempObject.transform.localScale)
+                {
+                    objectAudioSource.PlayOneShot(scaleSound);
+                }
             }
             else{tempObjDis1 = 0;}
 
@@ -180,7 +202,15 @@ public class NetworkObjectsManager : MonoBehaviour
 
                 //find the difference value and added to original distance
                 GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                Vector3 tempTf = tempObject.transform.localScale; //for ticking sound, get the scale to check the difference
+                //scale the object with snipping
                 tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis2) * 10) * 0.1f, tempObject.transform.localScale.z);
+
+                //if there's a difference, make a sound.
+                if (tempTf != tempObject.transform.localScale)
+                {
+                    objectAudioSource.PlayOneShot(scaleSound);
+                }
             }
             else{tempObjDis2 = 0;}
 
@@ -204,7 +234,15 @@ public class NetworkObjectsManager : MonoBehaviour
 
                 //find the difference value and added to original distance
                 GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                Vector3 tempTf = tempObject.transform.localScale; //for ticking sound, get the scale to check the difference
+                //scale the object with snipping
                 tempObject.transform.localScale = new Vector3(tempObject.transform.localScale.x, tempObject.transform.localScale.y, Mathf.RoundToInt((scalingDistance - tempScalingDis + tempObjDis3) * 10) * 0.1f);
+
+                //if there's a difference, make a sound.
+                if (tempTf != tempObject.transform.localScale)
+                {
+                    objectAudioSource.PlayOneShot(scaleSound);
+                }
             }
             else{tempObjDis3 = 0;}
         }
@@ -215,34 +253,45 @@ public class NetworkObjectsManager : MonoBehaviour
         if(RoomGameManager.gameStep == 3)
         {
             scalingAxisObject.SetActive(false); //after scaling is done, deactivate the scaling axis object
-            if (RotatingKnob.rotatedFlagX && RotatingKnob.rotatingAxisSelected == 1)
+
+            if (!rotateCompletedFlag)
             {
-                GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.x), 1));
-                RotatingKnob.rotatedFlagX = false;
-            }
-            if (RotatingKnob.rotatedFlagY && RotatingKnob.rotatingAxisSelected == 2)
-            {
-                GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.y), 2));
-                RotatingKnob.rotatedFlagY = false;
-            }
-            if (RotatingKnob.rotatedFlagZ && RotatingKnob.rotatingAxisSelected == 3)
-            {
-                GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                StartCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.z), 3));
-                RotatingKnob.rotatedFlagZ = false;
+                if (RotatingKnob.rotatedFlagX && RotatingKnob.rotatingAxisSelected == 1)
+                {
+                    rotateCompletedFlag = true;
+                    GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                    objectAudioSource.PlayOneShot(rotateSound);
+                    StartCoroutine(RotatingObject(tempObject, 1));
+                    RotatingKnob.rotatedFlagX = false;
+                }
+                if (RotatingKnob.rotatedFlagY && RotatingKnob.rotatingAxisSelected == 2)
+                {
+                    rotateCompletedFlag = true;
+                    GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                    objectAudioSource.PlayOneShot(rotateSound);
+                    StartCoroutine(RotatingObject(tempObject, 2));
+                    RotatingKnob.rotatedFlagY = false;
+                }
+                if (RotatingKnob.rotatedFlagZ && RotatingKnob.rotatingAxisSelected == 3)
+                {
+                    rotateCompletedFlag = true;
+                    GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
+                    objectAudioSource.PlayOneShot(rotateSound);
+                    StartCoroutine(RotatingObject(tempObject, 3));
+                    RotatingKnob.rotatedFlagZ = false;
+                }
             }
 
-            if(RoomGameManager.stopRotatingFlag == true) //from Room Game manager, if the rotation is not correct, stop the rotation
+            if(RoomGameManager.resetRotatingFlag == true) //from Room Game manager, if the rotation is not correct, stop the rotation
             {
                 GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                StopCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.x), 1));
-                StopCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.y), 2));
-                StopCoroutine(RotatingObject(tempObject, Mathf.RoundToInt(tempObject.transform.eulerAngles.z), 3));
+                StopCoroutine(RotatingObject(tempObject, 1));
+                StopCoroutine(RotatingObject(tempObject, 2));
+                StopCoroutine(RotatingObject(tempObject, 3));
                 RotatingKnob.rotatedFlagX = false;
                 RotatingKnob.rotatedFlagY = false;
                 RotatingKnob.rotatedFlagZ = false;
+                rotateCompletedFlag = false;
             }
         }
         #endregion
@@ -261,9 +310,10 @@ public class NetworkObjectsManager : MonoBehaviour
 
             if (positioiningFlag)
             {
-                handToHandLightString.SetActive(true);
+                handToHandLightString.SetActive(true);//this is where the light string audio source located
                 leftHandToObjectLightString.SetActive(true);
                 rightHandToObjectLightString.SetActive(true);
+
                 VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
 
 
@@ -326,17 +376,14 @@ public class NetworkObjectsManager : MonoBehaviour
         }
     }
 
-    IEnumerator RotatingObject(GameObject obj, int startAngle, int axis)
+    IEnumerator RotatingObject(GameObject obj, int axis)
     {
         if (axis == 1)
         {
             //to rotate the object smoothly, using lerp to rotate the object
-            while (Mathf.RoundToInt(obj.transform.eulerAngles.x) != startAngle + 45)
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.x) != 45)
             {
-                Debug.Log("Spinning");
-                Debug.Log(Mathf.RoundToInt(obj.transform.eulerAngles.x));
-                Debug.Log(startAngle + 45);
-                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(startAngle + 45, obj.transform.eulerAngles.y, obj.transform.eulerAngles.z), rotatingSpeed * Time.deltaTime);
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(45, 0, 0), rotatingSpeed * Time.deltaTime);
                 yield return null;
             }
             //at last, round up to integer so that it lands onto integer angle
@@ -344,18 +391,18 @@ public class NetworkObjectsManager : MonoBehaviour
         }
         else if (axis == 2)
         {
-            while (Mathf.RoundToInt(obj.transform.eulerAngles.y) != startAngle + 45)
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.y) != 45)
             {
-                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(obj.transform.eulerAngles.x, startAngle + 45, obj.transform.eulerAngles.z), rotatingSpeed * Time.deltaTime);
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(0, 45, 0), rotatingSpeed * Time.deltaTime);
                 yield return null;
             }
             obj.transform.eulerAngles = new Vector3(Mathf.RoundToInt(obj.transform.eulerAngles.x), Mathf.RoundToInt(obj.transform.eulerAngles.y), Mathf.RoundToInt(obj.transform.eulerAngles.z));
         }
         else if (axis == 3)
         {
-            while (Mathf.RoundToInt(obj.transform.eulerAngles.z) != startAngle + 45)
+            while (Mathf.RoundToInt(obj.transform.eulerAngles.z) != 45)
             {
-                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(obj.transform.eulerAngles.x, obj.transform.eulerAngles.y, startAngle + 45), rotatingSpeed * Time.deltaTime);
+                obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, Quaternion.Euler(0, 0, 45), rotatingSpeed * Time.deltaTime);
                 yield return null;
             }
             obj.transform.eulerAngles = new Vector3(Mathf.RoundToInt(obj.transform.eulerAngles.x), Mathf.RoundToInt(obj.transform.eulerAngles.y), Mathf.RoundToInt(obj.transform.eulerAngles.z));
@@ -363,6 +410,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
     }
+
     IEnumerator PositioningGetFingerPosition()
     {
         yield return new WaitForSeconds(0.4f);

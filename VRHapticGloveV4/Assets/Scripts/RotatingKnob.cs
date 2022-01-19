@@ -6,15 +6,16 @@ using TMPro;
 public class RotatingKnob : MonoBehaviour
 {
     private bool thumbTouched, indexTouched;
-    public static bool knobEnabled = false;
+    public static bool knobEnabled;
     public static bool rotatedFlagX, rotatedFlagY, rotatedFlagZ; //when the knob is spined more than 90 degree
     public static int rotatingAxisSelected = 0; //1 is X, 2 is y, and Z is 3.
     public GameObject knobParent, fingertip; // to rotate the knob
     private GameObject touchedFingerObject;
     [SerializeField]
     private float tempKnobAngle, tempFingerAngleX, tempFingerAngleY, tempFingerAngleZ, rotatedAngleX, rotatedAngleY, rotatedAngleZ;
+    //test code
     public static float tx, ty, tz;
-    public float x, y; //remove this after the test;
+    //test code end
     RaycastHit hit;
     private float raycastRange = 50f;
     public LayerMask axisTargetLayer;
@@ -28,7 +29,6 @@ public class RotatingKnob : MonoBehaviour
             tempFingerAngleX = touchedFingerObject.transform.eulerAngles.x;
             tempFingerAngleY = touchedFingerObject.transform.eulerAngles.y;
             tempFingerAngleZ = touchedFingerObject.transform.eulerAngles.z;
-
         }
 
         if (knobEnabled)
@@ -38,13 +38,14 @@ public class RotatingKnob : MonoBehaviour
             ty = touchedFingerObject.transform.eulerAngles.y;
             tz = touchedFingerObject.transform.eulerAngles.z;
             //test code end
+
             rotatedAngleX = Mathf.Abs(tempFingerAngleX - touchedFingerObject.transform.eulerAngles.x); //cacluated the difference between initial rotation and moved rotation
             rotatedAngleY = Mathf.Abs(tempFingerAngleY - touchedFingerObject.transform.eulerAngles.y);
             rotatedAngleZ = Mathf.Abs(tempFingerAngleZ - touchedFingerObject.transform.eulerAngles.z);
 
             if (rotatingAxisSelected == 1)
             {
-                knobParent.transform.eulerAngles = new Vector3(-(tempKnobAngle + rotatedAngleX), 180, 0);
+                knobParent.transform.eulerAngles = new Vector3((tempKnobAngle + rotatedAngleX), 180, 0);
                 this.gameObject.GetComponent<Renderer>().material.color = Color.red;
             }
             else if(rotatingAxisSelected == 2)
@@ -58,26 +59,29 @@ public class RotatingKnob : MonoBehaviour
                 this.gameObject.GetComponent<Renderer>().material.color = Color.blue;
             }
             
-            if(rotatedAngleX > 70)
+            if(rotatedAngleX > 35)
             {
                 rotatedFlagX = true; //this is used and falsed in NetworkObjectMangager script
                 rotatedAngleX = 0;
                 tempKnobAngle = 0;
                 tempFingerAngleX = 0;
+                knobEnabled = false;
             }
-            if (rotatedAngleY > 70)
+            if (rotatedAngleY > 35)
             {
                 rotatedFlagY = true; //this is used and falsed in NetworkObjectMangager script
                 rotatedAngleY = 0;
                 tempKnobAngle = 0;
                 tempFingerAngleY = 0;
+                knobEnabled = false;
             }
-            if (rotatedAngleZ > 70)
+            if (rotatedAngleZ > 35)
             {
                 rotatedFlagZ = true; //this is used and falsed in NetworkObjectMangager script
                 rotatedAngleZ = 0;
                 tempKnobAngle = 0;
                 tempFingerAngleZ = 0;
+                knobEnabled = false;
             }
 
         }
@@ -109,11 +113,8 @@ public class RotatingKnob : MonoBehaviour
         if (other.gameObject.name == "L2TipNetwork")
         {
             indexTouched = true;
-            if (LobbyNetworkManager.interactionType == 1)
-            {
-                touchedFingerObject = GameObject.FindWithTag("networkLeftControllerAnchor");
-                Debug.Log(touchedFingerObject);
-            }
+
+            if (LobbyNetworkManager.interactionType == 1) touchedFingerObject = GameObject.FindWithTag("networkLeftControllerAnchor");
             else touchedFingerObject = GameObject.FindWithTag("networkLeftHandAnchor");
         }
     }

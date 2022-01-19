@@ -7271,8 +7271,6 @@ MonoBehaviour:
   rotatedAngleX: 0
   rotatedAngleY: 0
   rotatedAngleZ: 0
-  x: 0
-  y: 0
   axisTargetLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -7480,8 +7478,6 @@ MonoBehaviour:
   rotatedAngleX: 0
   rotatedAngleY: 0
   rotatedAngleZ: 0
-  x: 0
-  y: 0
   axisTargetLayer:
     serializedVersion: 2
     m_Bits: 128

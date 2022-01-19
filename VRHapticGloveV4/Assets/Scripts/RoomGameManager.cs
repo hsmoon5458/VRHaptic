@@ -12,23 +12,28 @@ public class RoomGameManager : MonoBehaviour
     public int sampleNum, objectNum; // ex) Sample1, s3
 
     public GameObject leftHand, rightHand, leftHandTracking, rightHandTracking, leftControllerHand, rightControllerHand;
-    public TextMeshProUGUI xtmp, ytmp, ztmp;
     public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
-
+    public GameObject handToHandLightString, leftHandToObjectLightString, rightHandToObjectLightString;
     public bool confirmationFlag;
-    public static bool stopRotatingFlag;
+    public static bool resetRotatingFlag;
 
     public GameObject[] completedObjects; //completed networked objects
     public GameObject[] instantiatedObjects; //instantiated network objects
     public delegate void NetworkSettingDelegate(); //to recall the Network Setting for the script in "Network Player" prefab.
     public static NetworkSettingDelegate NetworkPlayerSettingDelegate;
+
+    //sound
+    public AudioSource roomAudioSource;
+    public AudioClip positionSound, levelCompleteSound, confrimSound, rejectSound;
+
     //test code
     public GameObject testFinger;
     private GameObject networkLeftHand;
     public GameObject testLeftAnchor;
     public GameObject testLeftControllerAnchor;
     public GameObject testLeftHandTracking;
+    private GameObject testGameObj;
     //test code end
     public void RefreshNetworkPlayerSetting()
     {
@@ -49,14 +54,7 @@ public class RoomGameManager : MonoBehaviour
 
         //test code
         #region Test Code
-        try
-        {   
-            xtmp.text = RotatingKnob.tx.ToString("F0");
-            ytmp.text = RotatingKnob.ty.ToString("F0");
-            ztmp.text = RotatingKnob.tz.ToString("F0");
-            
-        }
-        catch{}
+        
         if (Input.GetKeyDown("t"))
         {
             BackgroundCubeColor.colorChangeTime = 0.1f;
@@ -77,6 +75,17 @@ public class RoomGameManager : MonoBehaviour
             networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
             networkLeftHand.SetActive(true); 
         }
+        if (Input.GetKeyDown("f"))
+        {
+            StartCoroutine(LevelCompleteEffect());
+            roomAudioSource.PlayOneShot(levelCompleteSound);
+        }
+        if (Input.GetKeyDown("1")) //enable controller for developing
+        {
+            testGameObj = GameObject.FindWithTag("InstantiatedObject");
+            testGameObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
+        }
+
         #endregion
         //test code end
 
@@ -99,14 +108,24 @@ public class RoomGameManager : MonoBehaviour
         //Step 4: Snip movement to the position
         if(gameStep == 4)
         {
-            if (Vector3.Distance(currentWorkingGuideObject.transform.position, currentWorkingNetoworkObject.transform.position) < 0.1f)
+            float distance = Vector3.Distance(currentWorkingGuideObject.transform.position, currentWorkingNetoworkObject.transform.position);
+            if (distance < 0.1f)
             {
                 float step = 0.3f * Time.deltaTime;
                 currentWorkingNetoworkObject.transform.position = Vector3.MoveTowards(currentWorkingNetoworkObject.transform.position, currentWorkingSampleObject.transform.position, step);
+                handToHandLightString.SetActive(false);
+                leftHandToObjectLightString.SetActive(false);
+                rightHandToObjectLightString.SetActive(false);
+
                 //if it arrives to the target, locked in.
-                if(Vector3.Distance(currentWorkingSampleObject.transform.position, currentWorkingNetoworkObject.transform.position) < 0.001f)
+                if (distance < 0.001f)
                 {
                     currentWorkingNetoworkObject.transform.position = currentWorkingSampleObject.transform.position;
+                }
+
+                else if (distance > 0.001f && distance < 0.002f)
+                {
+                    roomAudioSource.PlayOneShot(positionSound); //this will be played once I hope
                 }
             }
         }
@@ -249,12 +268,14 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++; // go to next step
                 step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
+                roomAudioSource.PlayOneShot(confrimSound);
             }
             else // if incorrect object was instantiated, destroy all network object
             {
                 foreach (GameObject instantiatedObject in instantiatedObjects)
                 {
                     PhotonNetwork.Destroy(instantiatedObject);
+                    roomAudioSource.PlayOneShot(rejectSound);
                 }
             }
         }
@@ -263,12 +284,15 @@ public class RoomGameManager : MonoBehaviour
             if(networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
             {
                 gameStep++;
+                resetRotatingFlag = true; //reset rotating status to avoid some error
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
+                roomAudioSource.PlayOneShot(confrimSound);
             }
             else 
             {
                 //maybe some message popup that somethings wrong.
+                roomAudioSource.PlayOneShot(rejectSound);
             }
         }
         else if (currentGameStep == 3)//rotated object check
@@ -278,11 +302,13 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++;
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
+                roomAudioSource.PlayOneShot(confrimSound);
             }
             else //reset the euler angles
             {
                 networkObject.transform.eulerAngles = new Vector3(0, 0, 0);
-                stopRotatingFlag = true;
+                resetRotatingFlag = true;
+                roomAudioSource.PlayOneShot(rejectSound);
             }
         }
         else if(currentGameStep == 4)// positioned object check
@@ -301,6 +327,7 @@ public class RoomGameManager : MonoBehaviour
 
                     //do some effect and remove all the objects created.
                     StartCoroutine(LevelCompleteEffect());
+                    roomAudioSource.PlayOneShot(levelCompleteSound);
                 }
                 else
                 {
@@ -308,12 +335,13 @@ public class RoomGameManager : MonoBehaviour
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
+                    roomAudioSource.PlayOneShot(confrimSound);
                 }
             }
 
             else
             {
-                Debug.Log("Not close enough");
+                roomAudioSource.PlayOneShot(rejectSound);
             }
             
         }
@@ -368,7 +396,7 @@ public class RoomGameManager : MonoBehaviour
     {
         BackgroundCubeColor.colorChangeTime = 0.1f;
         BackgroundCubeColor.numberOfCubeColorChanged = 30;
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(6f);
         completedObjects = GameObject.FindGameObjectsWithTag("completedObject");
         foreach (GameObject completedObject in completedObjects)
         {
