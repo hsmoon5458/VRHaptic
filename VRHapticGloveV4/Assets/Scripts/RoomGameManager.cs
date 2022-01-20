@@ -26,8 +26,11 @@ public class RoomGameManager : MonoBehaviour
     public static NetworkSettingDelegate NetworkPlayerSettingDelegate;
 
     //sound
-    public AudioSource roomAudioSource;
-    public AudioClip positionSound, levelCompleteSound, confrimSound, rejectSound;
+    public AudioSource roomAudioSource, bgmAudioSource;
+    public AudioClip positionSound, levelCompleteSound, confirmSound, rejectSound;
+
+    //RPC
+    private PhotonView PV;
 
     //test code
     private GameObject networkLeftHand;
@@ -43,9 +46,10 @@ public class RoomGameManager : MonoBehaviour
 
     void Start()
     {
+        PV = GetComponent<PhotonView>();
         PlayerSetting();
     }
-    
+
     void Update()
     {
         //need to enable and diable knob at netwokrplayer correspond to game step here.
@@ -55,7 +59,7 @@ public class RoomGameManager : MonoBehaviour
 
         //test code
         #region Test Code
-        
+
         if (Input.GetKeyDown("t"))
         {
             BackgroundCubeColor.colorChangeTime = 0.1f;
@@ -74,12 +78,12 @@ public class RoomGameManager : MonoBehaviour
             testLeftControllerAnchor.SetActive(false);
             //networkLeftHand = GameObject.Find("Participant/LeftHand");
             networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
-            networkLeftHand.SetActive(true); 
+            networkLeftHand.SetActive(true);
         }
         if (Input.GetKeyDown("f"))
         {
             StartCoroutine(LevelCompleteEffect());
-            roomAudioSource.PlayOneShot(levelCompleteSound);
+
         }
         if (Input.GetKeyDown("1")) //enable controller for developing
         {
@@ -93,7 +97,7 @@ public class RoomGameManager : MonoBehaviour
         if (ConfirmationButtonBehavior.leftConfirmation && ConfirmationButtonBehavior.rightConfirmation) // if both buttons are clicked, make confirmation flag ture for GameStepCheck
         {
             confirmationFlag = true;
-            
+
             ConfirmationButtonBehavior.leftConfirmation = false;
             ConfirmationButtonBehavior.rightConfirmation = false;
         }
@@ -107,7 +111,7 @@ public class RoomGameManager : MonoBehaviour
         }
 
         //Step 4: Snip movement to the position
-        if(gameStep == 4)
+        if (gameStep == 4)
         {
             float distance = Vector3.Distance(currentWorkingGuideObject.transform.position, currentWorkingNetoworkObject.transform.position);
             if (distance < 0.1f)
@@ -126,7 +130,7 @@ public class RoomGameManager : MonoBehaviour
 
                 else if (distance > 0.001f && distance < 0.002f)
                 {
-                    roomAudioSource.PlayOneShot(positionSound); //this will be played once I hope
+                    PV.RPC("PositionSoundPlay", RpcTarget.AllBuffered); //this will be played once I hope
                 }
             }
         }
@@ -180,7 +184,7 @@ public class RoomGameManager : MonoBehaviour
     {
         LobbyNetworkManager.interactionType = 2;
     }
-    
+
     public void LevelStart(int sampleNum)
     {
         //set the timer setting
@@ -198,7 +202,7 @@ public class RoomGameManager : MonoBehaviour
         string minutes = Mathf.Floor(completionTime / 60).ToString("00");
         string seconds = (completionTime % 60).ToString("00");
     }
-    
+
     public void WorkspaceInitialize(int sampleNum, int objectNum, int gameStep)
     {
         //indentify the object
@@ -241,11 +245,11 @@ public class RoomGameManager : MonoBehaviour
 
                 currentWorkingGuideObject = workspaceSphereGuide;
             }
-            
+
         }
 
         //scaling object
-        else if (gameStep == 2){currentWorkingGuideObject.transform.localScale = currentWorkingSampleObject.transform.localScale;}
+        else if (gameStep == 2) { currentWorkingGuideObject.transform.localScale = currentWorkingSampleObject.transform.localScale; }
 
         //rotating object
         else if (gameStep == 3)
@@ -253,9 +257,9 @@ public class RoomGameManager : MonoBehaviour
             StartCoroutine(RotateGuideObject());
             //currentWorkingGuideObject.transform.eulerAngles = currentWorkingSampleObject.transform.eulerAngles;
         }
-        
+
         //move the guide object position to right place based on the sample figure
-        else if (gameStep == 4){currentWorkingGuideObject.transform.position = currentWorkingSampleObject.transform.position; }
+        else if (gameStep == 4) { currentWorkingGuideObject.transform.position = currentWorkingSampleObject.transform.position; }
     }
 
     public void GameStepCheck(int currentGameStep, GameObject workspaceObjectGuide, GameObject networkObject)
@@ -269,31 +273,31 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++; // go to next step
                 step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                roomAudioSource.PlayOneShot(confrimSound);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
             }
             else // if incorrect object was instantiated, destroy all network object
             {
+                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
                 foreach (GameObject instantiatedObject in instantiatedObjects)
                 {
                     PhotonNetwork.Destroy(instantiatedObject);
-                    roomAudioSource.PlayOneShot(rejectSound);
                 }
             }
         }
-        else if(currentGameStep == 2)//scaled object check
+        else if (currentGameStep == 2)//scaled object check
         {
-            if(networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
+            if (networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
             {
                 gameStep++;
                 resetRotatingFlag = true; //reset rotating status to avoid some error
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                roomAudioSource.PlayOneShot(confrimSound);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
             }
-            else 
+            else
             {
                 //maybe some message popup that somethings wrong.
-                roomAudioSource.PlayOneShot(rejectSound);
+                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
             }
         }
         else if (currentGameStep == 3)//rotated object check
@@ -303,18 +307,18 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++;
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                roomAudioSource.PlayOneShot(confrimSound);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
             }
             else //reset the euler angles
             {
                 networkObject.transform.eulerAngles = new Vector3(0, 0, 0);
                 resetRotatingFlag = true;
-                roomAudioSource.PlayOneShot(rejectSound);
+                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
             }
         }
-        else if(currentGameStep == 4)// positioned object check
+        else if (currentGameStep == 4)// positioned object check
         {
-            if(Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.001f)
+            if (Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.001f)
             {
                 currentWorkingNetoworkObject.tag = "completedObject"; //change the tag so that network object is not overlapped from other step and level
                 step4Timer = tempTime - step3Timer;
@@ -328,7 +332,6 @@ public class RoomGameManager : MonoBehaviour
 
                     //do some effect and remove all the objects created.
                     StartCoroutine(LevelCompleteEffect());
-                    roomAudioSource.PlayOneShot(levelCompleteSound);
                 }
                 else
                 {
@@ -336,15 +339,15 @@ public class RoomGameManager : MonoBehaviour
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                    roomAudioSource.PlayOneShot(confrimSound);
+                    PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
                 }
             }
 
             else
             {
-                roomAudioSource.PlayOneShot(rejectSound);
+                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
             }
-            
+
         }
     }
     public void PlayerSetting()
@@ -396,12 +399,58 @@ public class RoomGameManager : MonoBehaviour
             yield return null;
         }
     }
-    
+
     IEnumerator LevelCompleteEffect()
     {
         BackgroundCubeColor.colorChangeTime = 0.1f;
         BackgroundCubeColor.numberOfCubeColorChanged = 30;
-        yield return new WaitForSeconds(6f);
+        roomAudioSource.PlayOneShot(levelCompleteSound);
+        bgmAudioSource.Pause(); //stop bgm while the levelCompleteSound is playing
+        yield return new WaitForSeconds(8f);
+        bgmAudioSource.Play(); //start the bgm again.
+        completedObjects = GameObject.FindGameObjectsWithTag("completedObject");
+        foreach (GameObject completedObject in completedObjects)
+        {
+            PhotonNetwork.Destroy(completedObject);
+        }
+        BackgroundCubeColor.colorChangeTime = 2f;
+        BackgroundCubeColor.numberOfCubeColorChanged = 6;
+    }
+    public void RoomGAmeManagerSoundPlay(AudioClip clip)
+    {
+        roomAudioSource.PlayOneShot(clip);
+    }
+
+
+    [PunRPC]
+    public void ConfirmedSoundPlay()
+    {
+        RoomGAmeManagerSoundPlay(confirmSound);
+    }
+    [PunRPC]
+    public void RejectSoundPlay()
+    {
+        RoomGAmeManagerSoundPlay(rejectSound);
+    }
+    [PunRPC]
+    public void PositionSoundPlay()
+    {
+        RoomGAmeManagerSoundPlay(positionSound);
+    }
+    [PunRPC]
+    public void RPCLevelCompleteEffectPlay()
+    {
+        StartCoroutine("RPCLevelCompleteEffect");
+    }
+    [PunRPC]
+    IEnumerator RPCLevelCompleteEffect()
+    {
+        BackgroundCubeColor.colorChangeTime = 0.1f;
+        BackgroundCubeColor.numberOfCubeColorChanged = 30;
+        roomAudioSource.PlayOneShot(levelCompleteSound);
+        bgmAudioSource.Pause(); //stop bgm while the levelCompleteSound is playing
+        yield return new WaitForSeconds(8f);
+        bgmAudioSource.Play(); //start the bgm again.
         completedObjects = GameObject.FindGameObjectsWithTag("completedObject");
         foreach (GameObject completedObject in completedObjects)
         {

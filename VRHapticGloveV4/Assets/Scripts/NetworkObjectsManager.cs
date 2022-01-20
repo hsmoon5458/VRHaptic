@@ -31,8 +31,12 @@ public class NetworkObjectsManager : MonoBehaviour
     public AudioSource objectAudioSource;
     public AudioClip instantiateSound, scaleSound, rotateSound;
 
+    //RPC
+    private PhotonView PV;
+
     private void Start()
     {
+        PV = GetComponent<PhotonView>();
         InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
     }
 
@@ -113,21 +117,21 @@ public class NetworkObjectsManager : MonoBehaviour
             {
                 networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCube.name = "NetworkCube";
-                objectAudioSource.PlayOneShot(instantiateSound);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 cubeGenerate = false;
             }
             if (sphereGenerate)
             {
                 networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkSphere.name = "NetworkSphere";
-                objectAudioSource.PlayOneShot(instantiateSound);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 sphereGenerate = false;
             }
             if (cylinderGenerate)
             {
                 networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCylinder.name = "NetworkCylinder";
-                objectAudioSource.PlayOneShot(instantiateSound);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 cylinderGenerate = false;
             }
         }
@@ -177,7 +181,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //if there's a difference, make a sound.
                 if(tempTf != tempObject.transform.localScale)
                 {
-                    objectAudioSource.PlayOneShot(scaleSound);
+                    PV.RPC("ScaleSoundPlay", RpcTarget.AllBuffered);
                 }
             }
             else{tempObjDis1 = 0;}
@@ -260,7 +264,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    objectAudioSource.PlayOneShot(rotateSound);
+                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
                     StartCoroutine(RotatingObject(tempObject, 1));
                     RotatingKnob.rotatedFlagX = false;
                 }
@@ -268,7 +272,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    objectAudioSource.PlayOneShot(rotateSound);
+                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
                     StartCoroutine(RotatingObject(tempObject, 2));
                     RotatingKnob.rotatedFlagY = false;
                 }
@@ -276,7 +280,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    objectAudioSource.PlayOneShot(rotateSound);
+                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
                     StartCoroutine(RotatingObject(tempObject, 3));
                     RotatingKnob.rotatedFlagZ = false;
                 }
@@ -310,9 +314,7 @@ public class NetworkObjectsManager : MonoBehaviour
 
             if (positioiningFlag)
             {
-                handToHandLightString.SetActive(true);//this is where the light string audio source located
-                leftHandToObjectLightString.SetActive(true);
-                rightHandToObjectLightString.SetActive(true);
+                PV.RPC("LightString", RpcTarget.AllBuffered, true);
 
                 VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
 
@@ -351,9 +353,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //while the flag is enabled, distnace gets further, turn off the ligth string
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
-                    handToHandLightString.SetActive(false);
-                    leftHandToObjectLightString.SetActive(false);
-                    rightHandToObjectLightString.SetActive(false);
+                    PV.RPC("LightString", RpcTarget.AllBuffered, false);
                     positioiningFlag = false;
                 }
             }
@@ -410,11 +410,38 @@ public class NetworkObjectsManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
     }
-
     IEnumerator PositioningGetFingerPosition()
     {
         yield return new WaitForSeconds(0.4f);
         tempRightFingerPosition = rightFingertip.transform.position;
         positioiningFlag = true;
+    }
+
+    public void ObjectManagerSoundPlay(AudioClip clip)
+    {
+        objectAudioSource.PlayOneShot(clip);
+    }
+
+    [PunRPC]
+    public void InstantiateSoundPlay()
+    {
+        ObjectManagerSoundPlay(instantiateSound);
+    }
+    [PunRPC]
+    public void ScaleSoundPlay()
+    {
+        ObjectManagerSoundPlay(scaleSound);
+    }
+    [PunRPC]
+    public void RotateSoundPlay()
+    {
+        ObjectManagerSoundPlay(rotateSound);
+    }
+    [PunRPC]
+    public void LightString(bool x)
+    {
+        handToHandLightString.SetActive(x);//this is where the light string audio source located
+        leftHandToObjectLightString.SetActive(x);
+        rightHandToObjectLightString.SetActive(x);
     }
 }

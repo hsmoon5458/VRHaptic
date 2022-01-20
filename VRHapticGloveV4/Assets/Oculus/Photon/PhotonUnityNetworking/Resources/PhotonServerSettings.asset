@@ -45,6 +45,18 @@ MonoBehaviour:
   - RPC_DataSync
   - RPCDataSync
   - GameStepVariableSetup
+  - GameStepSync
+  - SoundPlay
+  - ConfirmedSoundPlay
+  - InstantiateSoundPlay
+  - LevelCompleteEffectss
+  - RPCLevelCompleteEffect
+  - RejectSoundPlay
+  - RotateSoundPlay
+  - RPCLevelCompleteEffectPlay
+  - ScaleSoundPlay
+  - PositionSoundPlay
+  - LightString
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

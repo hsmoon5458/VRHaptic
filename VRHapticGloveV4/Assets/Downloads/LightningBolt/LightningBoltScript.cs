@@ -338,6 +338,10 @@ namespace DigitalRuby.LightningBolt
         }
         private void Update()
         {
+            if(EndObject.tag == "completedObject") //after each step, reset the End object
+            {
+                InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
+            }
             if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.
             {
                 CancelInvoke("IdentifyFingertip");
