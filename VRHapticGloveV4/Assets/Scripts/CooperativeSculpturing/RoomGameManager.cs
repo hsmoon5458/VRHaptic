@@ -12,13 +12,14 @@ public class RoomGameManager : MonoBehaviour
 
     public Transform participantTf, researcherTf;
     public GameObject HankOVRCameraRig;
-
+    private GameObject knob;
     public GameObject leftHand, rightHand, leftHandTracking, rightHandTracking, leftControllerHand, rightControllerHand;
-    public GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
+    private GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
-    public GameObject handToHandLightString, leftHandToObjectLightString, rightHandToObjectLightString;
+    public GameObject handToHandLightString;
     public bool confirmationFlag;
     public static bool resetRotatingFlag;
+    private bool positionFixedFlag;
 
     public GameObject[] completedObjects; //completed networked objects
     public GameObject[] instantiatedObjects; //instantiated network objects
@@ -53,7 +54,7 @@ public class RoomGameManager : MonoBehaviour
     void Update()
     {
         //need to enable and diable knob at netwokrplayer correspond to game step here.
-
+        
         //timer for performance measurement
         tempTime = Time.deltaTime;
 
@@ -118,19 +119,18 @@ public class RoomGameManager : MonoBehaviour
             {
                 float step = 0.3f * Time.deltaTime;
                 currentWorkingNetoworkObject.transform.position = Vector3.MoveTowards(currentWorkingNetoworkObject.transform.position, currentWorkingSampleObject.transform.position, step);
-                handToHandLightString.SetActive(false);
-                leftHandToObjectLightString.SetActive(false);
-                rightHandToObjectLightString.SetActive(false);
+                PV.RPC("DisableLightString", RpcTarget.AllBuffered);
 
                 //if it arrives to the target, locked in.
-                if (distance < 0.001f)
+                if (distance < 0.01f)
                 {
                     currentWorkingNetoworkObject.transform.position = currentWorkingSampleObject.transform.position;
-                }
 
-                else if (distance > 0.001f && distance < 0.002f)
-                {
-                    PV.RPC("PositionSoundPlay", RpcTarget.AllBuffered); //this will be played once I hope
+                    if (positionFixedFlag)//this flag is ture in game step 3 and disabled here, this will be played once
+                    { 
+                        PV.RPC("PositionSoundPlay", RpcTarget.AllBuffered);
+                        positionFixedFlag = false;
+                    }
                 }
             }
         }
@@ -249,17 +249,13 @@ public class RoomGameManager : MonoBehaviour
         }
 
         //scaling object
-        else if (gameStep == 2) { currentWorkingGuideObject.transform.localScale = currentWorkingSampleObject.transform.localScale; }
+        else if (gameStep == 2) currentWorkingGuideObject.transform.localScale = currentWorkingSampleObject.transform.localScale;
 
         //rotating object
-        else if (gameStep == 3)
-        {
-            StartCoroutine(RotateGuideObject());
-            //currentWorkingGuideObject.transform.eulerAngles = currentWorkingSampleObject.transform.eulerAngles;
-        }
+        else if (gameStep == 3) StartCoroutine(RotateGuideObject());
 
         //move the guide object position to right place based on the sample figure
-        else if (gameStep == 4) { currentWorkingGuideObject.transform.position = currentWorkingSampleObject.transform.position; }
+        else if (gameStep == 4) currentWorkingGuideObject.transform.position = currentWorkingSampleObject.transform.position;
     }
 
     public void GameStepCheck(int currentGameStep, GameObject workspaceObjectGuide, GameObject networkObject)
@@ -289,6 +285,7 @@ public class RoomGameManager : MonoBehaviour
             if (networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
             {
                 gameStep++;
+                PV.RPC("EnableKnob", RpcTarget.AllBuffered, true);//enable knob for next step
                 resetRotatingFlag = true; //reset rotating status to avoid some error
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
@@ -304,7 +301,9 @@ public class RoomGameManager : MonoBehaviour
         {
             if (networkObject.transform.eulerAngles == workspaceObjectGuide.transform.eulerAngles)
             {
+                positionFixedFlag = true; //to position set
                 gameStep++;
+                PV.RPC("EnableKnob", RpcTarget.AllBuffered, false);//disable knob for next step
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
@@ -329,8 +328,9 @@ public class RoomGameManager : MonoBehaviour
                     Debug.Log("Level Done");
                     objectNum = 0; //set to 0 for another level
                     gameStep = 0;
-
+                    currentWorkingGuideObject.SetActive(false); //disable guide object when the level is completed
                     //do some effect and remove all the objects created.
+                    PV.RPC("DisableLightString", RpcTarget.AllBuffered);
                     StartCoroutine(LevelCompleteEffect());
                 }
                 else
@@ -352,9 +352,11 @@ public class RoomGameManager : MonoBehaviour
     }
     public void PlayerSetting()
     {
+        StartCoroutine(IdentifyingKnob()); //identifying the knob
+
         if (LobbyNetworkManager.userType == 1) // reseracher uses left hand only
         {
-            HankOVRCameraRig.transform.position = researcherTf.position;
+            HankOVRCameraRig.transform.position = researcherTf.position; //move the position to researcher position
 
             leftHand.SetActive(true);
             rightHand.SetActive(false);
@@ -373,11 +375,16 @@ public class RoomGameManager : MonoBehaviour
 
         if (LobbyNetworkManager.userType == 2) // participant uses right hand only
         {
-            HankOVRCameraRig.transform.position = participantTf.position;
+            HankOVRCameraRig.transform.position = participantTf.position; //move the position to participant position
 
             leftHand.SetActive(false);
             rightHand.SetActive(true);
 
+            if(workspaceCubeGuide == null) // so that when player change the interaction type, guide bojects is not instantiated again
+            {
+                StartCoroutine(InstantiateGuide()); //instantiate after few seconds so that network objects are instantiated after the clinet joins the room.
+            }
+                   
             if (LobbyNetworkManager.interactionType == 1) //if is controller setting
             {
                 rightHandTracking.SetActive(false);
@@ -390,7 +397,23 @@ public class RoomGameManager : MonoBehaviour
             }
         }
     }
-
+    IEnumerator IdentifyingKnob()
+    {
+        yield return new WaitForSeconds(4f);
+        if (LobbyNetworkManager.interactionType == 1) knob = GameObject.FindWithTag("controllerKnob");
+        if (LobbyNetworkManager.interactionType == 2) knob = GameObject.FindWithTag("handTrackingKnob");
+        PV.RPC("EnableKnob", RpcTarget.AllBuffered, false);
+    }
+    IEnumerator InstantiateGuide()//instantatiate after few seconds after client joins the room
+    {
+        yield return new WaitForSeconds(3f);
+        workspaceCubeGuide = PhotonNetwork.Instantiate("GuideCube", new Vector3(0, 1, 0.5f), Quaternion.identity);
+        workspaceCubeGuide.SetActive(false); //will be true when the level start
+        workspaceCylinderGuide = PhotonNetwork.Instantiate("GuideCylinder", new Vector3(0, 1, 0.5f), Quaternion.identity);
+        workspaceCylinderGuide.SetActive(false);
+        workspaceSphereGuide = PhotonNetwork.Instantiate("GuideSphere", new Vector3(0, 1, 0.5f), Quaternion.identity);
+        workspaceSphereGuide.SetActive(false);
+    }
     IEnumerator RotateGuideObject()
     {
         while (currentWorkingGuideObject.transform.eulerAngles != currentWorkingSampleObject.transform.eulerAngles)
@@ -399,7 +422,6 @@ public class RoomGameManager : MonoBehaviour
             yield return null;
         }
     }
-
     IEnumerator LevelCompleteEffect()
     {
         BackgroundCubeColor.colorChangeTime = 0.1f;
@@ -420,7 +442,6 @@ public class RoomGameManager : MonoBehaviour
     {
         roomAudioSource.PlayOneShot(clip);
     }
-
 
     [PunRPC]
     public void ConfirmedSoundPlay()
@@ -458,5 +479,15 @@ public class RoomGameManager : MonoBehaviour
         }
         BackgroundCubeColor.colorChangeTime = 2f;
         BackgroundCubeColor.numberOfCubeColorChanged = 6;
+    }
+    [PunRPC]
+    public void DisableLightString()
+    {
+        handToHandLightString.SetActive(false);
+    }
+    [PunRPC]
+    public void EnableKnob(bool x)
+    {
+        knob.SetActive(x);
     }
 }

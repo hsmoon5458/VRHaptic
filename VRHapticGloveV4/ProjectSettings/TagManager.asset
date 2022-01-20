@@ -16,6 +16,8 @@ TagManager:
   - completedObject
   - networkLeftControllerAnchor
   - networkLeftHandAnchor
+  - controllerKnob
+  - handTrackingKnob
   layers:
   - Default
   - TransparentFX

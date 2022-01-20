@@ -57,6 +57,10 @@ MonoBehaviour:
   - ScaleSoundPlay
   - PositionSoundPlay
   - LightString
+  - EnableLightString
+  - DisableLightString
+  - KnobEnable
+  - EnableKnob
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

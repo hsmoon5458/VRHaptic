@@ -5,7 +5,7 @@ using Photon.Pun;
 using TMPro;
 public class RotatingKnob : MonoBehaviour
 {
-    private bool thumbTouched, indexTouched;
+    private bool thumbTouched = false, indexTouched = false;
     public static bool knobEnabled;
     public static bool rotatedFlagX, rotatedFlagY, rotatedFlagZ; //when the knob is spined more than 90 degree
     public static int rotatingAxisSelected = 0; //1 is X, 2 is y, and Z is 3.
@@ -19,7 +19,11 @@ public class RotatingKnob : MonoBehaviour
     RaycastHit hit;
     private float raycastRange = 50f;
     public LayerMask axisTargetLayer;
-
+    void Start()
+    {
+        thumbTouched = false;
+        indexTouched = false;
+    }
     void Update()
     {
         if (thumbTouched && indexTouched && !knobEnabled)

@@ -296,52 +296,21 @@ namespace DigitalRuby.LightningBolt
         }
 
         //indentify start and end object for lighting effect.
-        private void IdentifyFingertip()
+        public void IdentifyFingertip()
         {
             if (LobbyNetworkManager.userType == 1) // researcher
             {
-                if(this.gameObject.name == "HandToHandLightString")
-                {
-                    StartObject = GameObject.FindWithTag("myLeftIndexFinger");
-                    EndObject = GameObject.FindWithTag("networkRightIndexFinger");
-                }
-                else if(this.gameObject.name == "RightHandToObjectLightString")
-                {
-                    StartObject = GameObject.FindWithTag("networkRightIndexFinger");
-                    EndObject = GameObject.FindWithTag("InstantiatedObject");
-                }
-                else
-                {
-                    StartObject = GameObject.FindWithTag("myLeftIndexFinger");
-                    EndObject = GameObject.FindWithTag("InstantiatedObject");
-                }
-
+                StartObject = GameObject.FindWithTag("myLeftIndexFinger");
+                EndObject = GameObject.FindWithTag("networkRightIndexFinger");
             }
             else if (LobbyNetworkManager.userType == 2) // participant
             {
-                if (this.gameObject.name == "HandToHandLightString")
-                {
-                    StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
-                    EndObject = GameObject.FindWithTag("myRightIndexFinger");
-                }
-                else if(this.gameObject.name == "RightHandToObjectLightString")
-                {
-                    StartObject = GameObject.FindWithTag("myRightIndexFinger");
-                    EndObject = GameObject.FindWithTag("InstantiatedObject");
-                }
-                else
-                {
-                    StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
-                    EndObject = GameObject.FindWithTag("InstantiatedObject");
-                }
+                StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
+                EndObject = GameObject.FindWithTag("myRightIndexFinger");                
             }
         }
         private void Update()
         {
-            if(EndObject.tag == "completedObject") //after each step, reset the End object
-            {
-                InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
-            }
             if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.
             {
                 CancelInvoke("IdentifyFingertip");

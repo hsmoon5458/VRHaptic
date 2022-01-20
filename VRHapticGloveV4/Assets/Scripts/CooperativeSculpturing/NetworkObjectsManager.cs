@@ -22,7 +22,7 @@ public class NetworkObjectsManager : MonoBehaviour
     //rotating object
     private bool rotateCompletedFlag;
     //positioning object
-    public GameObject handToHandLightString, leftHandToObjectLightString, rightHandToObjectLightString;
+    public GameObject handToHandLightString;
     private float lightStringDistanceThreshold = 0.5f, positioningThreshold = 0.1f, objectMovementSpeed = 0.1f;
     private Vector3 tempRightFingerPosition, tempTargetPosition;
     private bool positioiningFlag;
@@ -59,6 +59,8 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     cubeGenerate = true;
                     timeCountCube = 0; //reset the time for another iteration
+                    timeCountSphere = 0;
+                    timeCountCylinder = 0;
                     FingertipBehavior.thumbTouchedIndex = false; //falsify the touch
                     FingertipBehavior.indexTouchedThumb = false;
                 }
@@ -75,7 +77,9 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (timeCountSphere > timeToGenerate) //if it lasts for certain period
                 {
                     sphereGenerate = true;
-                    timeCountSphere = 0; //reset the time for another iteration
+                    timeCountCube = 0; //reset the time for another iteration
+                    timeCountSphere = 0;
+                    timeCountCylinder = 0;
                     FingertipBehavior.thumbTouchedThumb = false; //falsify the touch
                     FingertipBehavior.indexTouchedIndex = false;
                 }
@@ -92,7 +96,9 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (timeCountCylinder > timeToGenerate) //if it lasts for certain period
                 {
                     cylinderGenerate = true;
-                    timeCountCylinder = 0; //reset the time for another iteration
+                    timeCountCube = 0; //reset the time for another iteration
+                    timeCountSphere = 0;
+                    timeCountCylinder = 0;
                     FingertipBehavior.thumbTouchedThumb = false; //falsify the touch
                     FingertipBehavior.indexTouchedIndex = false;
                 }
@@ -109,9 +115,7 @@ public class NetworkObjectsManager : MonoBehaviour
         if(RoomGameManager.gameStep == 1)
         {
             //disable light string from game step 4
-            handToHandLightString.SetActive(false);
-            leftHandToObjectLightString.SetActive(false);
-            rightHandToObjectLightString.SetActive(false);
+            PV.RPC("LightString", RpcTarget.AllBuffered, false);
 
             if (cubeGenerate)
             {
@@ -135,18 +139,6 @@ public class NetworkObjectsManager : MonoBehaviour
                 cylinderGenerate = false;
             }
         }
-        /*
-        //delete all network object
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            networkObjects = GameObject.FindGameObjectsWithTag("InstantiatedObject");
-            foreach (GameObject obj in networkObjects)
-            {
-                PhotonNetwork.Destroy(obj);
-            }
-
-        }
-        */
         #endregion
 
         //Step 2
@@ -441,7 +433,5 @@ public class NetworkObjectsManager : MonoBehaviour
     public void LightString(bool x)
     {
         handToHandLightString.SetActive(x);//this is where the light string audio source located
-        leftHandToObjectLightString.SetActive(x);
-        rightHandToObjectLightString.SetActive(x);
     }
 }
