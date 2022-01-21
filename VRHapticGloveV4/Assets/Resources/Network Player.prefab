@@ -3502,6 +3502,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3168808088855848345}
+  - component: {fileID: 6175675650513036498}
   m_Layer: 6
   m_Name: KnobParent
   m_TagString: controllerKnob
@@ -3524,6 +3525,22 @@ Transform:
   m_Father: {fileID: 8185184537005440587}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6175675650513036498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4666960224685813593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1
 --- !u!1 &4784287575889404205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4770,8 +4787,10 @@ MonoBehaviour:
   - {fileID: 7123549346901727942}
   - {fileID: 8937751504072272322}
   - {fileID: 1165613942938356846}
+  - {fileID: 3094405733004262581}
   - {fileID: 4067273768253332606}
   - {fileID: 3105833787416727914}
+  - {fileID: 6175675650513036498}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -6469,6 +6488,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7653805803434192195}
+  - component: {fileID: 3094405733004262581}
   m_Layer: 6
   m_Name: KnobParent
   m_TagString: handTrackingKnob
@@ -6491,6 +6511,22 @@ Transform:
   m_Father: {fileID: 6765486102010748250}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3094405733004262581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8324882876388936626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1
 --- !u!1 &8618072110392654057
 GameObject:
   m_ObjectHideFlags: 0
@@ -7230,14 +7266,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27555e1efe4d52448bd467512c85d4fb, type: 3}
---- !u!4 &2530885749881739851 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3021076116832985665, guid: 27555e1efe4d52448bd467512c85d4fb, type: 3}
-  m_PrefabInstance: {fileID: 788841966949611530}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2881802125014941489 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3246163311645460283, guid: 27555e1efe4d52448bd467512c85d4fb, type: 3}
+  m_PrefabInstance: {fileID: 788841966949611530}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2530885749881739851 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3021076116832985665, guid: 27555e1efe4d52448bd467512c85d4fb, type: 3}
   m_PrefabInstance: {fileID: 788841966949611530}
   m_PrefabAsset: {fileID: 0}
 --- !u!136 &2850718353836450554
@@ -7746,6 +7782,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11438496, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_parentTransform
+      value: 
+      objectReference: {fileID: 870984027520185891}
     - target: {fileID: 1040324774911890, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -8209,6 +8249,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11477634, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+      propertyPath: m_parentTransform
+      value: 
+      objectReference: {fileID: 7112284648730077583}
     - target: {fileID: 1134128082860472, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -8339,21 +8383,6 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 3eef81924f07a934e9f5441697f7c881, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
---- !u!1 &8185581532627018621 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 195418, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
-  m_PrefabInstance: {fileID: 8185581532626933799}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8185581532627315571 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 422740, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
-  m_PrefabInstance: {fileID: 8185581532626933799}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8187333705922749309 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1767638403545946, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
-  m_PrefabInstance: {fileID: 8185581532626933799}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8185184537005440587 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4111008495003244, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
@@ -8362,6 +8391,21 @@ Transform:
 --- !u!1 &8187436442557461821 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1857178881256730, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+  m_PrefabInstance: {fileID: 8185581532626933799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8187333705922749309 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1767638403545946, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+  m_PrefabInstance: {fileID: 8185581532626933799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8185581532627315571 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 422740, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+  m_PrefabInstance: {fileID: 8185581532626933799}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8185581532627018621 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 195418, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
   m_PrefabInstance: {fileID: 8185581532626933799}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1165613942938356846

@@ -1597,6 +1597,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 953547435}
+        m_TargetAssemblyTypeName: RoomGameManager, Assembly-CSharp
+        m_MethodName: RefreshNetworkPlayerSetting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!23 &178895799
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1772,6 +1784,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: DigitalRuby.LightningBolt.LightningBoltScript,
           Assembly-CSharp
         m_MethodName: IdentifyFingertip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 953547435}
+        m_TargetAssemblyTypeName: RoomGameManager, Assembly-CSharp
+        m_MethodName: RefreshNetworkPlayerSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7835,6 +7859,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11477634, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+      propertyPath: m_parentTransform
+      value: 
+      objectReference: {fileID: 496431111}
     - target: {fileID: 1857178881256730, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
       propertyPath: m_Name
       value: R2Tip
@@ -8718,6 +8746,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11438496, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+      propertyPath: m_parentTransform
+      value: 
+      objectReference: {fileID: 504753832}
     - target: {fileID: 1187670712520774, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
       propertyPath: m_Name
       value: L1Tip
@@ -10280,7 +10312,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 953547433}
-  - component: {fileID: 953547432}
   - component: {fileID: 953547434}
   - component: {fileID: 953547435}
   - component: {fileID: 953547436}
@@ -10292,22 +10323,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &953547432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953547431}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf38b2a901fcef2419caef9ef1ae9912, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rigCamera: {fileID: 1879403753}
-  bridViewCamera: {fileID: 1765860404}
-  movementSensitivity: 1.49
-  mouseSensitivity: 1
 --- !u!4 &953547433
 Transform:
   m_ObjectHideFlags: 0

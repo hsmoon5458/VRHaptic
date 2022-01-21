@@ -29,7 +29,7 @@ public class NetworkPlayer : MonoBehaviour
     
     void Start()
     {
-        RoomGameManager.NetworkPlayerSettingDelegate = NetworkPlayerSetting; //to enable network setting outside of the prefab
+        RoomGameManager.NetworkPlayerSettingDelegate = HandSetting; //to enable network setting outside of the prefab
         NetworkPlayerSetting();//this is for initial setup, regardless of above code.
     }
     public static void ChangeLayers(GameObject go, int layer)
@@ -193,8 +193,11 @@ public class NetworkPlayer : MonoBehaviour
             Debug.LogError("OVR not found");
         }
 
-
-        #region Setup Network Player setting
+        //this delay is intentional for the RoomGameManager.cs to catch the knob appropriately in starting.
+        StartCoroutine(HandSettingDelay());
+    }
+    public void HandSetting()
+    {
         //this is for network player (not myself)
         if (!photonView.IsMine)
         {
@@ -236,16 +239,15 @@ public class NetworkPlayer : MonoBehaviour
             }
         }
         //this is for myself
-        else
+        if (photonView.IsMine)
         {
             //LAYER 8 WILL NOT BE VISIABLE FROM THE PLAYER
             ChangeLayers(networkPlayerHead.gameObject, 8);//8 is myselfNetwork layer.
-
             if (this.gameObject.name == "Researcher")
             {
                 if (LobbyNetworkManager.interactionType == 1) // if the setting is controller
                 {
-                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
+                    networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking                    
                     networkPlayerLeftHand.gameObject.SetActive(false);
                     networkRightControllerHand.gameObject.SetActive(false); //don't use right controller since it is Researcher
                     networkLeftControllerHand.gameObject.SetActive(true); //use the Left controller only
@@ -280,7 +282,7 @@ public class NetworkPlayer : MonoBehaviour
                 else // if the setting is hand tracking
                 {
                     networkLeftControllerHand.gameObject.SetActive(false); //dont use left and right controllers
-                    networkRightControllerHand.gameObject.SetActive(false); 
+                    networkRightControllerHand.gameObject.SetActive(false);
                     networkPlayerRightHand.gameObject.SetActive(true); //use the right hand only
                     networkPlayerLeftHand.gameObject.SetActive(false);
 
@@ -289,9 +291,13 @@ public class NetworkPlayer : MonoBehaviour
                 }
             }
         }
-        #endregion
     }
 
+    IEnumerator HandSettingDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        HandSetting();
+    }
     /*
     //delay at start for the system to identify the bones at the beginning
 

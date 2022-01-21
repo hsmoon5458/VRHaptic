@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+
+
 public class RoomGameManager : MonoBehaviour
 {
     [SerializeField]
@@ -12,7 +14,8 @@ public class RoomGameManager : MonoBehaviour
 
     public Transform participantTf, researcherTf;
     public GameObject HankOVRCameraRig;
-    private GameObject knob;
+    [SerializeField]
+    private GameObject controllerKnob, handTrackingKnob;
     public GameObject leftHand, rightHand, leftHandTracking, rightHandTracking, leftControllerHand, rightControllerHand;
     private GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
@@ -25,7 +28,7 @@ public class RoomGameManager : MonoBehaviour
     public GameObject[] instantiatedObjects; //instantiated network objects
     public delegate void NetworkSettingDelegate(); //to recall the Network Setting for the script in "Network Player" prefab.
     public static NetworkSettingDelegate NetworkPlayerSettingDelegate;
-
+    
     //sound
     public AudioSource roomAudioSource, bgmAudioSource;
     public AudioClip positionSound, levelCompleteSound, confirmSound, rejectSound;
@@ -40,7 +43,7 @@ public class RoomGameManager : MonoBehaviour
     public GameObject testLeftHandTracking;
     private GameObject testGameObj;
     //test code end
-    public void RefreshNetworkPlayerSetting()
+    public void RefreshNetworkPlayerSetting() // reset network setup for changing interaction type
     {
         NetworkPlayerSettingDelegate();
     }
@@ -49,12 +52,13 @@ public class RoomGameManager : MonoBehaviour
     {
         PV = GetComponent<PhotonView>();
         PlayerSetting();
+
+        //identify the knob in both controller and hand tracking in NetworkPlayer
+        StartCoroutine(IdentifyingKnob());
     }
 
     void Update()
     {
-        //need to enable and diable knob at netwokrplayer correspond to game step here.
-        
         //timer for performance measurement
         tempTime = Time.deltaTime;
 
@@ -94,7 +98,7 @@ public class RoomGameManager : MonoBehaviour
 
         #endregion
         //test code end
-
+        #region Confirmation
         if (ConfirmationButtonBehavior.leftConfirmation && ConfirmationButtonBehavior.rightConfirmation) // if both buttons are clicked, make confirmation flag ture for GameStepCheck
         {
             confirmationFlag = true;
@@ -110,7 +114,7 @@ public class RoomGameManager : MonoBehaviour
             GameStepCheck(gameStep, currentWorkingSampleObject, currentWorkingNetoworkObject);
             confirmationFlag = false;
         }
-
+        #endregion
         //Step 4: Snip movement to the position
         if (gameStep == 4)
         {
@@ -135,7 +139,7 @@ public class RoomGameManager : MonoBehaviour
             }
         }
     }
-
+    #region Levels
     public void StartLevel1()
     {
         sampleNum = 1;
@@ -176,6 +180,7 @@ public class RoomGameManager : MonoBehaviour
         sampleNum = 8;
         LevelStart(sampleNum);
     }
+    #endregion
     public void ClickedController()
     {
         LobbyNetworkManager.interactionType = 1;
@@ -285,7 +290,7 @@ public class RoomGameManager : MonoBehaviour
             if (networkObject.transform.localScale == workspaceObjectGuide.transform.localScale)
             {
                 gameStep++;
-                PV.RPC("EnableKnob", RpcTarget.AllBuffered, true);//enable knob for next step
+                EnableKnob(true);//enable knob for next step
                 resetRotatingFlag = true; //reset rotating status to avoid some error
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
@@ -303,7 +308,7 @@ public class RoomGameManager : MonoBehaviour
             {
                 positionFixedFlag = true; //to position set
                 gameStep++;
-                PV.RPC("EnableKnob", RpcTarget.AllBuffered, false);//disable knob for next step
+                EnableKnob(false);//disable knob for next step
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
@@ -351,9 +356,7 @@ public class RoomGameManager : MonoBehaviour
         }
     }
     public void PlayerSetting()
-    {
-        StartCoroutine(IdentifyingKnob()); //identifying the knob
-
+    {        
         if (LobbyNetworkManager.userType == 1) // reseracher uses left hand only
         {
             HankOVRCameraRig.transform.position = researcherTf.position; //move the position to researcher position
@@ -380,7 +383,7 @@ public class RoomGameManager : MonoBehaviour
             leftHand.SetActive(false);
             rightHand.SetActive(true);
 
-            if(workspaceCubeGuide == null) // so that when player change the interaction type, guide bojects is not instantiated again
+            if(workspaceCubeGuide == null) // so that when player change the interaction type, guide object is not instantiated again
             {
                 StartCoroutine(InstantiateGuide()); //instantiate after few seconds so that network objects are instantiated after the clinet joins the room.
             }
@@ -397,12 +400,21 @@ public class RoomGameManager : MonoBehaviour
             }
         }
     }
+    public void EnableKnob(bool x)
+    {
+        if (LobbyNetworkManager.interactionType == 1) controllerKnob.SetActive(x);
+        else if (LobbyNetworkManager.interactionType == 2) handTrackingKnob.SetActive(x);
+    }
     IEnumerator IdentifyingKnob()
     {
-        yield return new WaitForSeconds(4f);
-        if (LobbyNetworkManager.interactionType == 1) knob = GameObject.FindWithTag("controllerKnob");
-        if (LobbyNetworkManager.interactionType == 2) knob = GameObject.FindWithTag("handTrackingKnob");
-        PV.RPC("EnableKnob", RpcTarget.AllBuffered, false);
+        yield return new WaitForSeconds(1.5f);
+        if (LobbyNetworkManager.userType == 2) //only for the participant
+        {
+            controllerKnob = GameObject.FindGameObjectWithTag("controllerKnob");
+            handTrackingKnob = GameObject.FindGameObjectWithTag("handTrackingKnob");
+        }
+
+        EnableKnob(false); //disable the at the beginning
     }
     IEnumerator InstantiateGuide()//instantatiate after few seconds after client joins the room
     {
@@ -485,9 +497,5 @@ public class RoomGameManager : MonoBehaviour
     {
         handToHandLightString.SetActive(false);
     }
-    [PunRPC]
-    public void EnableKnob(bool x)
-    {
-        knob.SetActive(x);
-    }
+    
 }
