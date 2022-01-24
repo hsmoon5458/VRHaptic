@@ -296,19 +296,25 @@ namespace DigitalRuby.LightningBolt
         }
 
         //indentify start and end object for lighting effect.
+        public void NullStartEndObject()
+        {
+            StartObject = null;
+            EndObject = null;
+        }
+
         public void IdentifyFingertip()
         {
-            if (LobbyNetworkManager.userType == 1) // researcher
+            try
             {
-                StartObject = GameObject.FindWithTag("myLeftIndexFinger");
-                EndObject = GameObject.FindWithTag("networkRightIndexFinger");
+                StartObject = NetworkObjectsManager.leftFintertipStatic;
+                EndObject = NetworkObjectsManager.rightFingertipStatic;
             }
-            else if (LobbyNetworkManager.userType == 2) // participant
+            catch
             {
-                StartObject = GameObject.FindWithTag("networkLeftIndexFinger");
-                EndObject = GameObject.FindWithTag("myRightIndexFinger");                
-            }
+                Debug.Log("Start and End objects are null");
+            }                       
         }
+
         private void Update()
         {
             if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.

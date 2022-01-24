@@ -33,6 +33,7 @@ public class XAxisPinching : MonoBehaviour
         {
             if (FingertipBehavior.networkPinchingStatus)
             {
+                Debug.Log("left picnchj ture");
                 leftHandPinched = true;
             }
             else

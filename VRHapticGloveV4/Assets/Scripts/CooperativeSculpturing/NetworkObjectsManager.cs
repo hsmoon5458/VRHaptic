@@ -15,7 +15,9 @@ public class NetworkObjectsManager : MonoBehaviour
     private float timeToGenerate = 1.2f;
     private float rotatingSpeed = 1.4f;
     //scaling 3D objects
+    [SerializeField]
     private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
+    public static GameObject leftFintertipStatic, rightFingertipStatic; //to reference from light string and others.
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
     public GameObject scalingAxisObject; //x, y, z axis object
@@ -38,6 +40,11 @@ public class NetworkObjectsManager : MonoBehaviour
     {
         PV = GetComponent<PhotonView>();
         InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
+
+        if(LobbyNetworkManager.userType == 1)//if it is a researcher
+        {
+            scalingAxisObject.SetActive(true);
+        }
     }
 
     // Update is called once per frame
@@ -353,18 +360,75 @@ public class NetworkObjectsManager : MonoBehaviour
         #endregion
 
     }
-
+    public void NullFintertips()
+    {
+        rightFingertip = null;
+        rightFingertipStatic = null;
+        leftFingertip = null;
+        leftFintertipStatic = null;
+    }
     private void IdentifyFingertip()
     {
+        Debug.Log("identifying");
         if(LobbyNetworkManager.userType == 1) // researcher
         {
+            //scan all network fingertip (for both researcher and participnat) so that it does not catch diabeld myFinger
+            if (LobbyNetworkManager.interactionType == 1)
+            {
+                try
+                {
+                    rightFingertip = GameObject.Find("Participant/RightControllerAnchor/CustomHandRight/Offset/r_hand_skeletal_lowres/hands:r_hand_world/hands:b_r_hand/hands:b_r_index1/hands:b_r_index2/hands:b_r_index3/R2Tip");
+                    rightFingertipStatic = rightFingertip;
+                }
+                catch
+                {
+                    Debug.Log("Cannot find left fingertip");
+                }
+            }
+            else if (LobbyNetworkManager.interactionType == 2)//hand tracking
+            {
+                try
+                {
+                    rightFingertip = GameObject.Find("Participant/RightHand/R2J3/R2Tip");
+                    rightFingertipStatic = rightFingertip;
+                }
+                catch
+                {
+                    Debug.Log("Cannot find left fingertip");
+                }
+            }
+
             leftFingertip = GameObject.FindWithTag("myLeftIndexFinger");
-            rightFingertip = GameObject.FindWithTag("networkRightIndexFinger");
         }
         else if(LobbyNetworkManager.userType == 2) // participant
         {
-            leftFingertip = GameObject.FindWithTag("networkLeftIndexFinger");
+            if(LobbyNetworkManager.interactionType == 1)
+            {
+                try
+                {
+                    leftFingertip = GameObject.Find("Researcher/LeftControllerAnchor/CustomHandLeft/Offset/l_hand_skeletal_lowres/hands:l_hand_world/hands:b_l_hand/hands:b_l_index1/hands:b_l_index2/hands:b_l_index3/L2TipNetwork");
+                    leftFintertipStatic = leftFingertip;
+                }
+                catch
+                {
+                    Debug.Log("Cannot find left fingertip");
+                }
+            }
+            else if(LobbyNetworkManager.interactionType == 2)//hand tracking
+            {
+                try
+                {
+                    leftFingertip = GameObject.Find("Researcher/LeftHand/L2J3/L2TipNetwork");
+                    leftFintertipStatic = leftFingertip;
+                }
+                catch
+                {
+                    Debug.Log("Cannot find left fingertip");
+                }
+            }
+                        
             rightFingertip = GameObject.FindWithTag("myRightIndexFinger");
+
         }
     }
 

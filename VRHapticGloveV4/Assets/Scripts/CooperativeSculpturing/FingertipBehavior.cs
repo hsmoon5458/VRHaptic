@@ -65,6 +65,7 @@ public class FingertipBehavior : MonoBehaviour
             if (other.gameObject.name == "L1TipNetwork")
             {
                 networkPinchingStatus = true;
+                Debug.Log("Pinched");
             }
         }
 
