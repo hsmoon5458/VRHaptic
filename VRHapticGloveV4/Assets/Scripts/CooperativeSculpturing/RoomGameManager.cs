@@ -12,7 +12,7 @@ public class RoomGameManager : MonoBehaviour
     public static int gameStep = 0; //1 is creating, 2 is scaling, 3 rotating, 4 is positioning
     public int sampleNum, objectNum; // ex) Sample1, s3
 
-    public Transform participantTf, researcherTf;
+    public Transform participantTf, researcherTf, objectSpawnTf;
     public GameObject HankOVRCameraRig;
     [SerializeField]
     private GameObject controllerKnob, handTrackingKnob;
@@ -222,7 +222,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceCubeGuide.SetActive(true); //activate the object, and deactiavte the other.
                 workspaceCubeGuide.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f); //reset transform
                 workspaceCubeGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceCubeGuide.transform.position = new Vector3(0, 1, 0.5f); //should be same as object spawn position
+                workspaceCubeGuide.transform.position = objectSpawnTf.position; //should be same as object spawn position
                 workspaceCylinderGuide.SetActive(false);
                 workspaceSphereGuide.SetActive(false);
 
@@ -234,7 +234,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceCylinderGuide.SetActive(true);
                 workspaceCylinderGuide.transform.localScale = new Vector3(0.2f, 0.1f, 0.2f);
                 workspaceCylinderGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceCylinderGuide.transform.position = new Vector3(0, 1, 0.5f);
+                workspaceCylinderGuide.transform.position = objectSpawnTf.position;
                 workspaceSphereGuide.SetActive(false);
 
                 currentWorkingGuideObject = workspaceCylinderGuide;
@@ -246,7 +246,7 @@ public class RoomGameManager : MonoBehaviour
                 workspaceSphereGuide.SetActive(true);
                 workspaceSphereGuide.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
                 workspaceSphereGuide.transform.eulerAngles = new Vector3(0, 0, 0);
-                workspaceSphereGuide.transform.position = new Vector3(0, 1, 0.5f);
+                workspaceSphereGuide.transform.position = objectSpawnTf.position;
 
                 currentWorkingGuideObject = workspaceSphereGuide;
             }
@@ -344,6 +344,7 @@ public class RoomGameManager : MonoBehaviour
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
+                    PV.RPC("DisableLightString", RpcTarget.AllBuffered);
                     PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
                 }
             }

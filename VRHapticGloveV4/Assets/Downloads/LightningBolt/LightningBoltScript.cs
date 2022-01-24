@@ -43,13 +43,18 @@ namespace DigitalRuby.LightningBolt
     [RequireComponent(typeof(LineRenderer))]
     public class LightningBoltScript : MonoBehaviour
     {
+        [Tooltip("To reference the left and right fingertips.")]
+        public GameObject NetworkManager;
+
         [Tooltip("The game object where the lightning will emit from. If null, StartPosition is used.")]
+        [SerializeField]
         private GameObject StartObject;
 
         [Tooltip("The start position where the lightning will emit from. This is in world space if StartObject is null, otherwise this is offset from StartObject position.")]
         private Vector3 StartPosition = new Vector3(0f, 0f, 0f);
 
         [Tooltip("The game object where the lightning will end at. If null, EndPosition is used.")]
+        [SerializeField]
         private GameObject EndObject;
 
         [Tooltip("The end position where the lightning will end at. This is in world space if EndObject is null, otherwise this is offset from EndObject position.")]
@@ -306,8 +311,8 @@ namespace DigitalRuby.LightningBolt
         {
             try
             {
-                StartObject = NetworkObjectsManager.leftFintertipStatic;
-                EndObject = NetworkObjectsManager.rightFingertipStatic;
+                StartObject = NetworkManager.GetComponent<NetworkObjectsManager>().leftFingertip;
+                EndObject = NetworkManager.GetComponent<NetworkObjectsManager>().rightFingertip;
             }
             catch
             {

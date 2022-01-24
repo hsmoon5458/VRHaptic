@@ -143,7 +143,7 @@ public class CubeHit : MonoBehaviour
             {
                 writer = new StreamWriter(baseDir);
             }
-            catch(Exception e)
+            catch
             {
                 return false;
             }

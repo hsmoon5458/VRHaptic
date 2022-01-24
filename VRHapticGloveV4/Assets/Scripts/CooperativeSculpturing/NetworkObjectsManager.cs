@@ -16,8 +16,8 @@ public class NetworkObjectsManager : MonoBehaviour
     private float rotatingSpeed = 1.4f;
     //scaling 3D objects
     [SerializeField]
-    private GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
-    public static GameObject leftFintertipStatic, rightFingertipStatic; //to reference from light string and others.
+    public GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling
+
     public static bool xAxisScalingEnabledFlag, yAxisScalingEnabledFlag, zAxisScalingEnabledFlag;
     private float scalingDistance, tempObjDis1, tempObjDis2, tempObjDis3, tempScalingDis;
     public GameObject scalingAxisObject; //x, y, z axis object
@@ -121,15 +121,15 @@ public class NetworkObjectsManager : MonoBehaviour
         #region Instantiate 3D Objects
         if(RoomGameManager.gameStep == 1)
         {
-            //disable light string from game step 4
-            PV.RPC("LightString", RpcTarget.AllBuffered, false);
-
             if (cubeGenerate)
             {
                 networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCube.name = "NetworkCube";
                 PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 cubeGenerate = false;
+                timeCountCube = 0;
+                timeCountCylinder = 0;
+                timeCountSphere = 0;
             }
             if (sphereGenerate)
             {
@@ -137,6 +137,9 @@ public class NetworkObjectsManager : MonoBehaviour
                 networkSphere.name = "NetworkSphere";
                 PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 sphereGenerate = false;
+                timeCountCube = 0;
+                timeCountCylinder = 0;
+                timeCountSphere = 0;
             }
             if (cylinderGenerate)
             {
@@ -144,6 +147,9 @@ public class NetworkObjectsManager : MonoBehaviour
                 networkCylinder.name = "NetworkCylinder";
                 PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
                 cylinderGenerate = false;
+                timeCountCube = 0;
+                timeCountCylinder = 0;
+                timeCountSphere = 0;
             }
         }
         #endregion
@@ -363,9 +369,7 @@ public class NetworkObjectsManager : MonoBehaviour
     public void NullFintertips()
     {
         rightFingertip = null;
-        rightFingertipStatic = null;
         leftFingertip = null;
-        leftFintertipStatic = null;
     }
     private void IdentifyFingertip()
     {
@@ -378,7 +382,6 @@ public class NetworkObjectsManager : MonoBehaviour
                 try
                 {
                     rightFingertip = GameObject.Find("Participant/RightControllerAnchor/CustomHandRight/Offset/r_hand_skeletal_lowres/hands:r_hand_world/hands:b_r_hand/hands:b_r_index1/hands:b_r_index2/hands:b_r_index3/R2Tip");
-                    rightFingertipStatic = rightFingertip;
                 }
                 catch
                 {
@@ -390,7 +393,6 @@ public class NetworkObjectsManager : MonoBehaviour
                 try
                 {
                     rightFingertip = GameObject.Find("Participant/RightHand/R2J3/R2Tip");
-                    rightFingertipStatic = rightFingertip;
                 }
                 catch
                 {
@@ -407,7 +409,6 @@ public class NetworkObjectsManager : MonoBehaviour
                 try
                 {
                     leftFingertip = GameObject.Find("Researcher/LeftControllerAnchor/CustomHandLeft/Offset/l_hand_skeletal_lowres/hands:l_hand_world/hands:b_l_hand/hands:b_l_index1/hands:b_l_index2/hands:b_l_index3/L2TipNetwork");
-                    leftFintertipStatic = leftFingertip;
                 }
                 catch
                 {
@@ -419,7 +420,6 @@ public class NetworkObjectsManager : MonoBehaviour
                 try
                 {
                     leftFingertip = GameObject.Find("Researcher/LeftHand/L2J3/L2TipNetwork");
-                    leftFintertipStatic = leftFingertip;
                 }
                 catch
                 {
