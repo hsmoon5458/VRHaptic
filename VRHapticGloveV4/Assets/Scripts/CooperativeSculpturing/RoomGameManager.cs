@@ -98,6 +98,9 @@ public class RoomGameManager : MonoBehaviour
             testGameObj = GameObject.FindWithTag("InstantiatedObject");
             testGameObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         }
+        if (Input.GetKeyDown("2")) PV.RPC("PositionSoundPlay", RpcTarget.All);
+        if (Input.GetKeyDown("3")) PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
+        if (Input.GetKeyDown("4")) PV.RPC("RejectSoundPlay", RpcTarget.All);
         /*
         if (Input.GetKeyDown("2")) data_stream.WriteLine("L2");
         if (Input.GetKeyDown("3")) data_stream.WriteLine("L3");
@@ -135,7 +138,7 @@ public class RoomGameManager : MonoBehaviour
             {
                 float step = 0.3f * Time.deltaTime;
                 currentWorkingNetoworkObject.transform.position = Vector3.MoveTowards(currentWorkingNetoworkObject.transform.position, currentWorkingSampleObject.transform.position, step);
-                PV.RPC("DisableLightString", RpcTarget.AllBuffered);
+                PV.RPC("DisableLightString", RpcTarget.All);
 
                 //if it arrives to the target, locked in.
                 if (distance < 0.01f)
@@ -144,7 +147,7 @@ public class RoomGameManager : MonoBehaviour
 
                     if (positionFixedFlag)//this flag is ture in game step 3 and disabled here, this will be played once
                     { 
-                        PV.RPC("PositionSoundPlay", RpcTarget.AllBuffered);
+                        PV.RPC("PositionSoundPlay", RpcTarget.All);
                         positionFixedFlag = false;
                     }
                 }
@@ -286,11 +289,11 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++; // go to next step
                 step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
             }
             else // if incorrect object was instantiated, destroy all network object
             {
-                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("RejectSoundPlay", RpcTarget.All);
                 foreach (GameObject instantiatedObject in instantiatedObjects)
                 {
                     PhotonNetwork.Destroy(instantiatedObject);
@@ -306,12 +309,12 @@ public class RoomGameManager : MonoBehaviour
                 resetRotatingFlag = true; //reset rotating status to avoid some error
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
             }
             else
             {
                 //maybe some message popup that somethings wrong.
-                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("RejectSoundPlay", RpcTarget.All);
             }
         }
         else if (currentGameStep == 3)//rotated object check
@@ -323,13 +326,13 @@ public class RoomGameManager : MonoBehaviour
                 EnableKnob(false);//disable knob for next step
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
             }
             else //reset the euler angles
             {
                 networkObject.transform.eulerAngles = new Vector3(0, 0, 0);
                 resetRotatingFlag = true;
-                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("RejectSoundPlay", RpcTarget.All);
             }
         }
         else if (currentGameStep == 4)// positioned object check
@@ -347,7 +350,7 @@ public class RoomGameManager : MonoBehaviour
                     gameStep = 0;
                     currentWorkingGuideObject.SetActive(false); //disable guide object when the level is completed
                     //do some effect and remove all the objects created.
-                    PV.RPC("DisableLightString", RpcTarget.AllBuffered);
+                    PV.RPC("DisableLightString", RpcTarget.All);
                     StartCoroutine(LevelCompleteEffect());
                 }
                 else
@@ -356,14 +359,14 @@ public class RoomGameManager : MonoBehaviour
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
-                    PV.RPC("DisableLightString", RpcTarget.AllBuffered);
-                    PV.RPC("ConfirmedSoundPlay", RpcTarget.AllBuffered);
+                    PV.RPC("DisableLightString", RpcTarget.All);
+                    PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
                 }
             }
 
             else
             {
-                PV.RPC("RejectSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("RejectSoundPlay", RpcTarget.All);
             }
 
         }

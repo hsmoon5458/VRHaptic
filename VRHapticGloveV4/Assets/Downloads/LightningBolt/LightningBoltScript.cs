@@ -103,6 +103,7 @@ namespace DigitalRuby.LightningBolt
         private int animationPingPongDirection = 1;
         private bool orthographic;
 
+        private bool invokeRepeatingFlag;
         private void GetPerpendicularVector(ref Vector3 directionNormalized, out Vector3 side)
         {
             if (directionNormalized == Vector3.zero)
@@ -305,10 +306,12 @@ namespace DigitalRuby.LightningBolt
         {
             StartObject = null;
             EndObject = null;
+            invokeRepeatingFlag = true;
         }
 
         public void IdentifyFingertip()
         {
+            Debug.Log("Identifying Start and End Object");
             try
             {
                 StartObject = NetworkManager.GetComponent<NetworkObjectsManager>().leftFingertip;
@@ -322,14 +325,13 @@ namespace DigitalRuby.LightningBolt
 
         private void Update()
         {
-            if(StartObject != null && EndObject != null) // if they are both identified, cancel invoking.
-            {
-                CancelInvoke("IdentifyFingertip");
-            }
-            else
+            if(StartObject != null && EndObject != null) CancelInvoke("IdentifyFingertip");// if they are both identified, cancel invoking.
+
+            if (invokeRepeatingFlag)
             {
                 InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
-            }
+                invokeRepeatingFlag = false; //to repeat InvokeRepeating once.
+            } 
 
             orthographic = (Camera.main != null && Camera.main.orthographic);
             if (timer <= 0.0f)

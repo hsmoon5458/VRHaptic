@@ -5,6 +5,7 @@ using Photon.Pun;
 
 public class NetworkObjectsManager : MonoBehaviour
 {
+    private bool invokeRepeatingFlag;
     //creating 3D objects
     public Transform objectSpawnTransform;
     private GameObject networkCube, networkSphere, networkCylinder;
@@ -27,8 +28,8 @@ public class NetworkObjectsManager : MonoBehaviour
     public GameObject handToHandLightString;
     private float lightStringDistanceThreshold = 0.5f, positioningThreshold = 0.1f, objectMovementSpeed = 0.1f;
     private Vector3 tempRightFingerPosition, tempTargetPosition;
-    private bool positioiningFlag;
-
+    private bool positioiningFlag, enableRepeatPreventFlag;
+    
     //sound
     public AudioSource objectAudioSource;
     public AudioClip instantiateSound, scaleSound, rotateSound;
@@ -39,9 +40,9 @@ public class NetworkObjectsManager : MonoBehaviour
     private void Start()
     {
         PV = GetComponent<PhotonView>();
-        InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
-
-        if(LobbyNetworkManager.userType == 1)//if it is a researcher
+        InvokeRepeating("IdentifyFingertip", 1f, 1f);
+        invokeRepeatingFlag = false;
+        if (LobbyNetworkManager.userType == 1)//if it is a researcher
         {
             scalingAxisObject.SetActive(true);
         }
@@ -52,7 +53,12 @@ public class NetworkObjectsManager : MonoBehaviour
     {
         //keep finding the fingertip objects, if they are both identified, cancel invoking.
         if (leftFingertip != null && rightFingertip != null) CancelInvoke("IdentifyFingertip");
-        else InvokeRepeating("IdentifyFingertip", 1.0f, 1.0f);
+        if (leftFingertip != null && rightFingertip != null && RoomGameManager.gameStep == 0) handToHandLightString.SetActive(false); //disable both start and end objects are identifed at the beginning
+        if (invokeRepeatingFlag) //this will be true when NullFingertips are excuted.
+        {
+            InvokeRepeating("IdentifyFingertip", 1f, 1f);
+            invokeRepeatingFlag = false; //to invokeRepeat once
+        }
 
         //reset the time for all instantiations so that it does not make objects mistakely      
         #region Condition Check for Instantiation
@@ -125,7 +131,7 @@ public class NetworkObjectsManager : MonoBehaviour
             {
                 networkCube = PhotonNetwork.Instantiate("NetworkCube", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCube.name = "NetworkCube";
-                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.All);
                 cubeGenerate = false;
                 timeCountCube = 0;
                 timeCountCylinder = 0;
@@ -135,7 +141,7 @@ public class NetworkObjectsManager : MonoBehaviour
             {
                 networkSphere = PhotonNetwork.Instantiate("NetworkSphere", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkSphere.name = "NetworkSphere";
-                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.All);
                 sphereGenerate = false;
                 timeCountCube = 0;
                 timeCountCylinder = 0;
@@ -145,7 +151,7 @@ public class NetworkObjectsManager : MonoBehaviour
             {
                 networkCylinder = PhotonNetwork.Instantiate("NetworkCylinder", objectSpawnTransform.position, objectSpawnTransform.rotation);
                 networkCylinder.name = "NetworkCylinder";
-                PV.RPC("InstantiateSoundPlay", RpcTarget.AllBuffered);
+                PV.RPC("InstantiateSoundPlay", RpcTarget.All);
                 cylinderGenerate = false;
                 timeCountCube = 0;
                 timeCountCylinder = 0;
@@ -186,7 +192,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //if there's a difference, make a sound.
                 if(tempTf != tempObject.transform.localScale)
                 {
-                    PV.RPC("ScaleSoundPlay", RpcTarget.AllBuffered);
+                    PV.RPC("ScaleSoundPlay", RpcTarget.All);
                 }
             }
             else{tempObjDis1 = 0;}
@@ -269,7 +275,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
+                    PV.RPC("RotateSoundPlay", RpcTarget.All);
                     StartCoroutine(RotatingObject(tempObject, 1));
                     RotatingKnob.rotatedFlagX = false;
                 }
@@ -277,7 +283,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
+                    PV.RPC("RotateSoundPlay", RpcTarget.All);
                     StartCoroutine(RotatingObject(tempObject, 2));
                     RotatingKnob.rotatedFlagY = false;
                 }
@@ -285,7 +291,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     rotateCompletedFlag = true;
                     GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
-                    PV.RPC("RotateSoundPlay", RpcTarget.AllBuffered);
+                    PV.RPC("RotateSoundPlay", RpcTarget.All);
                     StartCoroutine(RotatingObject(tempObject, 3));
                     RotatingKnob.rotatedFlagZ = false;
                 }
@@ -314,15 +320,19 @@ public class NetworkObjectsManager : MonoBehaviour
                 GameObject tempObject = GameObject.FindWithTag("InstantiatedObject");
                 tempRightFingerPosition = rightFingertip.transform.position;
                 positioiningFlag = true;
+                enableRepeatPreventFlag = true;
                 StartCoroutine(PositioningGetFingerPosition()); //delay for 0.4 second to get the position in the middle of range, so that temp position is not set to the edge of the threshold
             }
 
             if (positioiningFlag)
             {
-                PV.RPC("LightString", RpcTarget.AllBuffered, true);
-
-                VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
-
+                if (enableRepeatPreventFlag) //to avoid calling RPC and Singleton keep repeating
+                {
+                    PV.RPC("LightString", RpcTarget.All, true);
+                    VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
+                    enableRepeatPreventFlag = false;
+                }
+                
 
                 if (rightFingertip.transform.position.x - tempRightFingerPosition.x > positioningThreshold)
                 {
@@ -358,7 +368,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //while the flag is enabled, distnace gets further, turn off the ligth string
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
-                    PV.RPC("LightString", RpcTarget.AllBuffered, false);
+                    PV.RPC("LightString", RpcTarget.All, false);
                     positioiningFlag = false;
                 }
             }
@@ -370,10 +380,11 @@ public class NetworkObjectsManager : MonoBehaviour
     {
         rightFingertip = null;
         leftFingertip = null;
+        invokeRepeatingFlag = true;
     }
     private void IdentifyFingertip()
     {
-        Debug.Log("identifying");
+        Debug.Log("Identifying Fingertips");
         if(LobbyNetworkManager.userType == 1) // researcher
         {
             //scan all network fingertip (for both researcher and participnat) so that it does not catch diabeld myFinger
@@ -385,7 +396,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 }
                 catch
                 {
-                    Debug.Log("Cannot find left fingertip");
+                    Debug.Log("Cannot find right fingertip");
                 }
             }
             else if (LobbyNetworkManager.interactionType == 2)//hand tracking
@@ -396,7 +407,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 }
                 catch
                 {
-                    Debug.Log("Cannot find left fingertip");
+                    Debug.Log("Cannot find right fingertip");
                 }
             }
 
