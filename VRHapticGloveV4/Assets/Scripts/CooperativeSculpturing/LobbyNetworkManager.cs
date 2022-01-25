@@ -48,6 +48,7 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
         }
 
     }
+
     public void ClickedResearcher()
     {
         userType = 1;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class VibrationManager : MonoBehaviour
 {
+    private float tempTime;
     public static VibrationManager singletone;
     void Start()
     {
@@ -15,20 +16,9 @@ public class VibrationManager : MonoBehaviour
         else
             singletone = this;
     }
-
-    public void TriggerVibration(AudioClip vibrationAudio, OVRInput.Controller controller)
+    private void Update()
     {
-        OVRHapticsClip clip = new OVRHapticsClip(vibrationAudio);
-
-        if (controller == OVRInput.Controller.LTouch)
-        {
-            OVRHaptics.LeftChannel.Preempt(clip);
-        }
-
-        else if (controller == OVRInput.Controller.RTouch)
-        {
-            OVRHaptics.RightChannel.Preempt(clip);
-        }
+        tempTime = Time.deltaTime;
     }
 
     public void TriggerVibration(int iteration, int frequency, int strength, OVRInput.Controller controller)
@@ -49,5 +39,9 @@ public class VibrationManager : MonoBehaviour
         {
             OVRHaptics.RightChannel.Preempt(clip);
         }
+    }
+    public void ControllerVibration(float amp)
+    {
+        OVRInput.SetControllerVibration(1, amp, OVRInput.Controller.RTouch);
     }
 }

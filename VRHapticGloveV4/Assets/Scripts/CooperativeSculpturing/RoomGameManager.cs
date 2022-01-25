@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
-
+using System.IO.Ports;
 
 public class RoomGameManager : MonoBehaviour
 {
@@ -42,6 +42,7 @@ public class RoomGameManager : MonoBehaviour
     public GameObject testLeftControllerAnchor;
     public GameObject testLeftHandTracking;
     private GameObject testGameObj;
+    //SerialPort data_stream = new SerialPort("COM4", 115200);
     //test code end
     public void RefreshNetworkPlayerSetting() // reset network setup for changing interaction type
     {
@@ -55,6 +56,8 @@ public class RoomGameManager : MonoBehaviour
 
         //identify the knob in both controller and hand tracking in NetworkPlayer
         StartCoroutine(IdentifyingKnob());
+
+        //data_stream.Open(); //Initiate the Serial stream
     }
 
     void Update()
@@ -95,7 +98,16 @@ public class RoomGameManager : MonoBehaviour
             testGameObj = GameObject.FindWithTag("InstantiatedObject");
             testGameObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         }
-
+        /*
+        if (Input.GetKeyDown("2")) data_stream.WriteLine("L2");
+        if (Input.GetKeyDown("3")) data_stream.WriteLine("L3");
+        if (Input.GetKeyDown("4")) data_stream.WriteLine("L4");
+        if (Input.GetKeyDown("5")) data_stream.WriteLine("L5");
+        if (Input.GetKeyDown("6")) data_stream.WriteLine("L6");
+        if (Input.GetKeyDown("7")) data_stream.WriteLine("L7");
+        if (Input.GetKeyDown("8")) data_stream.WriteLine("L8");
+        if (Input.GetKeyDown("9")) data_stream.WriteLine("L9");
+        */
         #endregion
         //test code end
         #region Confirmation

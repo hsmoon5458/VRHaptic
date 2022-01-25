@@ -35,7 +35,7 @@ public class SongScore
         {
             return deviationIndex[indexNum];
         }
-        catch (Exception e) //illegal bounds
+        catch //illegal bounds
         {
             Console.WriteLine("Error accessing desired index in DeviationIndex for get");
             return -1;
@@ -48,7 +48,7 @@ public class SongScore
             deviationIndex[indexNum] = value;
             return true;
         }
-        catch (Exception e) //illegal bounds
+        catch  //illegal bounds
         {
             Console.WriteLine("Error accessing desired index in DeviationIndex for set");
             return false;
