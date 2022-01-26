@@ -5,7 +5,6 @@ using UnityEngine;
 public class FingertipBehavior : MonoBehaviour
 {
     public static bool thumbTouchedThumb, thumbTouchedIndex, indexTouchedThumb, indexTouchedIndex, myPinchingStatus, networkPinchingStatus;
-    private int vib_itr = 40, vib_freq = 2, vib_amp = 255;
 
     void Update()
     {

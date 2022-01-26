@@ -224,7 +224,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //if there's a difference, make a sound.
                 if (tempTf != tempObject.transform.localScale)
                 {
-                    objectAudioSource.PlayOneShot(scaleSound);
+                    PV.RPC("ScaleSoundPlay", RpcTarget.All);
                 }
             }
             else{tempObjDis2 = 0;}
@@ -256,7 +256,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 //if there's a difference, make a sound.
                 if (tempTf != tempObject.transform.localScale)
                 {
-                    objectAudioSource.PlayOneShot(scaleSound);
+                    PV.RPC("ScaleSoundPlay", RpcTarget.All);
                 }
             }
             else{tempObjDis3 = 0;}
