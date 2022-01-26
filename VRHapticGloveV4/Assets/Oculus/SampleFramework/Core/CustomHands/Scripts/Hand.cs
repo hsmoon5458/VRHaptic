@@ -127,7 +127,8 @@ namespace OVRTouchSample
             {
                 m_isPointing = true;
             }
-            m_isGivingThumbsUp = !OVRInput.Get(OVRInput.NearTouch.PrimaryThumbButtons, m_controller);
+            //m_isGivingThumbsUp = !OVRInput.Get(OVRInput.NearTouch.PrimaryThumbButtons, m_controller); this is for neartouch(not pushing but place on the top)
+            m_isGivingThumbsUp = !OVRInput.Get(OVRInput.Button.Two, m_controller); 
         }
         
         private void LateUpdate()

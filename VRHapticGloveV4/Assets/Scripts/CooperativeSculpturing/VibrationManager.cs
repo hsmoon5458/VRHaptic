@@ -18,7 +18,7 @@ public class VibrationManager : MonoBehaviour
     }
     private void Update()
     {
-        tempTime = Time.deltaTime;
+        tempTime += Time.deltaTime;
     }
 
     public void TriggerVibration(int iteration, int frequency, int strength, OVRInput.Controller controller)

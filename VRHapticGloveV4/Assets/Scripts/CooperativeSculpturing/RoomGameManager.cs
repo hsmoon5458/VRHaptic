@@ -63,7 +63,7 @@ public class RoomGameManager : MonoBehaviour
     void Update()
     {
         //timer for performance measurement
-        tempTime = Time.deltaTime;
+        tempTime += Time.deltaTime;
 
         //test code
         #region Test Code
