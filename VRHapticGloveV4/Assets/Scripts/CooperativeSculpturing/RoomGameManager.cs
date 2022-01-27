@@ -33,6 +33,10 @@ public class RoomGameManager : MonoBehaviour
     public AudioSource roomAudioSource, bgmAudioSource;
     public AudioClip positionSound, levelCompleteSound, confirmSound, rejectSound;
 
+    //Notification Popup
+    public GameObject notificationPopUp;
+    public TextMeshProUGUI popUpText; 
+
     //RPC
     private PhotonView PV;
 
@@ -42,7 +46,7 @@ public class RoomGameManager : MonoBehaviour
     public GameObject testLeftControllerAnchor;
     public GameObject testLeftHandTracking;
     private GameObject testGameObj;
-    //SerialPort data_stream = new SerialPort("COM4", 115200);
+
     //test code end
     public void RefreshNetworkPlayerSetting() // reset network setup for changing interaction type
     {
@@ -56,8 +60,6 @@ public class RoomGameManager : MonoBehaviour
 
         //identify the knob in both controller and hand tracking in NetworkPlayer
         StartCoroutine(IdentifyingKnob());
-
-        //data_stream.Open(); //Initiate the Serial stream
     }
 
     void Update()
@@ -98,9 +100,7 @@ public class RoomGameManager : MonoBehaviour
             testGameObj = GameObject.FindWithTag("InstantiatedObject");
             testGameObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         }
-        if (Input.GetKeyDown("2")) PV.RPC("PositionSoundPlay", RpcTarget.All);
-        if (Input.GetKeyDown("3")) PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
-        if (Input.GetKeyDown("4")) PV.RPC("RejectSoundPlay", RpcTarget.All);
+
         /*
         if (Input.GetKeyDown("2")) data_stream.WriteLine("L2");
         if (Input.GetKeyDown("3")) data_stream.WriteLine("L3");
@@ -114,12 +114,10 @@ public class RoomGameManager : MonoBehaviour
         #endregion
         //test code end
         #region Confirmation
-        if (ConfirmationButtonBehavior.leftConfirmation && ConfirmationButtonBehavior.rightConfirmation) // if both buttons are clicked, make confirmation flag ture for GameStepCheck
+        if (ConfirmationButtonBehavior.confirmButtonFlag) // if both buttons are clicked, make confirmation button flag ture for GameStepCheck
         {
             confirmationFlag = true;
-
-            ConfirmationButtonBehavior.leftConfirmation = false;
-            ConfirmationButtonBehavior.rightConfirmation = false;
+            ConfirmationButtonBehavior.confirmButtonFlag = false;
         }
 
         //confirm the current step whether it's done
@@ -148,6 +146,7 @@ public class RoomGameManager : MonoBehaviour
                     if (positionFixedFlag)//this flag is ture in game step 3 and disabled here, this will be played once
                     { 
                         PV.RPC("PositionSoundPlay", RpcTarget.All);
+                        VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
                         positionFixedFlag = false;
                     }
                 }
@@ -213,6 +212,7 @@ public class RoomGameManager : MonoBehaviour
         //set the level setting
         objectNum = 1;
         gameStep = 1;
+        PV.RPC("NotificationPopUp", RpcTarget.All, "Create the object.");
         WorkspaceInitialize(sampleNum, objectNum, gameStep); //start the level with first object, and first game step
     }
 
@@ -290,10 +290,12 @@ public class RoomGameManager : MonoBehaviour
                 step1Timer = tempTime; //save the time
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Scale the object.");
             }
             else // if incorrect object was instantiated, destroy all network object
             {
                 PV.RPC("RejectSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Create again.");
                 foreach (GameObject instantiatedObject in instantiatedObjects)
                 {
                     PhotonNetwork.Destroy(instantiatedObject);
@@ -310,11 +312,13 @@ public class RoomGameManager : MonoBehaviour
                 step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Rotate the object.");
             }
             else
             {
                 //maybe some message popup that somethings wrong.
                 PV.RPC("RejectSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Scale again.");
             }
         }
         else if (currentGameStep == 3)//rotated object check
@@ -327,12 +331,14 @@ public class RoomGameManager : MonoBehaviour
                 step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Position the object.");
             }
             else //reset the euler angles
             {
                 networkObject.transform.eulerAngles = new Vector3(0, 0, 0);
                 resetRotatingFlag = true;
                 PV.RPC("RejectSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Rotate again.");
             }
         }
         else if (currentGameStep == 4)// positioned object check
@@ -351,7 +357,8 @@ public class RoomGameManager : MonoBehaviour
                     currentWorkingGuideObject.SetActive(false); //disable guide object when the level is completed
                     //do some effect and remove all the objects created.
                     PV.RPC("DisableLightString", RpcTarget.All);
-                    StartCoroutine(LevelCompleteEffect());
+                    PV.RPC("RPCLevelCompleteEffectPlay", RpcTarget.All);
+                    //StartCoroutine(LevelCompleteEffect());
                 }
                 else
                 {
@@ -361,12 +368,14 @@ public class RoomGameManager : MonoBehaviour
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
                     PV.RPC("DisableLightString", RpcTarget.All);
                     PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
+                    PV.RPC("NotificationPopUp", RpcTarget.All, "Create the object.");
                 }
             }
 
             else
             {
                 PV.RPC("RejectSoundPlay", RpcTarget.All);
+                PV.RPC("NotificationPopUp", RpcTarget.All, "Position again.");
             }
 
         }
@@ -513,5 +522,17 @@ public class RoomGameManager : MonoBehaviour
     {
         handToHandLightString.SetActive(false);
     }
-    
+    [PunRPC]
+    public void NotificationPopUp(string text)
+    {
+        popUpText.text = text;
+        StartCoroutine(NotificationPopUpForSeconds());
+    }
+    [PunRPC]
+    IEnumerator NotificationPopUpForSeconds()
+    {
+        notificationPopUp.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        notificationPopUp.SetActive(false);
+    }
 }

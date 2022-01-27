@@ -10,6 +10,7 @@ public class RotatingKnob : MonoBehaviour
     public static bool rotatedFlagX, rotatedFlagY, rotatedFlagZ; //when the knob is spined more than 90 degree
     public static int rotatingAxisSelected = 0; //1 is X, 2 is y, and Z is 3.
     public GameObject knobParent, fingertip; // to rotate the knob
+    [SerializeField]
     private GameObject touchedFingerObject;
     [SerializeField]
     private float tempKnobAngle, tempFingerAngleX, tempFingerAngleY, tempFingerAngleZ, rotatedAngleX, rotatedAngleY, rotatedAngleZ;
@@ -118,7 +119,11 @@ public class RotatingKnob : MonoBehaviour
         {
             indexTouched = true;
 
-            if (LobbyNetworkManager.interactionType == 1) touchedFingerObject = GameObject.FindWithTag("networkLeftControllerAnchor");
+            if (LobbyNetworkManager.interactionType == 1)
+            {
+                touchedFingerObject = GameObject.FindWithTag("networkLeftControllerAnchor");
+            }
+
             else touchedFingerObject = GameObject.FindWithTag("networkLeftHandAnchor");
         }
     }

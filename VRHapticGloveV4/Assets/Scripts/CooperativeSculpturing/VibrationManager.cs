@@ -8,7 +8,6 @@ public class VibrationManager : MonoBehaviour
 {
     public const float FADE_TIME = 0.5f;
     public const float MAX_PWM = 1f;
-    private OVRInput.Controller currController = OVRInput.Controller.RTouch;
     private bool cont = true;
     private bool noShutDown = true;
     //private int prev_received = -1;
@@ -47,52 +46,52 @@ public class VibrationManager : MonoBehaviour
         {
             case 0:
                 //transition to off state
-                StartCoroutine(transitionToVibrationPower(0));
+                StartCoroutine(transitionToVibrationPower(0, controller));
                 break;
             case 1:
                 //transition to 25% state
-                StartCoroutine(transitionToVibrationPower(1));
+                StartCoroutine(transitionToVibrationPower(1, controller));
                 break;
             case 2:
                 //transition to 50% state
-                StartCoroutine(transitionToVibrationPower(2));
+                StartCoroutine(transitionToVibrationPower(2, controller));
                 break;
             case 3:
                 //transition to 75% state
-                StartCoroutine(transitionToVibrationPower(3));
+                StartCoroutine(transitionToVibrationPower(3, controller));
                 break;
             case 4:
                 //transition to 100% state
-                StartCoroutine(transitionToVibrationPower(4));
+                StartCoroutine(transitionToVibrationPower(4, controller));
                 break;
             case 5:
                 //three bursts
-                StartCoroutine(threeQuickBursts());
+                StartCoroutine(threeQuickBursts(controller));
                 break;
             case 6:
                 //sin wave
-                StartCoroutine(sinWave());
+                StartCoroutine(sinWave(controller));
                 break;
             case 7:
-                StartCoroutine(sqrtFade());
+                StartCoroutine(sqrtFade(controller));
                 //sqrt off
                 break;
             case 8:
-                StartCoroutine(zipzap());
+                StartCoroutine(zipzap(controller));
                 //zipzap
                 break;
             case 9:
                 //immediate cut
-                ControllerVibration(0);
+                ControllerVibration(0, controller);
                 break;
         }
     }
-    public void ControllerVibration(float amp)
+    public void ControllerVibration(float amp, OVRInput.Controller controller)
     {
-        OVRInput.SetControllerVibration(1, amp, OVRInput.Controller.RTouch);
+        OVRInput.SetControllerVibration(1, amp, controller);
     }
 
-    IEnumerator transitionToVibrationPower(float goal)
+    IEnumerator transitionToVibrationPower(float goal, OVRInput.Controller controller)
     {
         //keep a running time of when this started
         float start_time = temp_time;
@@ -104,12 +103,12 @@ public class VibrationManager : MonoBehaviour
             float target = (time_c / FADE_TIME);
             target = target * (final_v - prev_v);
             current_amp = prev_v + (target);
-            ControllerVibration(current_amp);
+            ControllerVibration(current_amp, controller);
             yield return null;
         }
     }
 
-    IEnumerator sqrtFade()
+    IEnumerator sqrtFade(OVRInput.Controller controller)
     {
         //sqrt fade from high pwm to zero
         float prev_millis = temp_time;
@@ -120,25 +119,25 @@ public class VibrationManager : MonoBehaviour
             float target = (float)(sqrt_const * sqrt_curr);
             Debug.Log(target);
             current_amp = target;
-            ControllerVibration(current_amp);
+            ControllerVibration(current_amp, controller);
             yield return null;
         }
         current_amp = 0;
-        ControllerVibration(current_amp);
+        ControllerVibration(current_amp, controller);
     }
 
-    IEnumerator sinWave()
+    IEnumerator sinWave(OVRInput.Controller controller)
     {
         cont = true;
         while (cont)
         {
             current_amp = (float)(Math.Sin(temp_time / 0.15f));
-            ControllerVibration(current_amp);
+            ControllerVibration(current_amp, controller);
             yield return null;
         }
     }
 
-    IEnumerator threeQuickBursts()
+    IEnumerator threeQuickBursts(OVRInput.Controller controller)
     {
         float prev_millis = temp_time;
         float diff = temp_time - prev_millis;
@@ -168,15 +167,15 @@ public class VibrationManager : MonoBehaviour
             if (current_amp != loop_amp)
             {
                 current_amp = loop_amp;
-                ControllerVibration(current_amp);
+                ControllerVibration(current_amp, controller);
             }
             yield return null;
         }
         current_amp = 0; //reset the vibration before quit
-        ControllerVibration(current_amp);
+        ControllerVibration(current_amp, controller);
     }
 
-    IEnumerator zipzap()
+    IEnumerator zipzap(OVRInput.Controller controller)
     {
         System.Random rand = new System.Random();
         cont = true;
@@ -189,7 +188,7 @@ public class VibrationManager : MonoBehaviour
                 rand_cycletime = rand.Next(15, 40)/100f;
                 prev_millis = temp_time;
                 current_amp = rand.Next(1, 8) / 8f;
-                ControllerVibration(current_amp);
+                ControllerVibration(current_amp, controller);
             }
             yield return null;
         }

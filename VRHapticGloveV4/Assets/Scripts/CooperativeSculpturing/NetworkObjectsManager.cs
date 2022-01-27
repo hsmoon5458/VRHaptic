@@ -369,7 +369,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
                     PV.RPC("LightString", RpcTarget.All, false);
-                    VibrationManager.singletone.TriggerVibration(0, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
                     positioiningFlag = false;
                 }
             }

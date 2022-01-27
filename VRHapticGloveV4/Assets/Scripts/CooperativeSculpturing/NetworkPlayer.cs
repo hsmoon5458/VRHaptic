@@ -273,6 +273,9 @@ public class NetworkPlayer : MonoBehaviour
                 {
                     networkPlayerRightHand.gameObject.SetActive(false); //dont use left and right hand tracking
                     networkPlayerLeftHand.gameObject.SetActive(false);
+
+                    networkLeftControllerAnchor.gameObject.SetActive(false); //to fix rotating with controllers
+
                     networkLeftControllerHand.gameObject.SetActive(false); //don't use left controller since it is participant
                     networkRightControllerHand.gameObject.SetActive(true); //use the right controller only
 
