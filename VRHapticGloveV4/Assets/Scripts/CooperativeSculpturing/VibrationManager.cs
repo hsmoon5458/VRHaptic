@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO.Ports;
 
 public class VibrationManager : MonoBehaviour
 {
@@ -14,32 +15,29 @@ public class VibrationManager : MonoBehaviour
     private double sqrt_const = (MAX_PWM / Math.Sqrt(FADE_TIME * 2));
     private float current_amp;
     private float temp_time;
+
+    SerialPort data_stream = new SerialPort("COM4", 115200);
+
     public static VibrationManager singletone;
     void Start()
-    {
+    {        
+        data_stream.Open(); //Initiate the Serial stream
         if (singletone && singletone != this)
         {
             Destroy(this);
         }
-
+        
         else
             singletone = this;
     }
     void Update()
     {
-        //constantly update the current ms of the program state for animations
         temp_time += Time.deltaTime;
+    }
 
-        if (Input.GetKeyDown("1")) TriggerVibration(0, currController); //power off smooth
-        if (Input.GetKeyDown("2")) TriggerVibration(1, currController);
-        if (Input.GetKeyDown("3")) TriggerVibration(2, currController);
-        if (Input.GetKeyDown("4")) TriggerVibration(3, currController);
-        if (Input.GetKeyDown("5")) TriggerVibration(4, currController);
-        if (Input.GetKeyDown("6")) TriggerVibration(5, currController); //three quick burst
-        if (Input.GetKeyDown("7")) TriggerVibration(6, currController); //sine wave
-        if (Input.GetKeyDown("8")) TriggerVibration(7, currController); //sqrt fade
-        if (Input.GetKeyDown("9")) TriggerVibration(8, currController); //light string 
-        if (Input.GetKeyDown("0")) TriggerVibration(9, currController); //power off imediate      
+    public void FingerTipVibration(int interaction)
+    {
+        data_stream.WriteLine("L" + interaction.ToString());        
     }
 
     public void TriggerVibration(int interaction, OVRInput.Controller controller)
@@ -96,15 +94,12 @@ public class VibrationManager : MonoBehaviour
 
     IEnumerator transitionToVibrationPower(float goal)
     {
-        Debug.Log("Corotuine started");
         //keep a running time of when this started
         float start_time = temp_time;
         float final_v = goal * (MAX_PWM / 4);
         float prev_v = current_amp;
         while (temp_time - start_time < FADE_TIME && noShutDown)
         {
-            Debug.Log(temp_time - start_time);
-            Debug.Log(FADE_TIME);
             float time_c = (float)temp_time - start_time;
             float target = (time_c / FADE_TIME);
             target = target * (final_v - prev_v);
@@ -145,7 +140,6 @@ public class VibrationManager : MonoBehaviour
 
     IEnumerator threeQuickBursts()
     {
-        Debug.Log("ThreeQuickBursts");
         float prev_millis = temp_time;
         float diff = temp_time - prev_millis;
         float loop_amp = 1f;
@@ -173,7 +167,6 @@ public class VibrationManager : MonoBehaviour
             }
             if (current_amp != loop_amp)
             {
-                Debug.Log("Changing Level");
                 current_amp = loop_amp;
                 ControllerVibration(current_amp);
             }

@@ -329,7 +329,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (enableRepeatPreventFlag) //to avoid calling RPC and Singleton keep repeating
                 {
                     PV.RPC("LightString", RpcTarget.All, true);
-                    VibrationManager.singletone.TriggerVibration(40, 2, 55, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(8, OVRInput.Controller.RTouch);
                     enableRepeatPreventFlag = false;
                 }
                 
@@ -369,6 +369,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
                     PV.RPC("LightString", RpcTarget.All, false);
+                    VibrationManager.singletone.TriggerVibration(0, OVRInput.Controller.RTouch);
                     positioiningFlag = false;
                 }
             }
