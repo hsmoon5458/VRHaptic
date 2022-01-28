@@ -330,6 +330,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     PV.RPC("LightString", RpcTarget.All, true);
                     VibrationManager.singletone.TriggerVibration(8, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(8);
                     enableRepeatPreventFlag = false;
                 }
                 
@@ -370,6 +371,7 @@ public class NetworkObjectsManager : MonoBehaviour
                 {
                     PV.RPC("LightString", RpcTarget.All, false);
                     VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(9);
                     positioiningFlag = false;
                 }
             }

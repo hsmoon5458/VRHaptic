@@ -50,7 +50,18 @@ public class RoomGameManager : MonoBehaviour
     //test code end
     public void RefreshNetworkPlayerSetting() // reset network setup for changing interaction type
     {
-        NetworkPlayerSettingDelegate();
+        //delegate doesn't work
+        if(LobbyNetworkManager.userType == 1) // researcher
+        {
+            GameObject.Find("Researcher").GetComponent<NetworkPlayer>().HandSetting();
+        }
+
+        if (LobbyNetworkManager.userType == 2) // participant
+        {
+            GameObject.Find("Participant").GetComponent<NetworkPlayer>().HandSetting();
+        }
+
+        //NetworkPlayerSettingDelegate();
     }
 
     void Start()
@@ -136,9 +147,7 @@ public class RoomGameManager : MonoBehaviour
             {
                 float step = 0.3f * Time.deltaTime;
                 currentWorkingNetoworkObject.transform.position = Vector3.MoveTowards(currentWorkingNetoworkObject.transform.position, currentWorkingSampleObject.transform.position, step);
-                PV.RPC("DisableLightString", RpcTarget.All);
-                VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
-                VibrationManager.singletone.FingerTipVibration(9);
+                
                 //if it arrives to the target, locked in.
                 if (distance < 0.01f)
                 {
@@ -147,8 +156,9 @@ public class RoomGameManager : MonoBehaviour
                     if (positionFixedFlag)//this flag is ture in game step 3 and disabled here, this will be played once
                     { 
                         PV.RPC("PositionSoundPlay", RpcTarget.All);
-                        //VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
-                        //VibrationManager.singletone.FingerTipVibration(9);
+                        PV.RPC("DisableLightString", RpcTarget.All);
+                        VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                        VibrationManager.singletone.FingerTipVibration(9);
                         positionFixedFlag = false;
                     }
                 }
@@ -351,7 +361,7 @@ public class RoomGameManager : MonoBehaviour
         }
         else if (currentGameStep == 4)// positioned object check
         {
-            if (Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.001f)
+            if (Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.01f)
             {
                 currentWorkingNetoworkObject.tag = "completedObject"; //change the tag so that network object is not overlapped from other step and level
                 step4Timer = tempTime - step3Timer;
