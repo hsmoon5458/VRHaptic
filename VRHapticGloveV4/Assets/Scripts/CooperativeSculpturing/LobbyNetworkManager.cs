@@ -21,6 +21,7 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
     public GameObject roomSelectionUIResearcher, roomSelectionUIParticipant, roomSelectionUIPCView, interactionTypeUIResearcher, interactionTypeUIParticipant;
     public GameObject connectButtonResearcher, connectButtonParticipant, connectButtonPCView;
     public static int userType, interactionType; //1 is researcher, 2 is participant, and 3 is PCview for userType, and 1 for controller and 2 for hand tracking
+    public Material screenFadeMaterial;
 
     private void Start()
     {
@@ -174,4 +175,29 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
         }
 
     }
+
+    IEnumerator FadeOut()
+    {
+        float time = Time.time;
+        int alpha = 0;
+        while (alpha < 255)
+        {            
+            alpha = Mathf.FloorToInt(Mathf.Lerp(0, 255, Mathf.InverseLerp(time, time + 1.5f, Time.time)));
+            screenFadeMaterial.color = new Color(0f, 0f, 0f, alpha / 255f);
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeIn()
+    {
+        float time = Time.time;
+        int alpha = 255;
+        while (alpha > 0)
+        {
+            alpha = Mathf.FloorToInt(Mathf.Lerp(255, 0, Mathf.InverseLerp(time, time + 2.2f, Time.time)));
+            screenFadeMaterial.color = new Color(0f, 0f, 0f, alpha / 255f);
+            yield return null;
+        }
+    }
+
 }
