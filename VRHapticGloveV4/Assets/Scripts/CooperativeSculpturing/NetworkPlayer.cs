@@ -277,7 +277,7 @@ public class NetworkPlayer : MonoBehaviour
                     networkLeftControllerAnchor.gameObject.SetActive(false); //to fix rotating with controllers
 
                     networkLeftControllerHand.gameObject.SetActive(false); //don't use left controller since it is participant
-                    Debug.Log("esssss");
+                    Debug.Log("yayayayaayaayaa");
                     networkRightControllerHand.gameObject.SetActive(true); //use the right controller only
 
                     ChangeLayers(networkRightControllerHand, 8);// change the layer of controller hand so that it does not overlap with hand in "HankOVRCamearRig"

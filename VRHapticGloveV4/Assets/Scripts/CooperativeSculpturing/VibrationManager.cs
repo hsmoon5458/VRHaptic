@@ -19,8 +19,12 @@ public class VibrationManager : MonoBehaviour
 
     public static VibrationManager singletone;
     void Start()
-    {        
-        data_stream.Open(); //Initiate the Serial stream
+    {
+        if (!data_stream.IsOpen)
+        {
+            data_stream.Open(); //Initiate the Serial stream
+        }
+        
         if (singletone && singletone != this)
         {
             Destroy(this);
@@ -32,8 +36,13 @@ public class VibrationManager : MonoBehaviour
     void Update()
     {
         temp_time += Time.deltaTime;
+        if(Input.GetKeyDown("v")) data_stream.WriteLine("L3");
+        if (Input.GetKeyDown("b")) data_stream.WriteLine("L9");
     }
-
+    public void CloseIOPort()
+    {
+        data_stream.Close();
+    }
     public void FingerTipVibration(int interaction)
     {
         data_stream.WriteLine("L" + interaction.ToString());        

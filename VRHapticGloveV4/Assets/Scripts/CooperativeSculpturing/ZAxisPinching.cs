@@ -6,8 +6,17 @@ public class ZAxisPinching : MonoBehaviour
 {
     public static bool ZScaling = false;
     private bool rightHandPinched, leftHandPinched;
+    private bool vibrationFlag;
+    private GameObject gameManager;
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager");
+    }
     void Update()
     {
+        //check vibrationflag continously;
+        vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
+
         if (rightHandPinched && leftHandPinched && !NetworkObjectsManager.zAxisScalingEnabledFlag)
         {
             ZScaling = true;
@@ -22,10 +31,20 @@ public class ZAxisPinching : MonoBehaviour
             if (FingertipBehavior.myPinchingStatus)
             {
                 rightHandPinched = true;
+                if (vibrationFlag)
+                {
+                    VibrationManager.singletone.TriggerVibration(6, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(6);
+                }
             }
             else
             {
                 rightHandPinched = false;
+                if (vibrationFlag)
+                {
+                    VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(9);
+                }
             }
         }
 

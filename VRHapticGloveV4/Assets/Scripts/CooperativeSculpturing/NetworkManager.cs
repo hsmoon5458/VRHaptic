@@ -12,6 +12,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
  
     public override void OnJoinedLobby()
     {
+        VibrationManager.singletone.CloseIOPort();
+        PhotonNetwork.LeaveRoom();
         base.OnJoinedLobby();
         Debug.Log("Joined Lobby");
         if (SceneManager.GetActiveScene().buildIndex == 0)

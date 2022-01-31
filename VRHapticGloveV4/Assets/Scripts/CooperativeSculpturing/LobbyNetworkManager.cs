@@ -30,19 +30,20 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
             connectButtonResearcher.SetActive(false);
             connectButtonParticipant.SetActive(false);
             connectButtonPCView.SetActive(false);
+            Debug.Log("IS CONNECTED");
+            //once they came back to lobby from the room, they will reset interaction type and enter the room.
+            interactionType = 0;
+            if(userType == 1)
+            {
+                roomSelectionUIResearcher.SetActive(false);
+                interactionTypeUIResearcher.SetActive(true);
+            }
+            if(userType == 2)
+            {
+                roomSelectionUIParticipant.SetActive(false);
+                interactionTypeUIParticipant.SetActive(true);
+            }
 
-            if (userType == 1)
-            {
-                roomSelectionUIResearcher.SetActive(true);
-            }
-            else if (userType == 2)
-            {
-                roomSelectionUIParticipant.SetActive(true);
-            }
-            else
-            {
-                roomSelectionUIPCView.SetActive(true);
-            }
         }
         else //otherwise, creat Nickname to connect to server
         {

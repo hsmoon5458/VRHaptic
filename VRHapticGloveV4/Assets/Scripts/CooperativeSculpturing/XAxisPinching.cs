@@ -6,9 +6,18 @@ public class XAxisPinching : MonoBehaviour
 {
     public static bool XScaling = false;
     private bool rightHandPinched, leftHandPinched;
+
+    private bool vibrationFlag;
+    private GameObject gameManager;
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager");
+    }
     void Update()
     {
-        if(rightHandPinched && leftHandPinched && !NetworkObjectsManager.xAxisScalingEnabledFlag)
+        //check vibrationflag continously;
+        vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
+        if (rightHandPinched && leftHandPinched && !NetworkObjectsManager.xAxisScalingEnabledFlag)
         {
             XScaling = true;
         }
@@ -22,10 +31,20 @@ public class XAxisPinching : MonoBehaviour
             if (FingertipBehavior.myPinchingStatus)
             {
                 rightHandPinched = true;
+                if (vibrationFlag)
+                {
+                    VibrationManager.singletone.TriggerVibration(6, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(6);
+                }
             }
             else
             {
                 rightHandPinched = false;
+                if (vibrationFlag)
+                {
+                    VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.FingerTipVibration(9);
+                }
             }
         }
 
@@ -33,7 +52,6 @@ public class XAxisPinching : MonoBehaviour
         {
             if (FingertipBehavior.networkPinchingStatus)
             {
-                Debug.Log("left picnchj ture");
                 leftHandPinched = true;
             }
             else

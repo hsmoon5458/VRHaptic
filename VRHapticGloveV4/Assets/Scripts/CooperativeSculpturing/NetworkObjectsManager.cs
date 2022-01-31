@@ -37,9 +37,14 @@ public class NetworkObjectsManager : MonoBehaviour
     //RPC
     private PhotonView PV;
 
+    //vibration
+    private GameObject gameManager;
+    private bool vibrationFlag;
+
     private void Start()
     {
         PV = GetComponent<PhotonView>();
+        gameManager = GameObject.Find("GameManager");
         InvokeRepeating("IdentifyFingertip", 1f, 1f);
         invokeRepeatingFlag = false;
         if (LobbyNetworkManager.userType == 1)//if it is a researcher
@@ -51,6 +56,9 @@ public class NetworkObjectsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //check vibrationflag continously
+        vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
+
         //keep finding the fingertip objects, if they are both identified, cancel invoking.
         if (leftFingertip != null && rightFingertip != null) CancelInvoke("IdentifyFingertip");
         if (leftFingertip != null && rightFingertip != null && RoomGameManager.gameStep == 0) handToHandLightString.SetActive(false); //disable both start and end objects are identifed at the beginning
@@ -329,8 +337,12 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (enableRepeatPreventFlag) //to avoid calling RPC and Singleton keep repeating
                 {
                     PV.RPC("LightString", RpcTarget.All, true);
-                    VibrationManager.singletone.TriggerVibration(8, OVRInput.Controller.RTouch);
-                    VibrationManager.singletone.FingerTipVibration(8);
+                    if (vibrationFlag)
+                    {
+                        VibrationManager.singletone.TriggerVibration(8, OVRInput.Controller.RTouch);
+                        VibrationManager.singletone.FingerTipVibration(8);
+                    }
+                    
                     enableRepeatPreventFlag = false;
                 }
                 
@@ -370,8 +382,12 @@ public class NetworkObjectsManager : MonoBehaviour
                 if (Vector3.Distance(leftFingertip.transform.position, rightFingertip.transform.position) > lightStringDistanceThreshold)
                 {
                     PV.RPC("LightString", RpcTarget.All, false);
-                    VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
-                    VibrationManager.singletone.FingerTipVibration(9);
+                    if (vibrationFlag)
+                    {
+                        VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                        VibrationManager.singletone.FingerTipVibration(9);
+                    }
+                    
                     positioiningFlag = false;
                 }
             }

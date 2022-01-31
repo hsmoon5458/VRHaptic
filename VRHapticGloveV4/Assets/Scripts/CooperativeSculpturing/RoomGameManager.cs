@@ -20,6 +20,7 @@ public class RoomGameManager : MonoBehaviour
     private GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
     public GameObject handToHandLightString;
+    public bool vibrationFlag;
     public bool confirmationFlag;
     public static bool resetRotatingFlag;
     private bool positionFixedFlag;
@@ -78,14 +79,17 @@ public class RoomGameManager : MonoBehaviour
         //timer for performance measurement
         tempTime += Time.deltaTime;
 
+        //reset participant position
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("pushed");
+            HankOVRCameraRig.transform.position = participantTf.position;
+        }
+
         //test code
         #region Test Code
 
-        if (Input.GetKeyDown("t"))
-        {
-            BackgroundCubeColor.colorChangeTime = 0.1f;
-            BackgroundCubeColor.numberOfCubeColorChanged = 30;
-        }
+       
 
         if (Input.GetKeyDown("c")) //enable controller for developing
         {
@@ -101,27 +105,9 @@ public class RoomGameManager : MonoBehaviour
             networkLeftHand = PhotonView.Find(1001).gameObject.transform.GetChild(0).gameObject;
             networkLeftHand.SetActive(true);
         }
-        if (Input.GetKeyDown("f"))
-        {
-            StartCoroutine(LevelCompleteEffect());
-
-        }
-        if (Input.GetKeyDown("1")) //enable controller for developing
-        {
-            testGameObj = GameObject.FindWithTag("InstantiatedObject");
-            testGameObj.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
-        }
-
-        /*
-        if (Input.GetKeyDown("2")) data_stream.WriteLine("L2");
-        if (Input.GetKeyDown("3")) data_stream.WriteLine("L3");
-        if (Input.GetKeyDown("4")) data_stream.WriteLine("L4");
-        if (Input.GetKeyDown("5")) data_stream.WriteLine("L5");
-        if (Input.GetKeyDown("6")) data_stream.WriteLine("L6");
-        if (Input.GetKeyDown("7")) data_stream.WriteLine("L7");
-        if (Input.GetKeyDown("8")) data_stream.WriteLine("L8");
-        if (Input.GetKeyDown("9")) data_stream.WriteLine("L9");
-        */
+        
+        
+        
         #endregion
         //test code end
         #region Confirmation
@@ -157,8 +143,12 @@ public class RoomGameManager : MonoBehaviour
                     { 
                         PV.RPC("PositionSoundPlay", RpcTarget.All);
                         PV.RPC("DisableLightString", RpcTarget.All);
-                        VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
-                        VibrationManager.singletone.FingerTipVibration(9);
+                        if (vibrationFlag)
+                        {
+                            VibrationManager.singletone.TriggerVibration(9, OVRInput.Controller.RTouch);
+                            VibrationManager.singletone.FingerTipVibration(9);
+                        }
+                        
                         positionFixedFlag = false;
                     }
                 }
