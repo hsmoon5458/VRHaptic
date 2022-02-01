@@ -46,7 +46,6 @@ public class RoomGameManager : MonoBehaviour
     public GameObject testLeftAnchor;
     public GameObject testLeftControllerAnchor;
     public GameObject testLeftHandTracking;
-    private GameObject testGameObj;
 
     //test code end
     public void RefreshNetworkPlayerSetting() // reset network setup for changing interaction type
@@ -76,13 +75,18 @@ public class RoomGameManager : MonoBehaviour
 
     void Update()
     {
+        #region Timer
         //timer for performance measurement
         tempTime += Time.deltaTime;
+        if (gameStep == 1) step1Timer += Time.deltaTime;
+        if (gameStep == 2) step2Timer += Time.deltaTime;
+        if (gameStep == 3) step3Timer += Time.deltaTime;
+        if (gameStep == 4) step4Timer += Time.deltaTime;
+        #endregion
 
         //reset participant position
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("pushed");
             HankOVRCameraRig.transform.position = participantTf.position;
         }
 
@@ -216,6 +220,10 @@ public class RoomGameManager : MonoBehaviour
     {
         //set the timer setting
         tempTime = 0;
+        step1Timer = 0;
+        step2Timer = 0;
+        step3Timer = 0;
+        step4Timer = 0;
 
         //set the level setting
         objectNum = 1;
@@ -294,8 +302,7 @@ public class RoomGameManager : MonoBehaviour
             //check it has same mesh filter name (cube, cylinder, sphere)
             if (workspaceObjectGuide.GetComponent<MeshFilter>().mesh.name == networkObject.GetComponent<MeshFilter>().mesh.name && (instantiatedObjects.Length == 1))
             {
-                gameStep++; // go to next step
-                step1Timer = tempTime; //save the time
+                gameStep++; // go to next step                
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
                 PV.RPC("NotificationPopUp", RpcTarget.All, "Scale the object.");
@@ -317,7 +324,6 @@ public class RoomGameManager : MonoBehaviour
                 gameStep++;
                 EnableKnob(true);//enable knob for next step
                 resetRotatingFlag = true; //reset rotating status to avoid some error
-                step2Timer = tempTime - step1Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
                 PV.RPC("NotificationPopUp", RpcTarget.All, "Rotate the object.");
@@ -336,7 +342,6 @@ public class RoomGameManager : MonoBehaviour
                 positionFixedFlag = true; //to position set
                 gameStep++;
                 EnableKnob(false);//disable knob for next step
-                step3Timer = tempTime - step2Timer;
                 WorkspaceInitialize(sampleNum, objectNum, gameStep);
                 PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
                 PV.RPC("NotificationPopUp", RpcTarget.All, "Position the object.");
@@ -354,7 +359,6 @@ public class RoomGameManager : MonoBehaviour
             if (Vector3.Distance(currentWorkingGuideObject.transform.localPosition, networkObject.transform.localPosition) < 0.01f)
             {
                 currentWorkingNetoworkObject.tag = "completedObject"; //change the tag so that network object is not overlapped from other step and level
-                step4Timer = tempTime - step3Timer;
                 completionTime = tempTime; //save total time for each level
 
                 if (objectNum == 4) // if all objects are done
