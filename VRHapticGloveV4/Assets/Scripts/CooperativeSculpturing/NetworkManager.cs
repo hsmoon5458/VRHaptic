@@ -12,7 +12,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
  
     public override void OnJoinedLobby()
     {
-        VibrationManager.singletone.CloseIOPort();
+        try { VibrationManager.singletone.CloseIOPort(); }
+        catch { Debug.LogWarning("COM Port is not connected"); }
         PhotonNetwork.LeaveRoom();
         base.OnJoinedLobby();
         Debug.Log("Joined Lobby");
