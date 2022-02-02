@@ -14,8 +14,8 @@ public class FingertipBehavior : MonoBehaviour
     }
     void Update()
     {
-        //check vibrationflag continously, it shuold be working in room1 only
-        if (SceneManager.GetActiveScene().buildIndex == 1) vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;        
+        //check vibrationflag continously;
+        if (SceneManager.GetActiveScene().buildIndex == 1) vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
 
         if (RoomGameManager.gameStep == 0) //reset before go into step 1.
         {
