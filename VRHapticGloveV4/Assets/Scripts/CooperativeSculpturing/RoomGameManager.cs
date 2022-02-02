@@ -362,24 +362,30 @@ public class RoomGameManager : MonoBehaviour
                 currentWorkingNetoworkObject.tag = "completedObject"; //change the tag so that network object is not overlapped from other step and level
                 completionTime = tempTime; //save total time for each level
 
+                //reset setting for next step
+                StopAllCoroutines();//to avoid next guide object to be rotated
+                FingertipBehavior.thumbTouchedIndex = false; //falsify the touch
+                FingertipBehavior.indexTouchedThumb = false;
+                FingertipBehavior.thumbTouchedThumb = false;
+                FingertipBehavior.indexTouchedIndex = false;
+
                 if (objectNum == 4) // if all objects are done
                 {
                     Debug.Log("Level Done");
                     objectNum = 0; //set to 0 for another level
                     gameStep = 0;
-                    StopAllCoroutines();//to avoid next guide object to be rotated
+                    
                     currentWorkingGuideObject.SetActive(false); //disable guide object when the level is completed
                     //do some effect and remove all the objects created.
                     PV.RPC("DisableLightString", RpcTarget.All);
                     PV.RPC("RPCLevelCompleteEffectPlay", RpcTarget.All);
-                    //StartCoroutine(LevelCompleteEffect());
                 }
                 else
                 {
                     Debug.Log("Next object start");
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
-                    StopAllCoroutines();//to avoid next guide object to be rotated
+                    
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
                     PV.RPC("DisableLightString", RpcTarget.All);
                     PV.RPC("ConfirmedSoundPlay", RpcTarget.All);

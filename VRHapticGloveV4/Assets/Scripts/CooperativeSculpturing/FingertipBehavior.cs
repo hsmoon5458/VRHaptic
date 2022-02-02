@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FingertipBehavior : MonoBehaviour
 {
@@ -9,12 +10,12 @@ public class FingertipBehavior : MonoBehaviour
     private GameObject gameManager;
     private void Start()
     {
-        gameManager = GameObject.Find("GameManager");
+        if(SceneManager.GetActiveScene().buildIndex == 1) gameManager = GameObject.Find("GameManager");
     }
     void Update()
     {
         //check vibrationflag continously;
-        vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
+        if (SceneManager.GetActiveScene().buildIndex == 1) vibrationFlag = gameManager.GetComponent<RoomGameManager>().vibrationFlag;
 
         if (RoomGameManager.gameStep == 0) //reset before go into step 1.
         {
