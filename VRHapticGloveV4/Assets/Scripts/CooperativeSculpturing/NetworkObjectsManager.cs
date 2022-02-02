@@ -14,7 +14,7 @@ public class NetworkObjectsManager : MonoBehaviour
     private bool cubeFlag, sphereFlag, cylinderFlag;
     private bool cubeGenerate, sphereGenerate, cylinderGenerate;
     private float timeToGenerate = 1.2f;
-    private float rotatingSpeed = 1.4f;
+    private float rotatingSpeed = 2.3f;
     //scaling 3D objects
     [SerializeField]
     public GameObject leftFingertip, rightFingertip; // to calculate the distance between fingers for scaling

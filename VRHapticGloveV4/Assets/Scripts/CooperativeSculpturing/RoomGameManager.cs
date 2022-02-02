@@ -18,6 +18,7 @@ public class RoomGameManager : MonoBehaviour
     private GameObject controllerKnob, handTrackingKnob;
     public GameObject leftHand, rightHand, leftHandTracking, rightHandTracking, leftControllerHand, rightControllerHand;
     private GameObject workspaceCubeGuide, workspaceCylinderGuide, workspaceSphereGuide;
+    [SerializeField]
     private GameObject currentWorkingSampleObject, currentWorkingGuideObject, currentWorkingNetoworkObject;//catch the sample object, and changed the guide object corresponds to game step and sample object transform.
     public GameObject handToHandLightString;
     public bool vibrationFlag;
@@ -260,24 +261,24 @@ public class RoomGameManager : MonoBehaviour
                 currentWorkingGuideObject = workspaceCubeGuide; //set guide object for game step check
             }
             else if (currentWorkingSampleObject.tag == "sampleCylinder")
-            {
-                workspaceCubeGuide.SetActive(false);
+            {                
                 workspaceCylinderGuide.SetActive(true);
                 workspaceCylinderGuide.transform.localScale = new Vector3(0.2f, 0.1f, 0.2f);
                 workspaceCylinderGuide.transform.eulerAngles = new Vector3(0, 0, 0);
                 workspaceCylinderGuide.transform.position = objectSpawnTf.position;
+                workspaceCubeGuide.SetActive(false);
                 workspaceSphereGuide.SetActive(false);
 
                 currentWorkingGuideObject = workspaceCylinderGuide;
             }
             else // sphere
-            {
-                workspaceCubeGuide.SetActive(false);
-                workspaceCylinderGuide.SetActive(false);
+            {                
                 workspaceSphereGuide.SetActive(true);
                 workspaceSphereGuide.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
                 workspaceSphereGuide.transform.eulerAngles = new Vector3(0, 0, 0);
                 workspaceSphereGuide.transform.position = objectSpawnTf.position;
+                workspaceCubeGuide.SetActive(false);
+                workspaceCylinderGuide.SetActive(false);
 
                 currentWorkingGuideObject = workspaceSphereGuide;
             }
@@ -366,6 +367,7 @@ public class RoomGameManager : MonoBehaviour
                     Debug.Log("Level Done");
                     objectNum = 0; //set to 0 for another level
                     gameStep = 0;
+                    StopAllCoroutines();//to avoid next guide object to be rotated
                     currentWorkingGuideObject.SetActive(false); //disable guide object when the level is completed
                     //do some effect and remove all the objects created.
                     PV.RPC("DisableLightString", RpcTarget.All);
@@ -377,6 +379,7 @@ public class RoomGameManager : MonoBehaviour
                     Debug.Log("Next object start");
                     objectNum++; //otherwise, increase the number to move onto next object to finish the current level
                     gameStep = 1; //start from create object
+                    StopAllCoroutines();//to avoid next guide object to be rotated
                     WorkspaceInitialize(sampleNum, objectNum, gameStep);
                     PV.RPC("DisableLightString", RpcTarget.All);
                     PV.RPC("ConfirmedSoundPlay", RpcTarget.All);
@@ -467,7 +470,7 @@ public class RoomGameManager : MonoBehaviour
     {
         while (currentWorkingGuideObject.transform.eulerAngles != currentWorkingSampleObject.transform.eulerAngles)
         {
-            currentWorkingGuideObject.transform.rotation = Quaternion.Lerp(currentWorkingGuideObject.transform.rotation, currentWorkingSampleObject.transform.rotation, Time.deltaTime * 2.5f);
+            currentWorkingGuideObject.transform.rotation = Quaternion.Lerp(currentWorkingGuideObject.transform.rotation, currentWorkingSampleObject.transform.rotation, Time.deltaTime * 3f);
             yield return null;
         }
     }
