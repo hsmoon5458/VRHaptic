@@ -36,7 +36,7 @@ public class VibrationManager : MonoBehaviour
     void Update()
     {
         temp_time += Time.deltaTime;
-        if(Input.GetKeyDown("v")) data_stream.WriteLine("L3");
+        if(Input.GetKeyDown("v")) data_stream.WriteLine("L2");
         if (Input.GetKeyDown("b")) data_stream.WriteLine("L9");
     }
     public void CloseIOPort()
