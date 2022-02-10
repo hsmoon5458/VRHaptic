@@ -44,7 +44,7 @@ public class FingertipBehavior : MonoBehaviour
                 thumbTouchedThumb = true;
                 if (vibrationFlag)
                 {
-                    VibrationManager.singletone.TriggerVibration(3, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(4, OVRInput.Controller.RTouch);
                     VibrationManager.singletone.FingerTipVibration(3);
                 }
                 
@@ -54,7 +54,7 @@ public class FingertipBehavior : MonoBehaviour
                 thumbTouchedIndex = true;
                 if (vibrationFlag)
                 {
-                    VibrationManager.singletone.TriggerVibration(3, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(4, OVRInput.Controller.RTouch);
                     VibrationManager.singletone.FingerTipVibration(3);
                 }
                 
@@ -67,7 +67,7 @@ public class FingertipBehavior : MonoBehaviour
                 indexTouchedThumb = true;
                 if (vibrationFlag)
                 {
-                    VibrationManager.singletone.TriggerVibration(3, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(4, OVRInput.Controller.RTouch);
                     VibrationManager.singletone.FingerTipVibration(3);
                 }
                 
@@ -77,7 +77,7 @@ public class FingertipBehavior : MonoBehaviour
                 indexTouchedIndex = true;
                 if (vibrationFlag)
                 {
-                    VibrationManager.singletone.TriggerVibration(3, OVRInput.Controller.RTouch);
+                    VibrationManager.singletone.TriggerVibration(4, OVRInput.Controller.RTouch);
                     VibrationManager.singletone.FingerTipVibration(3);
                 }
                 

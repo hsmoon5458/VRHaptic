@@ -10873,6 +10873,7 @@ MonoBehaviour:
   handToHandLightString: {fileID: 2091203806}
   vibrationFlag: 0
   confirmationFlag: 0
+  handWHaptic: 0
   completedObjects: []
   instantiatedObjects: []
   roomAudioSource: {fileID: 860187577}
@@ -10883,6 +10884,8 @@ MonoBehaviour:
   rejectSound: {fileID: 8300000, guid: bc000a084cc786f4cb29d5ec24328cf7, type: 3}
   notificationPopUp: {fileID: 1125395749}
   popUpText: {fileID: 1320817524}
+  indexCollider: {fileID: 2087010790}
+  thumbCollider: {fileID: 1492662290}
   testLeftAnchor: {fileID: 146026279}
   testLeftControllerAnchor: {fileID: 504753831}
   testLeftHandTracking: {fileID: 999150121}

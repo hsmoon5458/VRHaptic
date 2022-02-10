@@ -23,6 +23,7 @@ public class RoomGameManager : MonoBehaviour
     public GameObject handToHandLightString;
     public bool vibrationFlag;
     public bool confirmationFlag;
+    public bool handWHaptic;
     public static bool resetRotatingFlag;
     private bool positionFixedFlag;
 
@@ -37,7 +38,11 @@ public class RoomGameManager : MonoBehaviour
 
     //Notification Popup
     public GameObject notificationPopUp;
-    public TextMeshProUGUI popUpText; 
+    public TextMeshProUGUI popUpText;
+
+    //hand with haptic collider adjustment
+    public SphereCollider indexCollider;
+    public SphereCollider thumbCollider;
 
     //RPC
     private PhotonView PV;
@@ -89,6 +94,18 @@ public class RoomGameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             HankOVRCameraRig.transform.position = participantTf.position;
+        }
+
+        if (handWHaptic)
+        {
+            indexCollider.radius = 0.025f;
+            thumbCollider.radius = 0.025f;
+        }
+
+        else
+        {
+            indexCollider.radius = 0.015f;
+            thumbCollider.radius = 0.015f;
         }
 
         //test code
