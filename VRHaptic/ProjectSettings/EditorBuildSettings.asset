@@ -17,10 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CooperativeSculpturingRoom1.unity
     guid: 474feb969c3728247943e38b285e1d01
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CooperativeSculpturingRoom2.unity
     guid: be658989feb5cd74fbce80b5746ce077
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CooperativeSculpturingRoom3.unity
     guid: 5dab764bc2a04e94b98afa7cc2aa4b2d
   m_configObjects:

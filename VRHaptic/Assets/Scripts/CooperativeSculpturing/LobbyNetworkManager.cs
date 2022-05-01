@@ -23,6 +23,8 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
     public static int userType, interactionType; //1 is researcher, 2 is participant, and 3 is PCview for userType, and 1 for controller and 2 for hand tracking
     public Material screenFadeMaterial;
 
+    public TextMeshProUGUI debugText;
+
     private void Start()
     {
         if (PhotonNetwork.IsConnected) // if it is connected to server, do nothing
@@ -99,6 +101,7 @@ public class LobbyNetworkManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedLobby();
         Debug.Log("Joined the Lobby");
+        debugText.text = "Joined the Lobby";
         //in case go back to lobby from the room
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
